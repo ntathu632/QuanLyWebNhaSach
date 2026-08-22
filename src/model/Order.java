@@ -22,6 +22,10 @@ public class Order implements Serializable {
     private OrderDetail[] details;
     private String paymentMethod;
 
+    // Không có trong class diagram gốc, nhưng cần thiết để OrderDAO biết phải xóa
+    // CartItem của giỏ hàng nào sau khi đặt hàng thành công.
+    private int cartID;
+
     public Order() {
     }
 
@@ -99,5 +103,13 @@ public class Order implements Serializable {
 
     public void setPaymentMethod(String paymentMethod) {
         this.paymentMethod = paymentMethod;
+    }
+
+    public int getCartID() {
+        return cartID;
+    }
+
+    public void setCartID(int cartID) {
+        this.cartID = cartID;
     }
 }

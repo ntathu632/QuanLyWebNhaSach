@@ -127,7 +127,10 @@ public class LoginFrm extends javax.swing.JFrame implements ActionListener {
         AccountDAO accountDAO = new AccountDAO();
 
         if (accountDAO.checkLogin(account)) {
-            if (account.getRole().equals("Admin")) {
+            if (!"Active".equalsIgnoreCase(account.getStatus())) {
+                javax.swing.JOptionPane.showMessageDialog(this,
+                        "Tài khoản của bạn đã bị khóa hoặc chưa được kích hoạt!");
+            } else if (account.getRole().equals("Admin")) {
                 (new AdminHomeFrm(account)).setVisible(true);
                 this.dispose();
             } else {

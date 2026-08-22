@@ -177,6 +177,7 @@ public class ShoppingCartFrm extends javax.swing.JFrame implements ActionListene
             order.setStatus("Pending");
             order.setCustomer(cart.getCustomer());
             order.setDetails(details);
+            order.setCartID(cart.getCartID());
 
             (new CheckoutFrm(order)).setVisible(true);
             this.dispose();

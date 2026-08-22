@@ -55,6 +55,12 @@ public class OrderDAO extends DAO {
                 }
             }
 
+            if (order.getCartID() > 0) {
+                PreparedStatement psClearCart = con.prepareStatement("DELETE FROM CartItem WHERE cartID = ?");
+                psClearCart.setInt(1, order.getCartID());
+                psClearCart.executeUpdate();
+            }
+
             con.commit();
             return true;
 
