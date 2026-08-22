@@ -80,4 +80,18 @@ public class OrderDAO extends DAO {
             }
         }
     }
+
+    public boolean updateOrderStatus(int orderID, String status) {
+        try {
+            PreparedStatement ps = con.prepareStatement("UPDATE Orders SET status = ? WHERE orderID = ?");
+            ps.setString(1, status);
+            ps.setInt(2, orderID);
+            ps.executeUpdate();
+            return true;
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return false;
+        }
+    }
 }
