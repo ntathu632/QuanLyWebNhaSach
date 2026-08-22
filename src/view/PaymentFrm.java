@@ -4,6 +4,7 @@
  */
 package view;
 
+import dao.OrderDAO;
 import dao.PaymentDAO;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -129,6 +130,9 @@ public class PaymentFrm extends javax.swing.JFrame implements ActionListener {
 
             PaymentDAO paymentDAO = new PaymentDAO();
             if (paymentDAO.addPayment(payment)) {
+                OrderDAO orderDAO = new OrderDAO();
+                orderDAO.updateOrderStatus(order.getOrderID(), "Paid");
+
                 JOptionPane.showMessageDialog(this, "Thanh toán và đặt hàng thành công!");
                 (new CustomerHomeFrm(order.getCustomer())).setVisible(true);
                 this.dispose();
@@ -136,6 +140,9 @@ public class PaymentFrm extends javax.swing.JFrame implements ActionListener {
                 JOptionPane.showMessageDialog(this, "Thanh toán thất bại! Vui lòng thử lại.");
             }
         } else if (e.getSource() == btnCancel) {
+            OrderDAO orderDAO = new OrderDAO();
+            orderDAO.updateOrderStatus(order.getOrderID(), "Cancelled");
+
             (new CustomerHomeFrm(order.getCustomer())).setVisible(true);
             this.dispose();
         }
