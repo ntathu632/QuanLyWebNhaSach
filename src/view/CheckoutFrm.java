@@ -27,6 +27,7 @@ public class CheckoutFrm extends javax.swing.JFrame implements ActionListener {
      */
     public CheckoutFrm(Order order) {
         initComponents();
+        AppTheme.maximize(this);
         this.order = order;
         setTitle("Trang Xác Nhận Đơn Hàng");
 

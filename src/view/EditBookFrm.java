@@ -27,6 +27,7 @@ public class EditBookFrm extends javax.swing.JFrame implements ActionListener {
      */
     public EditBookFrm(Account a, Book b) {
         initComponents();
+        AppTheme.maximize(this);
         this.account = a;
         this.book = b;
         setTitle("Trang Sửa Thông Tin Sách");

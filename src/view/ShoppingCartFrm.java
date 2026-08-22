@@ -33,6 +33,7 @@ public class ShoppingCartFrm extends javax.swing.JFrame implements ActionListene
      */
     public ShoppingCartFrm(ShoppingCart cart) {
         initComponents();
+        AppTheme.maximize(this);
         this.cart = cart;
         setTitle("Trang Giỏ Hàng");
         loadCartItems();

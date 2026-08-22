@@ -31,6 +31,7 @@ public class SearchBookForPurchaseFrm extends javax.swing.JFrame implements Acti
      */
     public SearchBookForPurchaseFrm(Customer c) {
         initComponents();
+        AppTheme.maximize(this);
         this.customer = c;
         setTitle("Trang Tìm Kiếm Sách");
         btnSearch.addActionListener(this);

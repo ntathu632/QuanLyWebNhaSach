@@ -29,6 +29,7 @@ public class BookDetailFrm extends javax.swing.JFrame implements ActionListener 
      */
     public BookDetailFrm(Customer c, Book b) {
         initComponents();
+        AppTheme.maximize(this);
         this.customer = c;
         this.book = b;
         setTitle("Trang Chi Tiết Sách");

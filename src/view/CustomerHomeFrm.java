@@ -24,6 +24,7 @@ public class CustomerHomeFrm extends javax.swing.JFrame implements ActionListene
      */
     public CustomerHomeFrm(Customer c) {
         initComponents();
+        AppTheme.maximize(this);
         this.customer = c;
         setTitle("Trang Customer Home");
         btnPurchaseOnline.addActionListener(this);

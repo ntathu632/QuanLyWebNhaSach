@@ -23,6 +23,7 @@ public class ManageBooksFrm extends javax.swing.JFrame implements ActionListener
      */
     public ManageBooksFrm(Account a) {
         initComponents();
+        AppTheme.maximize(this);
         this.account = a;
         setTitle("Trang Quản Lý Sách");
         btnEditBook.addActionListener(this);

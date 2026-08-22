@@ -29,6 +29,7 @@ public class PaymentFrm extends javax.swing.JFrame implements ActionListener {
      */
     public PaymentFrm(Order order) {
         initComponents();
+        AppTheme.maximize(this);
         this.order = order;
         setTitle("Trang Thanh Toán");
 

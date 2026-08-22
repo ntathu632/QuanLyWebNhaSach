@@ -31,6 +31,7 @@ public class SearchBookForEditFrm extends javax.swing.JFrame implements ActionLi
      */
     public SearchBookForEditFrm(Account a) {
         initComponents();
+        AppTheme.maximize(this);
         this.account = a;
         setTitle("Trang Tìm Kiếm Sách");
         btnSearch.addActionListener(this);
