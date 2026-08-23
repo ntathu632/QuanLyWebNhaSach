@@ -166,7 +166,7 @@ public final class AppTheme {
     /**
      * Style 1 mục điều hướng trong sidebar (nền tối liền với sidebar, chữ trắng,
      * bo tròn 0, căn trái, sáng lên khi hover) — dùng cho các trang có khung kiểu
-     * "SB Admin 2" (sidebar trái + topbar + nội dung): AdminHomeFrm và tương tự.
+     * "SB Admin 2" (sidebar trái + topbar + nội dung): AdminShellFrm.
      */
     public static void sidebarNav(JButton btn) {
         btn.setHorizontalAlignment(SwingConstants.LEFT);
@@ -189,6 +189,21 @@ public final class AppTheme {
                 + " pressedBackground: #" + hex(PRIMARY_PRESSED) + ";"
                 + " focusedBackground: #" + hex(HEADER) + ";"
                 + " borderWidth: 0; arc: 0; margin: 10,18,10,12; font: +1");
+    }
+
+    /**
+     * Nút chỉ có icon, nền trong suốt, sáng nhẹ khi hover — dùng cho nút mũi
+     * tên "quay lại" ở topbar các trang Admin con (SearchBookForEditPage,
+     * EditBookPage...).
+     */
+    public static void iconButton(JButton btn) {
+        btn.setFocusPainted(false);
+        btn.putClientProperty("FlatLaf.style",
+                "background: #" + hex(BACKGROUND) + "; foreground: #" + hex(TEXT) + ";"
+                + " hoverBackground: #" + hex(TABLE_HEADER) + ";"
+                + " pressedBackground: #" + hex(INPUT_BORDER) + ";"
+                + " focusedBackground: #" + hex(BACKGROUND) + ";"
+                + " borderWidth: 0; arc: 8; margin: 6,10,6,10");
     }
 
     /**

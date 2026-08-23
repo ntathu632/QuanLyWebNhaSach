@@ -17,6 +17,11 @@ public class Account implements Serializable {
     private String role;
     private String status;
 
+    // Không có trong class diagram gốc — chỉ dùng để hiển thị trong
+    // ManageAccountPage (tên chủ tài khoản, lấy từ Customer.fullName hoặc
+    // Employee.fullName tùy Account thuộc về ai), không lưu xuống CSDL.
+    private String ownerName;
+
     public Account() {
     }
 
@@ -57,5 +62,13 @@ public class Account implements Serializable {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getOwnerName() {
+        return ownerName;
+    }
+
+    public void setOwnerName(String ownerName) {
+        this.ownerName = ownerName;
     }
 }

@@ -12,6 +12,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.border.EmptyBorder;
 import model.Account;
+import model.Customer;
 
 /**
  *
@@ -168,7 +169,11 @@ public class LoginFrm extends javax.swing.JFrame implements ActionListener {
                 javax.swing.JOptionPane.showMessageDialog(this,
                         "Tài khoản của bạn đã bị khóa hoặc chưa được kích hoạt!");
             } else if (account.getRole().equals("Admin")) {
-                (new AdminHomeFrm(account)).setVisible(true);
+                (new AdminShellFrm(account)).setVisible(true);
+                this.dispose();
+            } else if (account.getRole().equals("Customer")) {
+                Customer customer = accountDAO.getCustomerByUsername(account.getUsername());
+                (new CustomerShellFrm(customer)).setVisible(true);
                 this.dispose();
             } else {
                 javax.swing.JOptionPane.showMessageDialog(this,

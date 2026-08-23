@@ -20,7 +20,7 @@ import javax.swing.Icon;
 public final class FlatIcon implements Icon {
 
     public enum Kind {
-        BOOK, RECEIPT, USERS, USER, MONEY, TAG, PEN, BUILDING, CHART, LOGOUT
+        BOOK, RECEIPT, USERS, USER, MONEY, TAG, PEN, BUILDING, CHART, LOGOUT, HOME, PLUS, TRASH, BACK, SEARCH
     }
 
     private final Kind kind;
@@ -116,6 +116,33 @@ public final class FlatIcon implements Icon {
                 int[] xp = {(int) (s * 0.72f), (int) (s * 0.92f), (int) (s * 0.72f)};
                 int[] yp = {(int) (s * 0.34f), (int) (s * 0.50f), (int) (s * 0.66f)};
                 g2.fillPolygon(xp, yp, 3);
+            }
+            case HOME -> {
+                int[] xp = {(int) (s * 0.06f), (int) (s * 0.50f), (int) (s * 0.94f)};
+                int[] yp = {(int) (s * 0.48f), (int) (s * 0.08f), (int) (s * 0.48f)};
+                g2.drawPolyline(xp, yp, 3);
+                g2.draw(new Rectangle2D.Float(s * 0.20f, s * 0.46f, s * 0.60f, s * 0.46f));
+                g2.draw(new Rectangle2D.Float(s * 0.44f, s * 0.62f, s * 0.14f, s * 0.30f));
+            }
+            case PLUS -> {
+                g2.draw(new java.awt.geom.Line2D.Float(s * 0.50f, s * 0.10f, s * 0.50f, s * 0.90f));
+                g2.draw(new java.awt.geom.Line2D.Float(s * 0.10f, s * 0.50f, s * 0.90f, s * 0.50f));
+            }
+            case BACK -> {
+                int[] xp = {(int) (s * 0.64f), (int) (s * 0.28f), (int) (s * 0.64f)};
+                int[] yp = {(int) (s * 0.14f), (int) (s * 0.50f), (int) (s * 0.86f)};
+                g2.drawPolyline(xp, yp, 3);
+            }
+            case SEARCH -> {
+                g2.draw(new java.awt.geom.Ellipse2D.Float(s * 0.08f, s * 0.08f, s * 0.58f, s * 0.58f));
+                g2.draw(new java.awt.geom.Line2D.Float(s * 0.60f, s * 0.60f, s * 0.92f, s * 0.92f));
+            }
+            case TRASH -> {
+                g2.draw(new java.awt.geom.Line2D.Float(s * 0.16f, s * 0.24f, s * 0.84f, s * 0.24f));
+                g2.draw(new Rectangle2D.Float(s * 0.24f, s * 0.24f, s * 0.52f, s * 0.66f));
+                g2.draw(new Rectangle2D.Float(s * 0.38f, s * 0.10f, s * 0.24f, s * 0.14f));
+                g2.draw(new java.awt.geom.Line2D.Float(s * 0.40f, s * 0.36f, s * 0.40f, s * 0.76f));
+                g2.draw(new java.awt.geom.Line2D.Float(s * 0.60f, s * 0.36f, s * 0.60f, s * 0.76f));
             }
         }
         g2.dispose();

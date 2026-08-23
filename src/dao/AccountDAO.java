@@ -9,6 +9,7 @@ import model.Customer;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 /**
  *
@@ -36,6 +37,83 @@ public class AccountDAO extends DAO {
             ex.printStackTrace();
         }
         return false;
+    }
+
+    // FR-ADM-05 (Manage User Accounts): danh sách tài khoản kèm tên chủ tài
+    // khoản thật (Customer.fullName hoặc Employee.fullName tùy CK_Account_Owner —
+    // xem AS-04) để admin biết tài khoản đó là của ai, không chỉ mỗi username.
+    public Account[] searchAccounts(String keyword) {
+        ArrayList<Account> list = new ArrayList<>();
+        try {
+            String sql = "SELECT a.username, a.role, a.status, "
+                    + "COALESCE(c.fullName, e.fullName) AS ownerName "
+                    + "FROM Account a "
+                    + "LEFT JOIN Customer c ON a.customerID = c.customerID "
+                    + "LEFT JOIN Employee e ON a.employeeID = e.employeeID "
+                    + "WHERE a.username LIKE ? OR COALESCE(c.fullName, e.fullName) LIKE ?";
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setString(1, "%" + keyword + "%");
+            ps.setString(2, "%" + keyword + "%");
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Account a = new Account();
+                a.setUsername(rs.getString("username"));
+                a.setRole(rs.getString("role"));
+                a.setStatus(rs.getString("status"));
+                a.setOwnerName(rs.getString("ownerName"));
+                list.add(a);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return list.toArray(new Account[0]);
+    }
+
+    // FR-ADM-05 (Update/Delete-Lock Account) + FR-ADM-07 (Assign Permissions —
+    // "thay đổi giá trị trường role", theo đúng SRS). "Delete-Lock" nghĩa là
+    // khóa tài khoản qua status="Locked" thay vì DELETE thật (an toàn hơn, giữ
+    // nguyên lịch sử đơn hàng/dữ liệu gắn với Customer/Employee chủ tài khoản).
+    public boolean updateAccountRoleStatus(String username, String role, String status) {
+        try {
+            PreparedStatement ps = con.prepareStatement("UPDATE Account SET role = ?, status = ? WHERE username = ?");
+            ps.setString(1, role);
+            ps.setString(2, status);
+            ps.setString(3, username);
+            ps.executeUpdate();
+            return true;
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return false;
+        }
+    }
+
+    // Lấy Customer gắn với 1 Account (qua Account.customerID) — cần thiết để
+    // sau khi đăng nhập thành công với role="Customer", LoginFrm có Customer
+    // thật để mở CustomerShellFrm (các màn khách hàng đều thao tác trên Customer,
+    // không phải trên Account).
+    public Customer getCustomerByUsername(String username) {
+        try {
+            String sql = "SELECT c.customerID, c.fullName, c.phone, c.email, c.address "
+                    + "FROM Customer c JOIN Account a ON c.customerID = a.customerID "
+                    + "WHERE a.username = ?";
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setString(1, username);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return new Customer(
+                        rs.getInt("customerID"),
+                        rs.getString("fullName"),
+                        rs.getString("phone"),
+                        rs.getString("email"),
+                        rs.getString("address"));
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return null;
     }
 
     // FR-CUS-01 (Register Account): tạo đồng thời Customer + Account trong 1

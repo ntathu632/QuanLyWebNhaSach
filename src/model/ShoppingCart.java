@@ -17,8 +17,8 @@ public class ShoppingCart implements Serializable {
     private Date createdDate;
     private CartItem[] items;
 
-    // Không có trong class diagram gốc, nhưng cần thiết để ShoppingCartFrm/CheckoutFrm
-    // biết Order thuộc về Customer nào khi checkout, vì bản thân ShoppingCartFrm không giữ Customer.
+    // Không có trong class diagram gốc, nhưng cần thiết để ShoppingCartPage/CheckoutPage
+    // biết Order thuộc về Customer nào khi checkout, vì bản thân ShoppingCart không giữ sẵn Customer.
     private Customer customer;
 
     public ShoppingCart() {
