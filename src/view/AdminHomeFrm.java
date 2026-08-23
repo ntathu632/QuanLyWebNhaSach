@@ -10,8 +10,11 @@
 package view;
 
 import dao.DAO;
+import dao.DashboardDAO;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
@@ -96,8 +99,10 @@ public class AdminHomeFrm extends javax.swing.JFrame implements ActionListener {
         brandPanel.setMaximumSize(new java.awt.Dimension(Integer.MAX_VALUE, AppTheme.TOPBAR_HEIGHT));
         brandPanel.setMinimumSize(new java.awt.Dimension(AppTheme.SIDEBAR_WIDTH, AppTheme.TOPBAR_HEIGHT));
 
-        JLabel brand = new JLabel("📚  Bookshop Admin");
-        brand.setForeground(java.awt.Color.WHITE);
+        JLabel brand = new JLabel("Bookshop Admin");
+        brand.setIcon(new FlatIcon(FlatIcon.Kind.BOOK, Color.WHITE, 20));
+        brand.setIconTextGap(10);
+        brand.setForeground(Color.WHITE);
         brand.setFont(brand.getFont().deriveFont(Font.BOLD, 17f));
         brandPanel.add(brand, BorderLayout.CENTER);
         sidebar.add(brandPanel);
@@ -111,27 +116,27 @@ public class AdminHomeFrm extends javax.swing.JFrame implements ActionListener {
         sidebar.add(brandDivider);
 
         sidebar.add(sidebarSectionLabel("QUẢN LÝ"));
-        btnManageBooks = sidebarButton("📖  Quản lý sách", AppTheme::sidebarNav);
+        btnManageBooks = sidebarButton(FlatIcon.Kind.BOOK, "Quản lý sách", true);
         sidebar.add(btnManageBooks);
-        btnManageCategory = sidebarButton("🗂️  Quản lý danh mục", AppTheme::sidebarNavMuted);
+        btnManageCategory = sidebarButton(FlatIcon.Kind.TAG, "Quản lý danh mục", false);
         sidebar.add(btnManageCategory);
-        btnManageAuthor = sidebarButton("✍️  Quản lý tác giả", AppTheme::sidebarNavMuted);
+        btnManageAuthor = sidebarButton(FlatIcon.Kind.PEN, "Quản lý tác giả", false);
         sidebar.add(btnManageAuthor);
-        btnManagePublisher = sidebarButton("🏢  Quản lý nhà xuất bản", AppTheme::sidebarNavMuted);
+        btnManagePublisher = sidebarButton(FlatIcon.Kind.BUILDING, "Quản lý nhà xuất bản", false);
         sidebar.add(btnManagePublisher);
-        btnManageAccounts = sidebarButton("👤  Quản lý tài khoản", AppTheme::sidebarNavMuted);
+        btnManageAccounts = sidebarButton(FlatIcon.Kind.USER, "Quản lý tài khoản", false);
         sidebar.add(btnManageAccounts);
-        btnManageEmployees = sidebarButton("👥  Quản lý nhân viên", AppTheme::sidebarNavMuted);
+        btnManageEmployees = sidebarButton(FlatIcon.Kind.USERS, "Quản lý nhân viên", false);
         sidebar.add(btnManageEmployees);
 
         sidebar.add(sidebarSeparator());
         sidebar.add(sidebarSectionLabel("BÁO CÁO"));
-        btnReports = sidebarButton("📊  Báo cáo thống kê", AppTheme::sidebarNavMuted);
+        btnReports = sidebarButton(FlatIcon.Kind.CHART, "Báo cáo thống kê", false);
         sidebar.add(btnReports);
 
         sidebar.add(Box.createVerticalGlue());
         sidebar.add(sidebarSeparator());
-        btnLogout = sidebarButton("🚪  Đăng xuất", AppTheme::sidebarNavMuted);
+        btnLogout = sidebarButton(FlatIcon.Kind.LOGOUT, "Đăng xuất", false);
         sidebar.add(btnLogout);
         sidebar.add(Box.createVerticalStrut(8));
 
@@ -147,11 +152,18 @@ public class AdminHomeFrm extends javax.swing.JFrame implements ActionListener {
         return sidebar;
     }
 
-    private JButton sidebarButton(String text, java.util.function.Consumer<JButton> style) {
+    private JButton sidebarButton(FlatIcon.Kind kind, String text, boolean active) {
         JButton btn = new JButton(text);
+        btn.setIcon(new FlatIcon(kind, active ? Color.WHITE : AppTheme.SIDEBAR_TEXT_MUTED, 16));
+        btn.setIconTextGap(10);
+        btn.setHorizontalAlignment(SwingConstants.LEFT);
         btn.setAlignmentX(JButton.LEFT_ALIGNMENT);
         btn.setMaximumSize(new java.awt.Dimension(Integer.MAX_VALUE, 42));
-        style.accept(btn);
+        if (active) {
+            AppTheme.sidebarNav(btn);
+        } else {
+            AppTheme.sidebarNavMuted(btn);
+        }
         return btn;
     }
 
@@ -192,21 +204,114 @@ public class AdminHomeFrm extends javax.swing.JFrame implements ActionListener {
         content.setBackground(AppTheme.BACKGROUND);
         content.setBorder(new EmptyBorder(28, 28, 28, 28));
 
-        JLabel welcome = new JLabel("<html>Chào mừng quay lại, <b>" + escapeHtml(displayName()) + "</b>."
-                + "<br/><br/>Chọn 1 mục ở thanh bên trái để bắt đầu quản lý.</html>");
-        welcome.setFont(welcome.getFont().deriveFont(15f));
-        welcome.setForeground(AppTheme.TEXT);
-        content.add(welcome, BorderLayout.NORTH);
+        JPanel top = new JPanel();
+        top.setLayout(new BoxLayout(top, BoxLayout.Y_AXIS));
+        top.setBackground(AppTheme.BACKGROUND);
 
+        JLabel heading = new JLabel("Dashboard");
+        heading.setFont(heading.getFont().deriveFont(Font.BOLD, 22f));
+        heading.setForeground(AppTheme.TEXT);
+        heading.setAlignmentX(JLabel.LEFT_ALIGNMENT);
+        heading.setBorder(new EmptyBorder(0, 0, 20, 0));
+        top.add(heading);
+
+        top.add(buildStatCards());
+
+        top.add(Box.createVerticalStrut(18));
+        top.add(buildChartsGrid());
+
+        content.add(top, BorderLayout.NORTH);
         return content;
     }
 
-    private String displayName() {
-        return (account != null && account.getUsername() != null) ? account.getUsername() : "Admin";
+    // 4 biểu đồ khác dạng nhau, mỗi cái dùng 1 loại số liệu thật khác nhau từ
+    // DB qua DashboardDAO — không phải dữ liệu dựng sẵn để trang trí:
+    //   - Cột đứng   : doanh thu theo ngày (đơn "Paid")
+    //   - Đường/vùng : số lượng đơn hàng theo ngày (mọi trạng thái)
+    //   - Donut      : tỉ lệ đơn hàng theo trạng thái (Pending/Paid/Cancelled)
+    //   - Cột ngang  : số đơn theo từng phương thức thanh toán
+    private JPanel buildChartsGrid() {
+        DashboardDAO dashboardDAO = new DashboardDAO();
+
+        java.util.List<BarChartPanel.Item> revenueItems = new java.util.ArrayList<>();
+        for (DashboardDAO.RevenuePoint p : dashboardDAO.revenueByDay()) {
+            revenueItems.add(new BarChartPanel.Item(p.label, p.amount));
+        }
+
+        java.util.List<BarChartPanel.Item> orderCountItems = new java.util.ArrayList<>();
+        for (DashboardDAO.RevenuePoint p : dashboardDAO.orderCountByDay()) {
+            orderCountItems.add(new BarChartPanel.Item(p.label, p.amount));
+        }
+
+        java.util.List<DashboardDAO.LabelCount> statusItems = dashboardDAO.orderStatusBreakdown();
+        java.util.List<DashboardDAO.LabelCount> paymentItems = dashboardDAO.paymentMethodBreakdown();
+
+        // Không đặt maximumSize/preferredSize theo chiều rộng cố định — để
+        // BoxLayout giãn full chiều ngang giống hệt hàng thẻ thống kê phía
+        // trên (row cũng dùng Integer.MAX_VALUE cho width), nhờ đó 2 hàng
+        // luôn thẳng mép nhau thay vì hàng dưới bị bó hẹp hơn hàng trên.
+        JPanel grid = new JPanel(new GridLayout(2, 2, 18, 18));
+        grid.setBackground(AppTheme.BACKGROUND);
+        grid.setAlignmentX(JPanel.LEFT_ALIGNMENT);
+        grid.setMaximumSize(new java.awt.Dimension(Integer.MAX_VALUE, 520));
+        grid.setPreferredSize(new java.awt.Dimension(0, 520));
+
+        grid.add(BarChartPanel.card("Doanh thu theo ngày (đơn đã thanh toán)", revenueItems, AppTheme.CHART_PINK, 250));
+        grid.add(LineChartPanel.card("Số đơn hàng theo ngày", orderCountItems, AppTheme.CHART_SKY, 250));
+        grid.add(DonutChartPanel.card("Tỉ lệ đơn hàng theo trạng thái", statusItems, AppTheme.CHART_GOLD, 250));
+        grid.add(HorizontalBarChartPanel.card("Đơn hàng theo phương thức thanh toán", paymentItems, AppTheme.CHART_ORANGE, 250));
+
+        return grid;
     }
 
-    private String escapeHtml(String s) {
-        return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
+    // Số liệu thật lấy từ DB qua DashboardDAO (COUNT/SUM) — không phải số giả
+    // định để trang trí. Doanh thu chỉ tính đơn đã "Paid" (xem AS-03 trong SRS).
+    private JPanel buildStatCards() {
+        DashboardDAO dashboardDAO = new DashboardDAO();
+
+        JPanel row = new JPanel(new GridLayout(1, 4, 18, 0));
+        row.setBackground(AppTheme.BACKGROUND);
+        row.setAlignmentX(JPanel.LEFT_ALIGNMENT);
+        row.setMaximumSize(new java.awt.Dimension(Integer.MAX_VALUE, 96));
+        row.setPreferredSize(new java.awt.Dimension(0, 96));
+
+        row.add(statCard(FlatIcon.Kind.BOOK, String.valueOf(dashboardDAO.countBooks()), "Tổng số sách", AppTheme.CHART_SKY));
+        row.add(statCard(FlatIcon.Kind.RECEIPT, String.valueOf(dashboardDAO.countOrders()), "Tổng đơn hàng", AppTheme.CHART_ORANGE));
+        row.add(statCard(FlatIcon.Kind.USERS, String.valueOf(dashboardDAO.countCustomers()), "Tổng khách hàng", AppTheme.CHART_PURPLE));
+        row.add(statCard(FlatIcon.Kind.MONEY, String.format("%,.0f₫", dashboardDAO.totalRevenue()), "Doanh thu đã thu", AppTheme.CHART_GOLD));
+
+        return row;
+    }
+
+    private JPanel statCard(FlatIcon.Kind kind, String value, String caption, Color accent) {
+        JPanel card = new JPanel();
+        card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
+        card.setBackground(Color.WHITE);
+        card.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createMatteBorder(0, 4, 0, 0, accent),
+                new EmptyBorder(14, 16, 14, 16)));
+
+        JLabel iconLabel = new JLabel(new FlatIcon(kind, accent, 22));
+        iconLabel.setAlignmentX(JLabel.LEFT_ALIGNMENT);
+        card.add(iconLabel);
+
+        card.add(Box.createVerticalStrut(6));
+
+        JLabel valueLabel = new JLabel(value);
+        valueLabel.setFont(valueLabel.getFont().deriveFont(Font.BOLD, 22f));
+        valueLabel.setForeground(AppTheme.TEXT);
+        valueLabel.setAlignmentX(JLabel.LEFT_ALIGNMENT);
+        card.add(valueLabel);
+
+        card.add(Box.createVerticalStrut(2));
+
+        JLabel captionLabel = new JLabel(caption);
+        captionLabel.setFont(captionLabel.getFont().deriveFont(12f));
+        captionLabel.setForeground(new Color(0x8A, 0x83, 0x74));
+        captionLabel.setAlignmentX(JLabel.LEFT_ALIGNMENT);
+        card.add(captionLabel);
+
+        return card;
     }
 
     @Override

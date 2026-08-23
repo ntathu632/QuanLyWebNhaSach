@@ -36,6 +36,21 @@ public final class AppTheme {
     public static final int SIDEBAR_WIDTH = 240;
     public static final int TOPBAR_HEIGHT = 56;
 
+    // Bảng màu RIÊNG cho biểu đồ — cố tình KHÔNG dùng lại PRIMARY/SECONDARY/
+    // HEADER (màu nút, sidebar...) để nội dung không lặp đúng 1 màu nhìn đơn
+    // điệu; tông tươi/sáng/rực hơn hẳn bảng màu trầm ấm của UI. Có 1 màu xanh
+    // dương (CHART_SKY) nhưng là xanh da trời sáng, khác hẳn xanh olive của
+    // PRIMARY/HEADER và khác luôn xanh dương đậm dùng ở bản trước.
+    public static final Color CHART_PINK = new Color(0xFF, 0x4F, 0xA3);
+    public static final Color CHART_ORANGE = new Color(0xFF, 0xA0, 0x33);
+    public static final Color CHART_GOLD = new Color(0xFF, 0xC8, 0x00);
+    public static final Color CHART_SKY = new Color(0x29, 0xB6, 0xF6);
+    public static final Color CHART_PURPLE = new Color(0xAB, 0x47, 0xBC);
+    public static final Color CHART_RED = new Color(0xFF, 0x5C, 0x5C);
+    public static final Color[] CHART_PALETTE = {CHART_PINK, CHART_ORANGE, CHART_SKY, CHART_GOLD, CHART_PURPLE, CHART_RED};
+    public static final Color CHART_GRID = new Color(0xE3, 0xDD, 0xC9);
+    public static final Color CHART_MUTED_TEXT = new Color(0x8A, 0x83, 0x74);
+
     private AppTheme() {
     }
 
