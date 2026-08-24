@@ -45,6 +45,52 @@ public class BookDAO extends DAO {
         return list.toArray(new Book[0]);
     }
 
+    // Dùng cho trang chủ Khách hàng: lấy sách thuộc 1 danh mục (qua bảng
+    // trung gian BookCategory) — trước đây Customer chưa có cách nào duyệt
+    // sách theo danh mục dù dữ liệu Category/BookCategory đã có sẵn thật.
+    public Book[] searchByCategory(int categoryID) {
+        ArrayList<Book> list = new ArrayList<>();
+        try {
+            String sql = "SELECT b.* FROM Book b JOIN BookCategory bc ON b.bookID = bc.bookID WHERE bc.categoryID = ?";
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setInt(1, categoryID);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                list.add(new Book(rs.getInt("bookID"), rs.getString("ISBN"), rs.getString("title"),
+                        rs.getFloat("price"), rs.getString("description"), rs.getString("image")));
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return list.toArray(new Book[0]);
+    }
+
+    // Sách bán chạy thật, tính theo tổng số lượng trong OrderDetail của mọi
+    // đơn (không lọc trạng thái — phản ánh nhu cầu đặt hàng thực tế) — dùng
+    // cho trang chủ Khách hàng, khác "Sách nổi bật" (vốn chỉ lấy N sách đầu
+    // tiên, không dựa trên doanh số thật).
+    public Book[] bestSellers(int limit) {
+        ArrayList<Book> list = new ArrayList<>();
+        try {
+            String sql = "SELECT TOP (?) b.bookID, b.ISBN, b.title, b.price, b.description, b.image "
+                    + "FROM Book b JOIN OrderDetail od ON b.bookID = od.bookID "
+                    + "GROUP BY b.bookID, b.ISBN, b.title, b.price, b.description, b.image "
+                    + "ORDER BY SUM(od.quantity) DESC";
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setInt(1, limit);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                list.add(new Book(rs.getInt("bookID"), rs.getString("ISBN"), rs.getString("title"),
+                        rs.getFloat("price"), rs.getString("description"), rs.getString("image")));
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return list.toArray(new Book[0]);
+    }
+
     // FR-ADM-01 (Add Book): kiểm tra trùng ISBN trước (Book.ISBN UNIQUE) để trả
     // về thông báo cụ thể thay vì để CSDL từ chối rồi báo lỗi chung chung.
     // Validate giá > 0 (Book.price CHECK) do phía gọi (AddBookPage) đảm nhiệm

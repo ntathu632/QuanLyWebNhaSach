@@ -6,6 +6,7 @@ package dao;
 
 import model.Account;
 import model.Customer;
+import model.Employee;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -103,17 +104,73 @@ public class AccountDAO extends DAO {
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
-                return new Customer(
+                Customer c = new Customer(
                         rs.getInt("customerID"),
                         rs.getString("fullName"),
                         rs.getString("phone"),
                         rs.getString("email"),
                         rs.getString("address"));
+                c.setUsername(username);
+                return c;
             }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
         return null;
+    }
+
+    // Lấy Employee gắn với 1 Account (qua Account.employeeID) — cần thiết để
+    // sau khi đăng nhập thành công với role nhân viên (Sales Staff/Inventory
+    // Staff/Admin qua đường nhân viên), có Employee thật để mở khung tương ứng.
+    public Employee getEmployeeByUsername(String username) {
+        try {
+            String sql = "SELECT e.employeeID, e.fullName, e.position, e.phone, e.email "
+                    + "FROM Employee e JOIN Account a ON e.employeeID = a.employeeID "
+                    + "WHERE a.username = ?";
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setString(1, username);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                Employee emp = new Employee(
+                        rs.getInt("employeeID"),
+                        rs.getString("fullName"),
+                        rs.getString("position"),
+                        rs.getString("phone"),
+                        rs.getString("email"));
+                emp.setUsername(username);
+                return emp;
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
+    // FR-COM-02 (Change Password) — chung cho mọi actor có tài khoản. Xác
+    // minh lại mật khẩu hiện tại trực tiếp trong câu UPDATE (WHERE password
+    // = mật khẩu cũ) để chỉ đổi được đúng 1 dòng nếu khớp, tránh phải SELECT
+    // rồi so sánh riêng.
+    public String changePassword(String username, String currentPassword, String newPassword) {
+        try {
+            PreparedStatement psCheck = con.prepareStatement(
+                    "SELECT 1 FROM Account WHERE username = ? AND password = ?");
+            psCheck.setString(1, username);
+            psCheck.setString(2, currentPassword);
+            if (!psCheck.executeQuery().next()) {
+                return "Mật khẩu hiện tại không đúng!";
+            }
+
+            PreparedStatement ps = con.prepareStatement("UPDATE Account SET password = ? WHERE username = ?");
+            ps.setString(1, newPassword);
+            ps.setString(2, username);
+            ps.executeUpdate();
+            return null;
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return "Đổi mật khẩu thất bại do lỗi hệ thống, vui lòng thử lại!";
+        }
     }
 
     // FR-CUS-01 (Register Account): tạo đồng thời Customer + Account trong 1

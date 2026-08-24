@@ -18,6 +18,11 @@ public class Employee implements Serializable {
     private String phone;
     private String email;
 
+    // Không có trong class diagram gốc — chỉ dùng để nhớ username của Account
+    // gắn với Employee này (populate qua AccountDAO.getEmployeeByUsername()),
+    // cần cho FR-COM-02 (Change Password). Không lưu xuống CSDL.
+    private String username;
+
     public Employee() {
     }
 
@@ -67,5 +72,13 @@ public class Employee implements Serializable {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

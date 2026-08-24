@@ -410,7 +410,44 @@ CREATE TABLE Invoice (
 GO
 
 
-/* 
+/*
+   14. REVIEW
+   Không có trong Entity Class.drawio gốc — bổ sung theo đúng ghi chú của
+   FR-CUS-09 (Rate Book) trong SRS: "nhóm cần bổ sung entity Review/Rating
+   nếu triển khai chức năng này". UNIQUE(bookID, customerID): mỗi khách chỉ
+   đánh giá 1 sách đúng 1 lần (giả định hợp lý, thông lệ TMĐT phổ biến,
+   không có trong tài liệu gốc).
+*/
+
+CREATE TABLE Review (
+    reviewID INT IDENTITY(1,1) PRIMARY KEY,
+    bookID INT NOT NULL,
+    customerID INT NOT NULL,
+    rating INT NOT NULL,
+    comment NVARCHAR(500) NULL,
+    reviewDate DATETIME2 NOT NULL
+        CONSTRAINT DF_Review_ReviewDate DEFAULT SYSDATETIME(),
+
+    CONSTRAINT CK_Review_Rating
+        CHECK (rating BETWEEN 1 AND 5),
+
+    CONSTRAINT UQ_Review_Book_Customer
+        UNIQUE (bookID, customerID),
+
+    CONSTRAINT FK_Review_Book
+        FOREIGN KEY (bookID)
+        REFERENCES Book(bookID)
+        ON DELETE CASCADE,
+
+    CONSTRAINT FK_Review_Customer
+        FOREIGN KEY (customerID)
+        REFERENCES Customer(customerID)
+        ON DELETE CASCADE
+);
+GO
+
+
+/*
    INDEXES
  */
 
@@ -436,6 +473,10 @@ GO
 
 CREATE INDEX IX_Invoice_EmployeeID
 ON Invoice(employeeID);
+GO
+
+CREATE INDEX IX_Review_BookID
+ON Review(bookID);
 GO
 
 -- Filtered index bắt buộc phải bật QUOTED_IDENTIFIER, nếu không CREATE INDEX sẽ báo lỗi 1934.

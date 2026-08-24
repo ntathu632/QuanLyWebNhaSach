@@ -18,6 +18,12 @@ public class Customer implements Serializable {
     private String email;
     private String address;
 
+    // Không có trong class diagram gốc — chỉ dùng để nhớ username của Account
+    // gắn với Customer này (populate qua AccountDAO.getCustomerByUsername()),
+    // cần cho FR-COM-02 (Change Password) vì CustomerShellFrm chỉ giữ Customer,
+    // không giữ Account. Không lưu xuống CSDL.
+    private String username;
+
     public Customer() {
     }
 
@@ -67,5 +73,13 @@ public class Customer implements Serializable {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }
