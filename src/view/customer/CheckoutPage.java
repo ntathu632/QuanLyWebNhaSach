@@ -82,7 +82,7 @@ public class CheckoutPage implements CustomerPage {
         formRow(formCard, gbc, 1, "Địa chỉ giao hàng:", txtShippingAddress);
 
         JComboBox<String> cboPaymentMethod = new JComboBox<>(
-                new String[]{"Credit Card", "Bank Transfer", "E-Wallet", "Cash on Delivery"});
+                new String[]{"VNPay", "Momo", "Bank Transfer", "Cash on Delivery"});
         formRow(formCard, gbc, 2, "Phương thức thanh toán:", cboPaymentMethod);
 
         top.add(formCard);

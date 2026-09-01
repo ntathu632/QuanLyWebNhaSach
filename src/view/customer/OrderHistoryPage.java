@@ -28,6 +28,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -71,7 +72,11 @@ public class OrderHistoryPage implements CustomerPage {
         table.setRowHeight(30);
         table.setGridColor(AppTheme.TABLE_GRID);
         table.getTableHeader().setReorderingAllowed(false);
-        table.getColumnModel().getColumn(3).setCellRenderer(new DefaultTableCellRenderer() {
+        AppTheme.alignTableColumn(table, 0, SwingConstants.CENTER, 90, 90);
+        AppTheme.alignTableColumn(table, 1, SwingConstants.CENTER, 150, 150);
+        AppTheme.alignTableColumn(table, 2, SwingConstants.RIGHT, 130, 130);
+        AppTheme.alignTableColumn(table, 3, SwingConstants.CENTER, 130, 130);
+        DefaultTableCellRenderer statusRenderer = new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable t, Object value, boolean isSelected,
                     boolean hasFocus, int row, int column) {
@@ -79,7 +84,9 @@ public class OrderHistoryPage implements CustomerPage {
                 c.setForeground(statusColor(String.valueOf(value)));
                 return c;
             }
-        });
+        };
+        statusRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+        table.getColumnModel().getColumn(3).setCellRenderer(statusRenderer);
 
         final List<Order> currentOrders = new ArrayList<>();
 
@@ -191,6 +198,10 @@ public class OrderHistoryPage implements CustomerPage {
         }
         JTable table = new JTable(model);
         table.setRowHeight(26);
+        AppTheme.alignTableColumn(table, 0, SwingConstants.LEFT, 0, 0);
+        AppTheme.alignTableColumn(table, 1, SwingConstants.CENTER, 80, 80);
+        AppTheme.alignTableColumn(table, 2, SwingConstants.RIGHT, 100, 100);
+        AppTheme.alignTableColumn(table, 3, SwingConstants.RIGHT, 100, 100);
         panel.add(new JScrollPane(table), BorderLayout.CENTER);
 
         JOptionPane.showMessageDialog(shell, panel, "Chi tiết đơn hàng #" + order.getOrderID(), JOptionPane.PLAIN_MESSAGE);

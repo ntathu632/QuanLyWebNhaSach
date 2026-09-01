@@ -128,6 +128,12 @@ public class PaymentPage implements CustomerPage {
     }
 
     private void onPay(CustomerShellFrm shell) {
+        String method = order.getPaymentMethod();
+        if ("VNPay".equals(method) || "Momo".equals(method)) {
+            shell.navigateTo(new MockPaymentGatewayPage(order, method));
+            return;
+        }
+
         Payment payment = new Payment();
         payment.setPaymentDate(new Date());
         payment.setAmount(order.getTotalAmount());
