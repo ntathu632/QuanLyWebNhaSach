@@ -36,6 +36,7 @@ public class CustomerShellFrm extends javax.swing.JFrame {
     private JPanel contentContainer;
     private JPanel subHeaderLeft;
     private JLabel cartBadge;
+    private JLabel userLabel;
 
     private JButton navHome;
     private JButton navSearch;
@@ -65,6 +66,12 @@ public class CustomerShellFrm extends javax.swing.JFrame {
         int count = new ShoppingCartDAO().countItemsIfCartExists(customer);
         cartBadge.setText(String.valueOf(count));
         cartBadge.setVisible(count > 0);
+    }
+
+    /** Cập nhật lại tên hiển thị ở navbar — gọi lại sau khi AccountPage lưu đổi họ tên thành công. */
+    public void refreshUserLabel() {
+        String name = (customer != null && customer.getFullName() != null) ? customer.getFullName() : "khách hàng";
+        userLabel.setText("Xin chào, " + name);
     }
 
     private void initShell() {
@@ -169,11 +176,20 @@ public class CustomerShellFrm extends javax.swing.JFrame {
         right.add(Box.createHorizontalStrut(20));
 
         String name = (customer != null && customer.getFullName() != null) ? customer.getFullName() : "khách hàng";
-        JLabel userLabel = new JLabel("Xin chào, " + name);
+        userLabel = new JLabel("Xin chào, " + name);
         userLabel.setForeground(Color.WHITE);
         userLabel.setFont(userLabel.getFont().deriveFont(Font.PLAIN, 13f));
         right.add(userLabel);
         right.add(Box.createHorizontalStrut(16));
+
+        JButton btnAccount = new JButton();
+        btnAccount.setIcon(new FlatIcon(FlatIcon.Kind.PEN, Color.WHITE, 16));
+        btnAccount.setToolTipText("Tài khoản của tôi");
+        btnAccount.putClientProperty("FlatLaf.style",
+                "background: #4F5D42; hoverBackground: #5C6E4F; pressedBackground: #3F4B35; borderWidth: 0; arc: 8; margin: 6,10,6,10");
+        btnAccount.addActionListener(e -> navigateTo(new AccountPage()));
+        right.add(btnAccount);
+        right.add(Box.createHorizontalStrut(8));
 
         JButton btnChangePassword = new JButton();
         btnChangePassword.setIcon(new FlatIcon(FlatIcon.Kind.USER, Color.WHITE, 16));

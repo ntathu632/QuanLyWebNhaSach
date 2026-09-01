@@ -45,6 +45,36 @@ public class CustomerDAO extends DAO {
         return list.toArray(new Customer[0]);
     }
 
+    // FR-COM (Update Profile, bổ sung theo yêu cầu người dùng) — Customer tự
+    // sửa thông tin cá nhân của chính mình. Kiểm tra trùng email TRƯỚC khi
+    // update (loại trừ chính customerID này), cùng cách làm với
+    // AccountDAO.register() thay vì để UQ_Customer_Email tự ném lỗi SQL.
+    public String updateCustomer(Customer customer) {
+        try {
+            PreparedStatement psCheckEmail = con.prepareStatement(
+                    "SELECT 1 FROM Customer WHERE email = ? AND customerID <> ?");
+            psCheckEmail.setString(1, customer.getEmail());
+            psCheckEmail.setInt(2, customer.getCustomerID());
+            if (psCheckEmail.executeQuery().next()) {
+                return "Email này đã được dùng bởi tài khoản khác, vui lòng dùng email khác!";
+            }
+
+            PreparedStatement ps = con.prepareStatement(
+                    "UPDATE Customer SET fullName = ?, phone = ?, email = ?, address = ? WHERE customerID = ?");
+            ps.setString(1, customer.getFullName());
+            ps.setString(2, customer.getPhone());
+            ps.setString(3, customer.getEmail());
+            ps.setString(4, customer.getAddress());
+            ps.setInt(5, customer.getCustomerID());
+            ps.executeUpdate();
+            return null;
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return "Cập nhật thông tin thất bại do lỗi hệ thống, vui lòng thử lại!";
+        }
+    }
+
     // Trả về Customer đại diện "Khách vãng lai" dùng chung cho mọi lượt bán
     // tại quầy không tra cứu khách quen — tạo mới đúng 1 lần nếu chưa có.
     public Customer getOrCreateWalkInCustomer() {

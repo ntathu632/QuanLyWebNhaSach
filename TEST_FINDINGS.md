@@ -146,6 +146,15 @@ Trạng thái: 🔴 Lỗi | 🟡 Cần chú ý | 🟢 OK
 
 🟢 **Đã verify end-to-end (luồng đầy đủ):** Thêm sách test (ISBN `8888777766`, kèm ảnh JPEG thật qua "Chọn ảnh...") → bấm "Thêm sách" → thành công, file lưu đúng `images/books/8888777766.jpg`. Đăng xuất, đăng nhập `customer01` → ảnh thật hiển thị đúng (cover-fit, bo góc) ở cả lưới "Tìm kiếm sách" và trang "Chi tiết sách". Sách seed cũ (không có file ảnh thật) vẫn hiển thị bìa vẽ tay như cũ, không lỗi. Không exception trong `app_err.log` suốt luồng. Đã dọn dữ liệu test (xóa sách ID 23 + file ảnh qua sqlcmd, vì sách có gán Danh mục/Tác giả nên bị chặn xóa qua UI theo đúng thiết kế).
 
+## Customer > Tài khoản của tôi (tính năng mới)
+
+🟢 **Tính năng mới:** trước đó bên Customer không có trang nào xem/sửa thông tin cá nhân — navbar chỉ hiện tên (không bấm được) và icon "Đổi mật khẩu" chỉ mở dialog đổi mật khẩu.
+- Thêm icon (bút chì) "Tài khoản của tôi" trên navbar Customer, mở trang mới `src/view/customer/AccountPage.java`: xem Username (read-only) + sửa Họ tên/SĐT/Email/Địa chỉ, validate giống `RegisterFrm` (bắt buộc Họ tên/SĐT/Email, email phải chứa "@").
+- `dao/CustomerDAO.updateCustomer()` (mới) — kiểm tra trùng email với khách khác trước khi update (cùng cách làm với `AccountDAO.register()`), không dựa vào lỗi ràng buộc SQL.
+- Sau khi lưu thành công, tên hiển thị "Xin chào, ..." trên navbar tự cập nhật ngay (`CustomerShellFrm.refreshUserLabel()`) mà không cần đăng nhập lại — đã verify bằng ảnh chụp thật (đổi tên thành "Nguyen Van An Test", navbar đổi theo ngay lập tức).
+- Layout ban đầu bị lỗi giống Admin (form card hẹp 600px, bỏ trống nửa cửa sổ) — đã sửa: card rộng 900px, canh giữa màn hình (`CENTER_ALIGNMENT`) thay vì ghim trái.
+- Test end-to-end trên `customer01`: sửa Địa chỉ → lưu → verify đúng trong DB qua `sqlcmd`; sửa Họ tên → lưu → navbar cập nhật đúng ngay; đã revert cả 2 trường về giá trị gốc, verify lại DB khớp seed data ban đầu. Không exception trong `app_err.log`.
+
 ---
 
 *File này để theo dõi tiến độ test thủ công qua GUI thật, không phải checklist code review tĩnh.*
