@@ -155,6 +155,12 @@ Trạng thái: 🔴 Lỗi | 🟡 Cần chú ý | 🟢 OK
 - Layout ban đầu bị lỗi giống Admin (form card hẹp 600px, bỏ trống nửa cửa sổ) — đã sửa: card rộng 900px, canh giữa màn hình (`CENTER_ALIGNMENT`) thay vì ghim trái.
 - Test end-to-end trên `customer01`: sửa Địa chỉ → lưu → verify đúng trong DB qua `sqlcmd`; sửa Họ tên → lưu → navbar cập nhật đúng ngay; đã revert cả 2 trường về giá trị gốc, verify lại DB khớp seed data ban đầu. Không exception trong `app_err.log`.
 
+🟢 **ĐÃ FIX (feedback "trang sơ sài quá"):** bản đầu chỉ có 1 form trơn, không có gì khác — chị thu chê sơ sài. Đã bổ sung: khối hồ sơ (avatar tròn + Họ tên lớn + `@username`) ở đầu trang, 2 thẻ thống kê thật (Tổng số đơn hàng, Tổng chi tiêu — cùng dữ liệu `OrderDAO` dùng cho "Đơn hàng của tôi", không phải số bịa), tiêu đề "Thông tin cá nhân" trong card, và thêm nút "Đổi mật khẩu" ngay trong trang (trước đó chỉ có trên navbar) để trang thực sự là 1 hub tài khoản thay vì chỉ 1 form sửa. Đã verify bằng ảnh chụp thật trên `customer01` (2 đơn hàng, 1,680,000đ — khớp dữ liệu đã test ở mục "Chi tiết khách hàng" bên Admin).
+
+## Customer > Chi tiết sách (feedback layout)
+
+🟢 **ĐÃ FIX:** chị thu phát hiện khi tự bấm vào 1 sách xem chi tiết, card thông tin sách + card đánh giá đều bị ghim bên trái, bỏ trống hẳn nửa cửa sổ bên phải (cùng gốc bug với Admin Add/Edit Book và Customer AccountPage — dùng `LEFT_ALIGNMENT` thay vì canh giữa trong 1 `BoxLayout` full-width). Đã sửa `BookDetailPage.java`: đổi cả 2 card sang `CENTER_ALIGNMENT`, nới rộng 900→1000px, tăng độ rộng khối mô tả (480→560px) cho cân đối hơn với card rộng hơn. Verify bằng ảnh chụp thật trên sách "Clean Code" — card giờ nằm giữa, không còn trống hẳn 1 bên. Không exception trong `app_err.log`.
+
 ---
 
 *File này để theo dõi tiến độ test thủ công qua GUI thật, không phải checklist code review tĩnh.*

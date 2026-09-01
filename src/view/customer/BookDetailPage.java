@@ -59,9 +59,9 @@ public class BookDetailPage implements CustomerPage {
         content.setBorder(new EmptyBorder(28, 28, 28, 28));
 
         ShadowCard card = new ShadowCard(new BorderLayout(28, 0), 16, 24);
-        card.setAlignmentX(JPanel.LEFT_ALIGNMENT);
-        card.setMaximumSize(new Dimension(900, 428));
-        card.setPreferredSize(new Dimension(900, 428));
+        card.setAlignmentX(JPanel.CENTER_ALIGNMENT);
+        card.setMaximumSize(new Dimension(1000, 428));
+        card.setPreferredSize(new Dimension(1000, 428));
 
         BookCoverPanel cover = new BookCoverPanel(book.getTitle(), book.getBookID(), book.getImage());
         cover.setPreferredSize(new Dimension(260, 0));
@@ -95,7 +95,7 @@ public class BookDetailPage implements CustomerPage {
 
         info.add(Box.createVerticalStrut(14));
 
-        JLabel descLabel = new JLabel("<html><div style='width:480px'>"
+        JLabel descLabel = new JLabel("<html><div style='width:560px'>"
                 + (book.getDescription() == null ? "" : book.getDescription().replace("&", "&amp;").replace("<", "&lt;"))
                 + "</div></html>");
         descLabel.setFont(descLabel.getFont().deriveFont(13f));
@@ -164,8 +164,8 @@ public class BookDetailPage implements CustomerPage {
         float avg = reviewDAO.averageRating(book.getBookID());
 
         ShadowCard sectionCard = new ShadowCard(new BorderLayout(0, 14), 16, 20);
-        sectionCard.setAlignmentX(JPanel.LEFT_ALIGNMENT);
-        sectionCard.setMaximumSize(new Dimension(900, Integer.MAX_VALUE));
+        sectionCard.setAlignmentX(JPanel.CENTER_ALIGNMENT);
+        sectionCard.setMaximumSize(new Dimension(1000, Integer.MAX_VALUE));
 
         String heading = reviews.isEmpty()
                 ? "Đánh giá sách (chưa có đánh giá nào)"
