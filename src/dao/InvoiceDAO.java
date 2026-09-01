@@ -91,6 +91,18 @@ public class InvoiceDAO extends DAO {
             psInvoice.setInt(4, employeeID);
             psInvoice.executeUpdate();
 
+            // Ghi nhận giao dịch vào bảng Payment, cùng transaction với Invoice,
+            // để khớp với kênh online (PaymentPage/MockPaymentGatewayPage) —
+            // trước đây bán tại quầy chỉ có Invoice, Payment không có bản ghi nào.
+            PreparedStatement psPayment = con.prepareStatement(
+                    "INSERT INTO Payment (paymentDate, amount, paymentMethod, status, orderID) VALUES (?,?,?,?,?)");
+            psPayment.setTimestamp(1, new java.sql.Timestamp(System.currentTimeMillis()));
+            psPayment.setFloat(2, total);
+            psPayment.setString(3, paymentMethod);
+            psPayment.setString(4, "Paid");
+            psPayment.setInt(5, orderID);
+            psPayment.executeUpdate();
+
             con.commit();
             return null;
 
