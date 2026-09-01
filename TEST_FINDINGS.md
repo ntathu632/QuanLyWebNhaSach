@@ -181,6 +181,8 @@ Trạng thái: 🔴 Lỗi | 🟡 Cần chú ý | 🟢 OK
 
 🔴 **Lỗi phát hiện ngay khi test, đã fix:** sau khi đổi mô tả sang `JTextArea`, tên sách/ISBN/đánh giá sao ở đầu trang biến mất khỏi màn hình (dù code build đúng thứ tự) — nguyên nhân: `JTextArea` dù `setEditable(false)` vẫn nhận focus mặc định, khiến `JScrollPane` bao ngoài tự cuộn xuống để hiện caret của nó ngay khi trang vừa load, che mất phần đầu trang. Sửa bằng `setFocusable(false)` cho cả `JTextArea` mô tả sách và bình luận đánh giá. Verify lại bằng ảnh chụp thật trên sách "Clean Code" — trang hiện đúng từ đầu (tên sách, ISBN, sao, giá, mô tả, số lượng, nút mua đều thấy ngay không cần cuộn), cuộn xuống thấy đúng mục đánh giá. Không exception trong `app_err.log`.
 
+✅ **Xác nhận qua test thật (không phải code mới):** chị thu hỏi liệu khách CHƯA mua sách có thấy được đánh giá của người khác không (thay vì chỉ thấy thông báo chặn) — code từ trước đã làm đúng: danh sách đánh giá hiển thị độc lập với điều kiện mua hàng, chỉ note chặn/form gửi đánh giá mới phụ thuộc AS-01. Verify bằng dữ liệu thật: đăng nhập `customer02` (đã mua + thanh toán "The Psychology of Money") gửi 1 đánh giá 5 sao thật; đăng nhập lại `customer01` (CHƯA mua sách này) mở cùng trang → thấy đúng đánh giá của customer02 (5 sao + bình luận) hiển thị phía trên, kèm thông báo "Chỉ khách hàng đã mua..." vì customer01 không đủ điều kiện tự đánh giá. Đã xóa đánh giá test khỏi DB sau khi verify xong.
+
 ---
 
 *File này để theo dõi tiến độ test thủ công qua GUI thật, không phải checklist code review tĩnh.*
