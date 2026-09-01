@@ -36,6 +36,7 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import model.Account;
+import model.Customer;
 
 public class ManageAccountPage implements AdminPage {
 
@@ -135,6 +136,33 @@ public class ManageAccountPage implements AdminPage {
         resultTitle.setForeground(AppTheme.TEXT);
         tableHeader.add(resultTitle, BorderLayout.WEST);
 
+        JPanel headerActions = new JPanel();
+        headerActions.setLayout(new BoxLayout(headerActions, BoxLayout.X_AXIS));
+        headerActions.setOpaque(false);
+
+        JButton btnDetail = new JButton("Xem chi tiết");
+        AppTheme.secondary(btnDetail);
+        btnDetail.addActionListener(e -> {
+            int row = table.getSelectedRow();
+            if (row < 0 || row >= currentItems.size()) {
+                JOptionPane.showMessageDialog(shell, "Vui lòng chọn 1 tài khoản để xem chi tiết!");
+                return;
+            }
+            Account selected = currentItems.get(row);
+            if (!"Customer".equals(selected.getRole())) {
+                JOptionPane.showMessageDialog(shell, "Chỉ xem chi tiết được với tài khoản khách hàng!");
+                return;
+            }
+            Customer customer = new AccountDAO().getCustomerByUsername(selected.getUsername());
+            if (customer == null) {
+                JOptionPane.showMessageDialog(shell, "Không tìm thấy thông tin khách hàng cho tài khoản này!");
+                return;
+            }
+            shell.navigateTo(new CustomerDetailPage(customer, selected));
+        });
+        headerActions.add(btnDetail);
+        headerActions.add(Box.createHorizontalStrut(10));
+
         JButton btnEdit = new JButton("Sửa");
         AppTheme.primary(btnEdit);
         btnEdit.addActionListener(e -> {
@@ -145,7 +173,8 @@ public class ManageAccountPage implements AdminPage {
             }
             editAccount(shell, currentItems.get(row), doSearch);
         });
-        tableHeader.add(btnEdit, BorderLayout.EAST);
+        headerActions.add(btnEdit);
+        tableHeader.add(headerActions, BorderLayout.EAST);
 
         tableCard.add(tableHeader, BorderLayout.NORTH);
 

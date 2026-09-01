@@ -24,6 +24,10 @@ public class Review implements Serializable {
     // (join từ Customer.fullName) trong danh sách đánh giá của 1 sách.
     private String customerName;
 
+    // Không lưu xuống CSDL — chỉ dùng để hiển thị tên sách (join từ Book.title)
+    // trong danh sách đánh giá của 1 khách hàng (chiều ngược lại với customerName).
+    private String bookTitle;
+
     public Review() {
     }
 
@@ -81,5 +85,13 @@ public class Review implements Serializable {
 
     public void setCustomerName(String customerName) {
         this.customerName = customerName;
+    }
+
+    public String getBookTitle() {
+        return bookTitle;
+    }
+
+    public void setBookTitle(String bookTitle) {
+        this.bookTitle = bookTitle;
     }
 }

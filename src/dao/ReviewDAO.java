@@ -74,6 +74,35 @@ public class ReviewDAO extends DAO {
         return list;
     }
 
+    // Dùng cho CustomerDetailPage (Admin > Quản lý tài khoản > Xem chi tiết
+    // khách hàng) — chiều ngược lại với getReviewsForBook: toàn bộ đánh giá
+    // MỘT khách hàng đã viết, kèm tên sách (join Book.title) để hiển thị.
+    public List<Review> getReviewsByCustomer(int customerID) {
+        List<Review> list = new ArrayList<>();
+        try {
+            String sql = "SELECT r.reviewID, r.bookID, r.rating, r.comment, r.reviewDate, b.title "
+                    + "FROM Review r JOIN Book b ON r.bookID = b.bookID "
+                    + "WHERE r.customerID = ? ORDER BY r.reviewDate DESC";
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setInt(1, customerID);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Review r = new Review();
+                r.setReviewID(rs.getInt("reviewID"));
+                r.setBookID(rs.getInt("bookID"));
+                r.setCustomerID(customerID);
+                r.setRating(rs.getInt("rating"));
+                r.setComment(rs.getString("comment"));
+                r.setReviewDate(rs.getTimestamp("reviewDate"));
+                r.setBookTitle(rs.getString("title"));
+                list.add(r);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return list;
+    }
+
     public float averageRating(int bookID) {
         try {
             PreparedStatement ps = con.prepareStatement("SELECT AVG(CAST(rating AS FLOAT)) FROM Review WHERE bookID = ?");

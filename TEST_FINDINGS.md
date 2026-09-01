@@ -75,6 +75,12 @@ Trạng thái: 🔴 Lỗi | 🟡 Cần chú ý | 🟢 OK
 - Sửa tài khoản người khác (sales01): đổi Trạng thái Active → Locked qua dropdown, lưu thành công, báo "Cập nhật tài khoản thành công!", list refresh đúng. Đổi lại Locked → Active cũng thành công (đã dọn dữ liệu test).
 - **Bảo vệ tự khóa tài khoản đang đăng nhập:** chọn sửa chính tài khoản "admin" (đang đăng nhập) và đổi Trạng thái sang Locked → hiện thêm dialog xác nhận riêng "Bạn đang khóa chính tài khoản đang đăng nhập. Tiếp tục?". Chọn "No" → hủy đúng, không cập nhật DB, admin vẫn Active. Logic chặn tự khóa hoạt động chính xác.
 
+🟢 **Tính năng mới — "Xem chi tiết khách hàng" (trang riêng):** theo yêu cầu chị thu, trước đó "Quản lý tài khoản" chỉ có list phẳng + dialog Sửa, không có cách nào xem sâu 1 khách hàng cụ thể.
+- Thêm nút "Xem chi tiết" cạnh nút "Sửa" trong bảng danh sách tài khoản; chỉ áp dụng cho tài khoản vai trò Customer (bấm với tài khoản Admin/Sales Staff/Inventory Staff → báo đúng "Chỉ xem chi tiết được với tài khoản khách hàng!", không crash).
+- Trang mới `CustomerDetailPage` (`src/view/admin/CustomerDetailPage.java`) hiển thị: thông tin cá nhân (Username, Họ tên, Trạng thái tài khoản, Email, SĐT, Địa chỉ), 3 thẻ thống kê (Tổng số đơn hàng, Tổng chi tiêu — chỉ tính đơn đã thanh toán, Số đánh giá đã viết), bảng Lịch sử đơn hàng (bấm "Xem chi tiết" 1 đơn → dialog chi tiết từng sách trong đơn, dùng lại đúng dữ liệu `OrderDAO` của trang "Đơn hàng của tôi" bên khách hàng) và bảng Đánh giá đã viết (join tên sách, dùng `ReviewDAO.getReviewsByCustomer()` mới thêm).
+- Test với `customer01` (Nguyễn Văn An): thông tin cá nhân đúng, 2 đơn hàng hiển thị đúng (tổng chi tiêu 1,680,000đ khớp 2 đơn đã thanh toán), mở chi tiết đơn #11 đúng 2 dòng sách (Clean Code, Atomic Habits) đúng số lượng/đơn giá/thành tiền. Nút "quay lại" trả về đúng "Quản lý tài khoản". Không exception trong `app_err.log`.
+- ⏳ Chưa test trực quan bảng "Đánh giá đã viết" với dữ liệu thật (customer01 test có 0 đánh giá) — code dùng lại đúng pattern bảng đã verify (Lịch sử đơn hàng), rủi ro thấp nhưng chưa chụp ảnh xác nhận.
+
 ## Admin > Quản lý nhân viên
 
 🟢 OK — Cả Thêm/Sửa/Xóa chạy đúng, không exception, không crash:
