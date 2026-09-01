@@ -119,6 +119,7 @@ public class SalesShellFrm extends javax.swing.JFrame {
 
         addNavItem(sidebar, "customers", FlatIcon.Kind.USER, "Tra cứu khách hàng", () -> navigateTo(new SearchCustomerPage()));
         addNavItem(sidebar, "books", FlatIcon.Kind.BOOK, "Tra cứu sách", () -> navigateTo(new SalesSearchBookPage()));
+        addNavItem(sidebar, "lowstock", FlatIcon.Kind.TAG, "Cảnh báo tồn kho thấp", () -> navigateTo(new LowStockPage()));
 
         sidebar.add(Box.createVerticalGlue());
         sidebar.add(sidebarSeparator());
