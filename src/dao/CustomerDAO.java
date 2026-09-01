@@ -36,8 +36,10 @@ public class CustomerDAO extends DAO {
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-                list.add(new Customer(rs.getInt("customerID"), rs.getString("fullName"),
-                        rs.getString("phone"), rs.getString("email"), rs.getString("address")));
+                Customer c = new Customer(rs.getInt("customerID"), rs.getString("fullName"),
+                        rs.getString("phone"), rs.getString("email"), rs.getString("address"));
+                c.setAvatar(rs.getString("avatar"));
+                list.add(c);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -75,6 +77,22 @@ public class CustomerDAO extends DAO {
         }
     }
 
+    // Cập nhật ảnh đại diện — tách riêng khỏi updateCustomer() vì đây là 1
+    // thao tác độc lập (chọn file rồi lưu ngay), không đi qua flow "Sửa" từng
+    // trường của AccountPage.
+    public boolean updateAvatar(int customerID, String avatarFilename) {
+        try {
+            PreparedStatement ps = con.prepareStatement("UPDATE Customer SET avatar = ? WHERE customerID = ?");
+            ps.setString(1, avatarFilename);
+            ps.setInt(2, customerID);
+            ps.executeUpdate();
+            return true;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return false;
+        }
+    }
+
     // Trả về Customer đại diện "Khách vãng lai" dùng chung cho mọi lượt bán
     // tại quầy không tra cứu khách quen — tạo mới đúng 1 lần nếu chưa có.
     public Customer getOrCreateWalkInCustomer() {
@@ -83,8 +101,10 @@ public class CustomerDAO extends DAO {
             ps.setString(1, WALK_IN_EMAIL);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                return new Customer(rs.getInt("customerID"), rs.getString("fullName"),
+                Customer c = new Customer(rs.getInt("customerID"), rs.getString("fullName"),
                         rs.getString("phone"), rs.getString("email"), rs.getString("address"));
+                c.setAvatar(rs.getString("avatar"));
+                return c;
             }
 
             PreparedStatement psInsert = con.prepareStatement(

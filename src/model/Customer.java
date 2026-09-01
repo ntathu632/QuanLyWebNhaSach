@@ -18,6 +18,10 @@ public class Customer implements Serializable {
     private String email;
     private String address;
 
+    // Tên file ảnh đại diện, lưu trong thư mục images/avatars/ (xem
+    // view.shared.AvatarStore) — NULL nghĩa là chưa upload, dùng icon mặc định.
+    private String avatar;
+
     // Không có trong class diagram gốc — chỉ dùng để nhớ username của Account
     // gắn với Customer này (populate qua AccountDAO.getCustomerByUsername()),
     // cần cho FR-COM-02 (Change Password) vì CustomerShellFrm chỉ giữ Customer,
@@ -73,6 +77,14 @@ public class Customer implements Serializable {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 
     public String getUsername() {

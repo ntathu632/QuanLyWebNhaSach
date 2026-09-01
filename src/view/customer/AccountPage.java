@@ -13,6 +13,7 @@ import dao.OrderDAO;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -20,15 +21,22 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.RenderingHints;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.geom.Ellipse2D;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -36,6 +44,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import model.Customer;
 import model.Order;
 
@@ -213,7 +222,7 @@ public class AccountPage implements CustomerPage {
         card.setAlignmentX(JPanel.LEFT_ALIGNMENT);
         card.setMaximumSize(new Dimension(Integer.MAX_VALUE, 150));
 
-        JComponent avatar = avatarBadge();
+        JComponent avatar = buildAvatar(shell);
         JPanel avatarWrap = new JPanel(new BorderLayout());
         avatarWrap.setOpaque(false);
         avatarWrap.setBorder(new EmptyBorder(0, 0, 0, 20));
@@ -248,25 +257,86 @@ public class AccountPage implements CustomerPage {
         return lbl;
     }
 
-    private JComponent avatarBadge() {
+    /**
+     * Ảnh đại diện — hiển thị ảnh thật (Customer.avatar, đọc qua AvatarStore)
+     * nếu khách đã upload, ngược lại vẽ icon mặc định như cũ. Bấm vào ảnh để
+     * chọn ảnh mới từ máy (JFileChooser) và lưu lại.
+     */
+    private JComponent buildAvatar(CustomerShellFrm shell) {
         int size = 64;
+        BufferedImage img = loadAvatarImage(shell.customer.getAvatar());
         FlatIcon icon = new FlatIcon(FlatIcon.Kind.USER, AppTheme.PRIMARY, 28);
         JComponent badge = new JComponent() {
             @Override
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setClip(new Ellipse2D.Float(0, 0, size, size));
+                if (img != null) {
+                    g2.drawImage(img, 0, 0, size, size, null);
+                } else {
+                    g2.setColor(Color.WHITE);
+                    g2.fillOval(0, 0, size, size);
+                    icon.paintIcon(this, g2, (size - icon.getIconWidth()) / 2, (size - icon.getIconHeight()) / 2);
+                }
+                g2.setClip(null);
+
+                int dot = 20;
+                int bx = size - dot;
+                int by = size - dot;
+                g2.setColor(AppTheme.SECONDARY);
+                g2.fillOval(bx, by, dot, dot);
                 g2.setColor(Color.WHITE);
-                g2.fillOval(0, 0, size, size);
+                new FlatIcon(FlatIcon.Kind.PEN, Color.WHITE, 11).paintIcon(this, g2, bx + (dot - 11) / 2, by + (dot - 11) / 2);
                 g2.dispose();
-                icon.paintIcon(this, g, (size - icon.getIconWidth()) / 2, (size - icon.getIconHeight()) / 2);
             }
         };
         badge.setPreferredSize(new Dimension(size, size));
         badge.setMaximumSize(new Dimension(size, size));
         badge.setMinimumSize(new Dimension(size, size));
         badge.setOpaque(false);
+        badge.setToolTipText("Đổi ảnh đại diện");
+        badge.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        badge.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                chooseAndUploadAvatar(shell);
+            }
+        });
         return badge;
+    }
+
+    private BufferedImage loadAvatarImage(String filename) {
+        File file = AvatarStore.resolve(filename);
+        if (file == null || !file.exists()) {
+            return null;
+        }
+        try {
+            return ImageIO.read(file);
+        } catch (Exception ex) {
+            return null;
+        }
+    }
+
+    private void chooseAndUploadAvatar(CustomerShellFrm shell) {
+        JFileChooser chooser = new JFileChooser();
+        chooser.setDialogTitle("Chọn ảnh đại diện");
+        chooser.setFileFilter(new FileNameExtensionFilter("Ảnh (jpg, jpeg, png, gif)", "jpg", "jpeg", "png", "gif"));
+        int result = chooser.showOpenDialog(shell);
+        if (result != JFileChooser.APPROVE_OPTION) {
+            return;
+        }
+        String filename = AvatarStore.save(chooser.getSelectedFile(), shell.customer.getCustomerID());
+        if (filename == null) {
+            JOptionPane.showMessageDialog(shell, "Không thể lưu ảnh, vui lòng thử lại!");
+            return;
+        }
+        if (new CustomerDAO().updateAvatar(shell.customer.getCustomerID(), filename)) {
+            shell.customer.setAvatar(filename);
+            shell.navigateTo(new AccountPage());
+        } else {
+            JOptionPane.showMessageDialog(shell, "Cập nhật ảnh đại diện thất bại, vui lòng thử lại!");
+        }
     }
 
     /** Hàng "Mật khẩu" — chấm ẩn + nút Sửa mở thẳng ChangePasswordDialog (không sửa tại chỗ như các trường khác). */

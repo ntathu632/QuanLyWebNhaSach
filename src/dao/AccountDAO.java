@@ -96,7 +96,7 @@ public class AccountDAO extends DAO {
     // không phải trên Account).
     public Customer getCustomerByUsername(String username) {
         try {
-            String sql = "SELECT c.customerID, c.fullName, c.phone, c.email, c.address "
+            String sql = "SELECT c.customerID, c.fullName, c.phone, c.email, c.address, c.avatar "
                     + "FROM Customer c JOIN Account a ON c.customerID = a.customerID "
                     + "WHERE a.username = ?";
             PreparedStatement ps = con.prepareStatement(sql);
@@ -111,6 +111,7 @@ public class AccountDAO extends DAO {
                         rs.getString("email"),
                         rs.getString("address"));
                 c.setUsername(username);
+                c.setAvatar(rs.getString("avatar"));
                 return c;
             }
         } catch (Exception ex) {

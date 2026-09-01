@@ -167,6 +167,7 @@ CREATE TABLE Customer (
     phone VARCHAR(20) NOT NULL,
     email VARCHAR(150) NOT NULL,
     address NVARCHAR(255) NULL,
+    avatar NVARCHAR(500) NULL,
 
     CONSTRAINT UQ_Customer_Email
         UNIQUE (email)
