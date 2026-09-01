@@ -8,6 +8,7 @@ package view.sales;
 import view.shared.*;
 
 import dao.OrderDAO;
+import dao.PaymentDAO;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -219,6 +220,12 @@ public class OrderManagementPage implements SalesPage {
                 return;
             }
             if (new OrderDAO().updateOrderStatus(selected.getOrderID(), newStatus)) {
+                if ("Cancelled".equals(newStatus)) {
+                    // Đơn đã thanh toán mới có Payment (Pending huỷ thẳng thì UPDATE
+                    // này không khớp dòng nào, vô hại) — đánh dấu hoàn tiền cho khớp
+                    // với Orders.status, cùng cách InvoiceHistoryPage đang làm.
+                    new PaymentDAO().updatePaymentStatus(selected.getOrderID(), "Refunded");
+                }
                 JOptionPane.showMessageDialog(shell, "Đã cập nhật trạng thái đơn hàng!");
                 reloadHolder[0].run();
             } else {

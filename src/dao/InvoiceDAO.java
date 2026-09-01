@@ -6,10 +6,12 @@
  */
 package dao;
 
+import model.Invoice;
 import model.OrderDetail;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -121,5 +123,40 @@ public class InvoiceDAO extends DAO {
                 ex.printStackTrace();
             }
         }
+    }
+
+    // FR-SALE-07 (Invoice History): toàn bộ hóa đơn lập tại quầy, kèm tên
+    // khách hàng/nhân viên và trạng thái đơn hiện tại (Paid/Cancelled) — cần
+    // để InvoiceHistoryPage tra cứu lại và hủy hóa đơn đã lập.
+    public List<Invoice> getInStoreInvoices() {
+        List<Invoice> list = new ArrayList<>();
+        try {
+            String sql = "SELECT iv.invoiceID, iv.invoiceDate, iv.totalAmount, iv.paymentMethod, "
+                    + "iv.orderID, iv.employeeID, o.status, c.fullName AS customerName, "
+                    + "e.fullName AS employeeName "
+                    + "FROM Invoice iv "
+                    + "JOIN Orders o ON o.orderID = iv.orderID "
+                    + "JOIN Customer c ON c.customerID = o.customerID "
+                    + "JOIN Employee e ON e.employeeID = iv.employeeID "
+                    + "ORDER BY iv.invoiceDate DESC";
+            PreparedStatement ps = con.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Invoice iv = new Invoice();
+                iv.setInvoiceID(rs.getInt("invoiceID"));
+                iv.setInvoiceDate(rs.getTimestamp("invoiceDate"));
+                iv.setTotalAmount(rs.getFloat("totalAmount"));
+                iv.setPaymentMethod(rs.getString("paymentMethod"));
+                iv.setOrderID(rs.getInt("orderID"));
+                iv.setEmployeeID(rs.getInt("employeeID"));
+                iv.setOrderStatus(rs.getString("status"));
+                iv.setCustomerName(rs.getString("customerName"));
+                iv.setEmployeeName(rs.getString("employeeName"));
+                list.add(iv);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return list;
     }
 }

@@ -40,4 +40,21 @@ public class PaymentDAO extends DAO {
             return false;
         }
     }
+
+    // Dùng khi hủy 1 hóa đơn tại quầy đã thanh toán (InvoiceHistoryPage) — đổi
+    // trạng thái giao dịch sang "Refunded" thay vì để "Paid" treo dù đơn đã
+    // Cancelled. UNIQUE(orderID) trên Payment nên mỗi order chỉ có đúng 1 dòng.
+    public boolean updatePaymentStatus(int orderID, String status) {
+        try {
+            PreparedStatement ps = con.prepareStatement(
+                    "UPDATE Payment SET status = ? WHERE orderID = ?");
+            ps.setString(1, status);
+            ps.setInt(2, orderID);
+            ps.executeUpdate();
+            return true;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return false;
+        }
+    }
 }

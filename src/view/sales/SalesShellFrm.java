@@ -111,6 +111,7 @@ public class SalesShellFrm extends javax.swing.JFrame {
         sidebar.add(sidebarSectionLabel("BÁN HÀNG"));
 
         addNavItem(sidebar, "instore", FlatIcon.Kind.RECEIPT, "Lập hóa đơn", () -> navigateTo(new InStoreSalePage()));
+        addNavItem(sidebar, "invoices", FlatIcon.Kind.MONEY, "Hóa đơn đã lập", () -> navigateTo(new InvoiceHistoryPage()));
         addNavItem(sidebar, "orders", FlatIcon.Kind.CHART, "Đơn hàng online", () -> navigateTo(new OrderManagementPage()));
 
         sidebar.add(sidebarSeparator());

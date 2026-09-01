@@ -20,6 +20,14 @@ public class Invoice implements Serializable {
     private int orderID;
     private int employeeID;
 
+    // Không có trong class diagram gốc, nhưng cần thiết để InvoiceHistoryPage
+    // hiển thị danh sách hóa đơn tại quầy mà không phải query lại Orders/
+    // Customer/Employee riêng cho mỗi dòng — populate qua
+    // InvoiceDAO.getInStoreInvoices() (JOIN), không lưu xuống CSDL.
+    private String customerName;
+    private String employeeName;
+    private String orderStatus;
+
     public Invoice() {
     }
 
@@ -69,5 +77,29 @@ public class Invoice implements Serializable {
 
     public void setEmployeeID(int employeeID) {
         this.employeeID = employeeID;
+    }
+
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
+    }
+
+    public String getEmployeeName() {
+        return employeeName;
+    }
+
+    public void setEmployeeName(String employeeName) {
+        this.employeeName = employeeName;
+    }
+
+    public String getOrderStatus() {
+        return orderStatus;
+    }
+
+    public void setOrderStatus(String orderStatus) {
+        this.orderStatus = orderStatus;
     }
 }
