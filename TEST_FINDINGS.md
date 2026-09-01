@@ -173,6 +173,14 @@ Trạng thái: 🔴 Lỗi | 🟡 Cần chú ý | 🟢 OK
 3. Mật khẩu hiển thị chấm tròn "••••••••••" — đổi thành dấu `**********` theo đúng yêu cầu.
 - Verify lại bằng ảnh chụp thật: đủ 5 hàng, cuộn được, chữ không còn bị cắt, mật khẩu hiển thị đúng dấu `*`. Không exception trong `app_err.log`.
 
+## Customer > Chi tiết sách (thiết kế lại theo mẫu trang sản phẩm thật)
+
+🟢 **Viết lại toàn bộ layout** theo yêu cầu chị thu: 1 bên ảnh bìa lớn, bên kia tên sách + ISBN + đánh giá sao + giá + mô tả chi tiết + số lượng/mua hàng, dùng hết chiều rộng cửa sổ (bỏ giới hạn `maxWidth`, để `BoxLayout` giãn hết khổ thay vì ghim 1 khối hẹp cố định), có cuộn (`JScrollPane` đã thêm từ lần fix trước vẫn giữ nguyên).
+- Thêm đánh giá sao thật (`starRow()`): 5 icon ★/☆ tô theo điểm trung bình làm tròn (dùng ký tự Unicode, không thêm icon mới vào `FlatIcon` dùng chung) — hiển thị ở cả khối thông tin chính lẫn tiêu đề mục "Đánh giá sách"; từng đánh giá trong danh sách cũng đổi từ "X/5" dạng chữ sang 5 sao thật.
+- Mô tả sách đổi từ `JLabel` html `div width` cố định (dễ vỡ khi đổi kích thước cửa sổ) sang `JTextArea` không sửa được, tự xuống dòng theo đúng chiều rộng thật của cột — áp dụng luôn cho nội dung bình luận trong từng đánh giá.
+
+🔴 **Lỗi phát hiện ngay khi test, đã fix:** sau khi đổi mô tả sang `JTextArea`, tên sách/ISBN/đánh giá sao ở đầu trang biến mất khỏi màn hình (dù code build đúng thứ tự) — nguyên nhân: `JTextArea` dù `setEditable(false)` vẫn nhận focus mặc định, khiến `JScrollPane` bao ngoài tự cuộn xuống để hiện caret của nó ngay khi trang vừa load, che mất phần đầu trang. Sửa bằng `setFocusable(false)` cho cả `JTextArea` mô tả sách và bình luận đánh giá. Verify lại bằng ảnh chụp thật trên sách "Clean Code" — trang hiện đúng từ đầu (tên sách, ISBN, sao, giá, mô tả, số lượng, nút mua đều thấy ngay không cần cuộn), cuộn xuống thấy đúng mục đánh giá. Không exception trong `app_err.log`.
+
 ---
 
 *File này để theo dõi tiến độ test thủ công qua GUI thật, không phải checklist code review tĩnh.*

@@ -1,6 +1,8 @@
 /*
- * Trang chi tiết sách — bìa lớn (vẽ tay) + thông tin + chọn số lượng + thêm
- * vào giỏ hàng. Nhận sẵn Book qua constructor, giống EditBookPage bên Admin.
+ * Trang chi tiết sách — thiết kế dạng trang sản phẩm thật (1 bên ảnh bìa lớn,
+ * 1 bên tên/thông tin/đánh giá sao/mô tả chi tiết/mua hàng), dùng hết chiều
+ * rộng cửa sổ maximize thay vì 1 card hẹp ghim giữa. Nhận sẵn Book qua
+ * constructor, giống EditBookPage bên Admin.
  */
 package view.customer;
 import view.shared.*;
@@ -31,6 +33,10 @@ import model.ShoppingCart;
 
 public class BookDetailPage implements CustomerPage {
 
+    private static final Color MUTED = new Color(0x8A, 0x83, 0x74);
+    private static final Color STAR_FILLED = new Color(0xE0, 0xA5, 0x3E);
+    private static final Color STAR_EMPTY = new Color(0xD8, 0xD1, 0xC2);
+
     private final Book book;
 
     public BookDetailPage(Book book) {
@@ -54,25 +60,52 @@ public class BookDetailPage implements CustomerPage {
 
     @Override
     public JPanel content(CustomerShellFrm shell) {
+        ReviewDAO reviewDAO = new ReviewDAO();
+        List<Review> reviews = reviewDAO.getReviewsForBook(book.getBookID());
+        float avg = reviewDAO.averageRating(book.getBookID());
+
         JPanel content = new JPanel(new BorderLayout());
         content.setBackground(AppTheme.BACKGROUND);
         content.setBorder(new EmptyBorder(28, 28, 28, 28));
 
-        ShadowCard card = new ShadowCard(new BorderLayout(28, 0), 16, 24);
-        card.setAlignmentX(JPanel.CENTER_ALIGNMENT);
-        card.setMaximumSize(new Dimension(1000, 428));
-        card.setPreferredSize(new Dimension(1000, 428));
+        JPanel top = new JPanel();
+        top.setLayout(new BoxLayout(top, BoxLayout.Y_AXIS));
+        top.setBackground(AppTheme.BACKGROUND);
 
+        top.add(buildMainCard(shell, avg, reviews.size()));
+        top.add(Box.createVerticalStrut(20));
+        top.add(buildReviewSection(shell, reviewDAO, reviews, avg));
+
+        JScrollPane pageScroll = new JScrollPane(top);
+        pageScroll.setBorder(null);
+        pageScroll.getVerticalScrollBar().setUnitIncrement(16);
+        content.add(pageScroll, BorderLayout.CENTER);
+        return content;
+    }
+
+    // Card chính: bìa lớn bên trái (cố định) + toàn bộ thông tin bên phải
+    // (co giãn) — không giới hạn maxWidth nên BoxLayout kéo giãn đúng hết
+    // chiều rộng cửa sổ (yêu cầu "full màn hình") thay vì ghim 1 khối hẹp.
+    private JPanel buildMainCard(CustomerShellFrm shell, float avg, int reviewCount) {
+        ShadowCard card = new ShadowCard(new BorderLayout(36, 0), 16, 28);
+        card.setAlignmentX(JPanel.LEFT_ALIGNMENT);
+        card.setMaximumSize(new Dimension(Integer.MAX_VALUE, 560));
+        card.setPreferredSize(new Dimension(0, 560));
+
+        JPanel coverWrap = new JPanel(new BorderLayout());
+        coverWrap.setOpaque(false);
+        coverWrap.setPreferredSize(new Dimension(380, 0));
+        coverWrap.setMaximumSize(new Dimension(380, Integer.MAX_VALUE));
         BookCoverPanel cover = new BookCoverPanel(book.getTitle(), book.getBookID(), book.getImage());
-        cover.setPreferredSize(new Dimension(260, 0));
-        card.add(cover, BorderLayout.WEST);
+        coverWrap.add(cover, BorderLayout.CENTER);
+        card.add(coverWrap, BorderLayout.WEST);
 
         JPanel info = new JPanel();
         info.setLayout(new BoxLayout(info, BoxLayout.Y_AXIS));
         info.setOpaque(false);
 
         JLabel titleLabel = new JLabel(book.getTitle());
-        titleLabel.setFont(titleLabel.getFont().deriveFont(Font.BOLD, 24f));
+        titleLabel.setFont(titleLabel.getFont().deriveFont(Font.BOLD, 26f));
         titleLabel.setForeground(AppTheme.TEXT);
         titleLabel.setAlignmentX(JLabel.LEFT_ALIGNMENT);
         info.add(titleLabel);
@@ -81,29 +114,48 @@ public class BookDetailPage implements CustomerPage {
 
         JLabel isbnLabel = new JLabel("ISBN: " + book.getISBN());
         isbnLabel.setFont(isbnLabel.getFont().deriveFont(12f));
-        isbnLabel.setForeground(new Color(0x8A, 0x83, 0x74));
+        isbnLabel.setForeground(MUTED);
         isbnLabel.setAlignmentX(JLabel.LEFT_ALIGNMENT);
         info.add(isbnLabel);
+
+        info.add(Box.createVerticalStrut(10));
+        info.add(starRow(avg, reviewCount, 18f));
 
         info.add(Box.createVerticalStrut(14));
 
         JLabel priceLabel = new JLabel(String.format("%,.0f₫", book.getPrice()));
-        priceLabel.setFont(priceLabel.getFont().deriveFont(Font.BOLD, 22f));
+        priceLabel.setFont(priceLabel.getFont().deriveFont(Font.BOLD, 26f));
         priceLabel.setForeground(AppTheme.ACCENT_TEXT);
         priceLabel.setAlignmentX(JLabel.LEFT_ALIGNMENT);
         info.add(priceLabel);
 
-        info.add(Box.createVerticalStrut(14));
+        info.add(Box.createVerticalStrut(16));
 
-        JLabel descLabel = new JLabel("<html><div style='width:560px'>"
-                + (book.getDescription() == null ? "" : book.getDescription().replace("&", "&amp;").replace("<", "&lt;"))
-                + "</div></html>");
-        descLabel.setFont(descLabel.getFont().deriveFont(13f));
-        descLabel.setForeground(AppTheme.TEXT);
-        descLabel.setAlignmentX(JLabel.LEFT_ALIGNMENT);
-        info.add(descLabel);
+        JLabel descHeading = new JLabel("Mô tả sách");
+        descHeading.setFont(descHeading.getFont().deriveFont(Font.BOLD, 14f));
+        descHeading.setForeground(AppTheme.TEXT);
+        descHeading.setAlignmentX(JLabel.LEFT_ALIGNMENT);
+        info.add(descHeading);
 
-        info.add(Box.createVerticalStrut(20));
+        info.add(Box.createVerticalStrut(6));
+
+        JTextArea descArea = new JTextArea(
+                book.getDescription() == null || book.getDescription().isEmpty()
+                        ? "Chưa có mô tả cho sách này."
+                        : book.getDescription());
+        descArea.setEditable(false);
+        descArea.setFocusable(false);
+        descArea.setLineWrap(true);
+        descArea.setWrapStyleWord(true);
+        descArea.setOpaque(false);
+        descArea.setFont(descArea.getFont().deriveFont(13.5f));
+        descArea.setForeground(AppTheme.TEXT);
+        descArea.setAlignmentX(JLabel.LEFT_ALIGNMENT);
+        descArea.setBorder(null);
+        info.add(descArea);
+
+        info.add(Box.createVerticalGlue());
+        info.add(Box.createVerticalStrut(18));
 
         JPanel qtyRow = new JPanel();
         qtyRow.setLayout(new BoxLayout(qtyRow, BoxLayout.X_AXIS));
@@ -143,44 +195,60 @@ public class BookDetailPage implements CustomerPage {
         info.add(buttonRow);
 
         card.add(info, BorderLayout.CENTER);
+        return card;
+    }
 
-        JPanel top = new JPanel();
-        top.setLayout(new BoxLayout(top, BoxLayout.Y_AXIS));
-        top.setBackground(AppTheme.BACKGROUND);
-        top.add(card);
-        top.add(Box.createVerticalStrut(20));
-        top.add(buildReviewSection(shell));
+    /** Hàng 5 ngôi sao (đầy/rỗng theo điểm trung bình đã làm tròn) + số liệu bằng chữ. */
+    private JPanel starRow(float avg, int count, float starSize) {
+        JPanel row = new JPanel();
+        row.setLayout(new BoxLayout(row, BoxLayout.X_AXIS));
+        row.setOpaque(false);
+        row.setAlignmentX(JPanel.LEFT_ALIGNMENT);
 
-        JScrollPane pageScroll = new JScrollPane(top);
-        pageScroll.setBorder(null);
-        pageScroll.getVerticalScrollBar().setUnitIncrement(16);
-        content.add(pageScroll, BorderLayout.CENTER);
-        return content;
+        int rounded = Math.round(avg);
+        for (int i = 1; i <= 5; i++) {
+            JLabel star = new JLabel(i <= rounded ? "★" : "☆");
+            star.setFont(star.getFont().deriveFont(starSize));
+            star.setForeground(i <= rounded ? STAR_FILLED : STAR_EMPTY);
+            row.add(star);
+        }
+        row.add(Box.createHorizontalStrut(8));
+
+        JLabel countLabel = new JLabel(count == 0
+                ? "Chưa có đánh giá"
+                : String.format("%.1f/5 (%d đánh giá)", avg, count));
+        countLabel.setFont(countLabel.getFont().deriveFont(13f));
+        countLabel.setForeground(MUTED);
+        row.add(countLabel);
+
+        return row;
     }
 
     // FR-CUS-09 (Rate Book): danh sách đánh giá thật (Review, bảng mới bổ
     // sung theo SRS) + form gửi đánh giá nếu khách đủ điều kiện (AS-01: đã
     // mua sách này và đơn đã "Paid") và chưa từng đánh giá cuốn này.
-    private JPanel buildReviewSection(CustomerShellFrm shell) {
-        ReviewDAO reviewDAO = new ReviewDAO();
-        List<Review> reviews = reviewDAO.getReviewsForBook(book.getBookID());
-        float avg = reviewDAO.averageRating(book.getBookID());
-
+    private JPanel buildReviewSection(CustomerShellFrm shell, ReviewDAO reviewDAO, List<Review> reviews, float avg) {
         ShadowCard sectionCard = new ShadowCard(new BorderLayout(0, 14), 16, 20);
-        sectionCard.setAlignmentX(JPanel.CENTER_ALIGNMENT);
-        sectionCard.setMaximumSize(new Dimension(1000, Integer.MAX_VALUE));
+        sectionCard.setAlignmentX(JPanel.LEFT_ALIGNMENT);
+        sectionCard.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
 
-        String heading = reviews.isEmpty()
-                ? "Đánh giá sách (chưa có đánh giá nào)"
-                : String.format("Đánh giá sách — trung bình %.1f/5 (%d lượt)", avg, reviews.size());
-        JLabel headingLabel = new JLabel(heading);
+        JPanel headingRow = new JPanel();
+        headingRow.setLayout(new BoxLayout(headingRow, BoxLayout.Y_AXIS));
+        headingRow.setOpaque(false);
+
+        JLabel headingLabel = new JLabel("Đánh giá sách");
         headingLabel.setFont(headingLabel.getFont().deriveFont(Font.BOLD, 16f));
         headingLabel.setForeground(AppTheme.TEXT);
-        sectionCard.add(headingLabel, BorderLayout.NORTH);
+        headingLabel.setAlignmentX(JLabel.LEFT_ALIGNMENT);
+        headingRow.add(headingLabel);
+        headingRow.add(Box.createVerticalStrut(6));
+        headingRow.add(starRow(avg, reviews.size(), 16f));
+        sectionCard.add(headingRow, BorderLayout.NORTH);
 
         JPanel body = new JPanel();
         body.setLayout(new BoxLayout(body, BoxLayout.Y_AXIS));
         body.setOpaque(false);
+        body.setBorder(new EmptyBorder(14, 0, 0, 0));
 
         if (!reviews.isEmpty()) {
             JPanel list = new JPanel();
@@ -193,7 +261,7 @@ public class BookDetailPage implements CustomerPage {
             }
             JScrollPane scroll = new JScrollPane(list);
             scroll.setBorder(null);
-            scroll.setPreferredSize(new Dimension(0, Math.min(220, reviews.size() * 70 + 10)));
+            scroll.setPreferredSize(new Dimension(0, Math.min(260, reviews.size() * 80 + 10)));
             scroll.getVerticalScrollBar().setUnitIncrement(16);
             body.add(scroll);
             body.add(Box.createVerticalStrut(14));
@@ -205,12 +273,12 @@ public class BookDetailPage implements CustomerPage {
         if (alreadyReviewed) {
             JLabel note = new JLabel("Bạn đã đánh giá cuốn sách này.");
             note.setFont(note.getFont().deriveFont(12f));
-            note.setForeground(new Color(0x8A, 0x83, 0x74));
+            note.setForeground(MUTED);
             body.add(note);
         } else if (!purchased) {
             JLabel note = new JLabel("Chỉ khách hàng đã mua và thanh toán thành công cuốn sách này mới có thể đánh giá.");
             note.setFont(note.getFont().deriveFont(12f));
-            note.setForeground(new Color(0x8A, 0x83, 0x74));
+            note.setForeground(MUTED);
             body.add(note);
         } else {
             body.add(buildReviewForm(shell, reviewDAO));
@@ -226,17 +294,40 @@ public class BookDetailPage implements CustomerPage {
         row.setOpaque(false);
         row.setAlignmentX(JPanel.LEFT_ALIGNMENT);
 
-        JLabel header = new JLabel(r.getCustomerName() + " — " + r.getRating() + "/5 · " + fmt.format(r.getReviewDate()));
-        header.setFont(header.getFont().deriveFont(Font.BOLD, 12.5f));
-        header.setForeground(AppTheme.TEXT);
-        header.setAlignmentX(JLabel.LEFT_ALIGNMENT);
-        row.add(header);
+        JPanel headerRow = new JPanel();
+        headerRow.setLayout(new BoxLayout(headerRow, BoxLayout.X_AXIS));
+        headerRow.setOpaque(false);
+        headerRow.setAlignmentX(JPanel.LEFT_ALIGNMENT);
+
+        JLabel name = new JLabel(r.getCustomerName() + "  ");
+        name.setFont(name.getFont().deriveFont(Font.BOLD, 12.5f));
+        name.setForeground(AppTheme.TEXT);
+        headerRow.add(name);
+
+        for (int i = 1; i <= 5; i++) {
+            JLabel star = new JLabel(i <= r.getRating() ? "★" : "☆");
+            star.setFont(star.getFont().deriveFont(12f));
+            star.setForeground(i <= r.getRating() ? STAR_FILLED : STAR_EMPTY);
+            headerRow.add(star);
+        }
+        JLabel date = new JLabel("  · " + fmt.format(r.getReviewDate()));
+        date.setFont(date.getFont().deriveFont(12f));
+        date.setForeground(MUTED);
+        headerRow.add(date);
+
+        row.add(headerRow);
 
         if (r.getComment() != null && !r.getComment().isEmpty()) {
-            JLabel comment = new JLabel("<html><div style='width:800px'>"
-                    + r.getComment().replace("&", "&amp;").replace("<", "&lt;") + "</div></html>");
+            row.add(Box.createVerticalStrut(4));
+            JTextArea comment = new JTextArea(r.getComment());
+            comment.setEditable(false);
+            comment.setFocusable(false);
+            comment.setLineWrap(true);
+            comment.setWrapStyleWord(true);
+            comment.setOpaque(false);
             comment.setFont(comment.getFont().deriveFont(12.5f));
             comment.setForeground(AppTheme.TEXT);
+            comment.setBorder(null);
             comment.setAlignmentX(JLabel.LEFT_ALIGNMENT);
             row.add(comment);
         }
