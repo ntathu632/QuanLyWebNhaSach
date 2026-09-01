@@ -93,6 +93,41 @@ public class CustomerDAO extends DAO {
         }
     }
 
+    // FR-SALE-09 (Quick Add Customer): tạo nhanh 1 Customer thật (không có
+    // Account đi kèm — khách không cần đăng nhập, chỉ cần có customerID để
+    // gắn vào Order) ngay tại quầy khi khách chưa có trong hệ thống, thay vì
+    // phải dùng chung "Khách vãng lai". Kiểm tra trùng email trước khi insert,
+    // cùng cách làm với updateCustomer()/AccountDAO.register(). Set lại
+    // customerID lên đối tượng truyền vào khi thành công.
+    public String addCustomer(Customer customer) {
+        try {
+            PreparedStatement psCheckEmail = con.prepareStatement("SELECT 1 FROM Customer WHERE email = ?");
+            psCheckEmail.setString(1, customer.getEmail());
+            if (psCheckEmail.executeQuery().next()) {
+                return "Email này đã được dùng bởi khách hàng khác, vui lòng dùng email khác!";
+            }
+
+            PreparedStatement ps = con.prepareStatement(
+                    "INSERT INTO Customer (fullName, phone, email, address) VALUES (?,?,?,?)",
+                    Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, customer.getFullName());
+            ps.setString(2, customer.getPhone());
+            ps.setString(3, customer.getEmail());
+            ps.setString(4, customer.getAddress());
+            ps.executeUpdate();
+
+            ResultSet keys = ps.getGeneratedKeys();
+            if (keys.next()) {
+                customer.setCustomerID(keys.getInt(1));
+            }
+            return null;
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return "Thêm khách hàng thất bại do lỗi hệ thống, vui lòng thử lại!";
+        }
+    }
+
     // Trả về Customer đại diện "Khách vãng lai" dùng chung cho mọi lượt bán
     // tại quầy không tra cứu khách quen — tạo mới đúng 1 lần nếu chưa có.
     public Customer getOrCreateWalkInCustomer() {

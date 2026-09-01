@@ -89,11 +89,28 @@ public class InStoreSalePage implements SalesPage {
             }
         });
 
+        JButton btnAddCustomer = new JButton("+ Khách hàng mới...");
+        AppTheme.secondary(btnAddCustomer);
+        btnAddCustomer.addActionListener(e -> {
+            Customer created = addNewCustomer(shell);
+            if (created != null) {
+                selectedCustomer[0] = created;
+                customerLabel.setText("Khách hàng: " + created.getFullName() + " (" + created.getPhone() + ")");
+            }
+        });
+
+        JPanel customerButtons = new JPanel();
+        customerButtons.setLayout(new BoxLayout(customerButtons, BoxLayout.X_AXIS));
+        customerButtons.setOpaque(false);
+        customerButtons.add(btnPickCustomer);
+        customerButtons.add(Box.createHorizontalStrut(8));
+        customerButtons.add(btnAddCustomer);
+
         JPanel customerRow = new JPanel(new BorderLayout(10, 0));
         customerRow.setBackground(AppTheme.BACKGROUND);
         customerRow.setMaximumSize(new Dimension(Integer.MAX_VALUE, 32));
         customerRow.add(customerLabel, BorderLayout.CENTER);
-        customerRow.add(btnPickCustomer, BorderLayout.EAST);
+        customerRow.add(customerButtons, BorderLayout.EAST);
 
         JPanel header = new JPanel();
         header.setLayout(new BoxLayout(header, BoxLayout.Y_AXIS));
@@ -491,5 +508,68 @@ public class InStoreSalePage implements SalesPage {
         }
         int idx = java.util.Arrays.asList(options).indexOf(choice);
         return found[idx];
+    }
+
+    /**
+     * FR-SALE-09: tạo nhanh 1 khách hàng thật ngay tại quầy khi khách chưa có
+     * trong hệ thống — thay vì bắt buộc dùng chung "Khách vãng lai". Email
+     * là NOT NULL + UNIQUE trong CSDL nhưng nhân viên thường không hỏi email
+     * khi bán tại quầy, nên để trống thì tự sinh 1 email placeholder theo số
+     * điện thoại (cùng kiểu placeholder @bookshop.local đã dùng cho khách
+     * vãng lai) thay vì chặn luôn nếu nhân viên không có email khách.
+     */
+    private Customer addNewCustomer(SalesShellFrm shell) {
+        JPanel panel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new java.awt.Insets(6, 0, 6, 10);
+        gbc.anchor = GridBagConstraints.WEST;
+
+        JTextField txtName = new JTextField(18);
+        JTextField txtPhone = new JTextField(18);
+        JTextField txtEmail = new JTextField(18);
+        JTextField txtAddress = new JTextField(18);
+
+        String[] labels = {"Họ tên *:", "Số điện thoại *:", "Email (tùy chọn):", "Địa chỉ (tùy chọn):"};
+        JTextField[] fields = {txtName, txtPhone, txtEmail, txtAddress};
+        for (int i = 0; i < labels.length; i++) {
+            gbc.gridx = 0;
+            gbc.gridy = i;
+            gbc.fill = GridBagConstraints.NONE;
+            panel.add(new JLabel(labels[i]), gbc);
+            gbc.gridx = 1;
+            gbc.fill = GridBagConstraints.HORIZONTAL;
+            panel.add(fields[i], gbc);
+        }
+
+        int result = JOptionPane.showConfirmDialog(shell, panel, "Thêm khách hàng mới",
+                JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+        if (result != JOptionPane.OK_OPTION) {
+            return null;
+        }
+
+        String name = txtName.getText().trim();
+        String phone = txtPhone.getText().trim();
+        if (name.isEmpty() || phone.isEmpty()) {
+            JOptionPane.showMessageDialog(shell, "Vui lòng nhập Họ tên và Số điện thoại!");
+            return null;
+        }
+        String email = txtEmail.getText().trim();
+        if (email.isEmpty()) {
+            email = "khach" + phone + "@bookshop.local";
+        }
+
+        Customer customer = new Customer();
+        customer.setFullName(name);
+        customer.setPhone(phone);
+        customer.setEmail(email);
+        String address = txtAddress.getText().trim();
+        customer.setAddress(address.isEmpty() ? null : address);
+
+        String error = new CustomerDAO().addCustomer(customer);
+        if (error != null) {
+            JOptionPane.showMessageDialog(shell, error);
+            return null;
+        }
+        return customer;
     }
 }
