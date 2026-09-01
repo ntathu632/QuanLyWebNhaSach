@@ -36,7 +36,7 @@ final class BookCard {
             }
         });
 
-        BookCoverPanel cover = new BookCoverPanel(book.getTitle(), book.getBookID());
+        BookCoverPanel cover = new BookCoverPanel(book.getTitle(), book.getBookID(), book.getImage());
         cover.setPreferredSize(new Dimension(0, 130));
         cover.setMaximumSize(new Dimension(Integer.MAX_VALUE, 130));
         cover.setAlignmentX(JPanel.LEFT_ALIGNMENT);

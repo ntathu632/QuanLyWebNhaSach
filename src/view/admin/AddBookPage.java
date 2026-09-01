@@ -15,15 +15,20 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Image;
 import java.awt.Insets;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -32,7 +37,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import model.Author;
 import model.Book;
 import model.Category;
@@ -77,24 +84,24 @@ public class AddBookPage implements AdminPage {
         formCard.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createMatteBorder(0, 4, 0, 0, AppTheme.PRIMARY),
                 new EmptyBorder(24, 24, 24, 24)));
-        formCard.setMaximumSize(new Dimension(620, 640));
-        formCard.setPreferredSize(new Dimension(620, 640));
+        formCard.setMaximumSize(new Dimension(1160, 480));
+        formCard.setPreferredSize(new Dimension(1160, 480));
         formCard.setAlignmentX(JPanel.LEFT_ALIGNMENT);
 
         GridBagConstraints gbc = new GridBagConstraints();
 
         JTextField txtISBN = new JTextField();
-        formRow(formCard, gbc, 0, "ISBN: *", txtISBN);
+        formRow(formCard, gbc, 0, 0, "ISBN: *", txtISBN);
 
         JTextField txtTitle = new JTextField();
-        formRow(formCard, gbc, 1, "Tên sách: *", txtTitle);
+        formRow(formCard, gbc, 0, 1, "Tên sách: *", txtTitle);
 
         JTextField txtPrice = new JTextField();
-        formRow(formCard, gbc, 2, "Giá bán: *", txtPrice);
+        formRow(formCard, gbc, 0, 2, "Giá bán: *", txtPrice);
 
         Publisher[] publishers = new PublisherDAO().searchPublisher("");
         JComboBox<Publisher> cboPublisher = new JComboBox<>(publishers);
-        formRow(formCard, gbc, 3, "Nhà xuất bản: *", cboPublisher);
+        formRow(formCard, gbc, 0, 3, "Nhà xuất bản: *", cboPublisher);
 
         Category[] categories = new CategoryDAO().searchCategory("");
         JList<Category> lstCategory = new JList<>(categories);
@@ -102,7 +109,9 @@ public class AddBookPage implements AdminPage {
         lstCategory.setVisibleRowCount(4);
         JScrollPane categoryScroll = new JScrollPane(lstCategory);
         categoryScroll.setBorder(BorderFactory.createLineBorder(AppTheme.INPUT_BORDER));
-        formRow(formCard, gbc, 4, "Danh mục:", categoryScroll);
+        categoryScroll.setPreferredSize(new Dimension(0, 90));
+        categoryScroll.setMinimumSize(new Dimension(0, 90));
+        formRow(formCard, gbc, 0, 4, "Danh mục:", categoryScroll);
 
         Author[] authors = new AuthorDAO().searchAuthor("");
         JList<Author> lstAuthor = new JList<>(authors);
@@ -110,17 +119,84 @@ public class AddBookPage implements AdminPage {
         lstAuthor.setVisibleRowCount(4);
         JScrollPane authorScroll = new JScrollPane(lstAuthor);
         authorScroll.setBorder(BorderFactory.createLineBorder(AppTheme.INPUT_BORDER));
-        formRow(formCard, gbc, 5, "Tác giả:", authorScroll);
+        authorScroll.setPreferredSize(new Dimension(0, 90));
+        authorScroll.setMinimumSize(new Dimension(0, 90));
+        formRow(formCard, gbc, 0, 5, "Tác giả:", authorScroll);
 
-        JTextArea txtDescription = new JTextArea(4, 20);
+        JTextArea txtDescription = new JTextArea(8, 20);
         txtDescription.setLineWrap(true);
         txtDescription.setWrapStyleWord(true);
         JScrollPane descScroll = new JScrollPane(txtDescription);
         descScroll.setBorder(BorderFactory.createLineBorder(AppTheme.INPUT_BORDER));
-        formRow(formCard, gbc, 6, "Mô tả:", descScroll);
 
-        JTextField txtImage = new JTextField();
-        formRow(formCard, gbc, 7, "Hình ảnh:", txtImage);
+        File[] pickedImage = new File[1];
+        JLabel lblThumbnail = new JLabel("Chưa chọn ảnh");
+        lblThumbnail.setHorizontalAlignment(SwingConstants.CENTER);
+        lblThumbnail.setPreferredSize(new Dimension(90, 120));
+        lblThumbnail.setMinimumSize(new Dimension(90, 120));
+        lblThumbnail.setMaximumSize(new Dimension(90, 120));
+        lblThumbnail.setBorder(BorderFactory.createLineBorder(AppTheme.INPUT_BORDER));
+        lblThumbnail.setForeground(AppTheme.TEXT);
+        lblThumbnail.setFont(lblThumbnail.getFont().deriveFont(11f));
+
+        JButton btnPickImage = new JButton("Chọn ảnh...");
+        AppTheme.secondary(btnPickImage);
+        btnPickImage.addActionListener(e -> {
+            JFileChooser chooser = new JFileChooser();
+            chooser.setFileFilter(new FileNameExtensionFilter("Ảnh (jpg, jpeg, png, gif)", "jpg", "jpeg", "png", "gif"));
+            if (chooser.showOpenDialog(shell) == JFileChooser.APPROVE_OPTION) {
+                pickedImage[0] = chooser.getSelectedFile();
+                Image scaled = new ImageIcon(pickedImage[0].getPath()).getImage()
+                        .getScaledInstance(90, 120, Image.SCALE_SMOOTH);
+                lblThumbnail.setIcon(new ImageIcon(scaled));
+                lblThumbnail.setText(null);
+            }
+        });
+
+        JPanel imagePicker = new JPanel();
+        imagePicker.setLayout(new BoxLayout(imagePicker, BoxLayout.X_AXIS));
+        imagePicker.setOpaque(false);
+        imagePicker.add(lblThumbnail);
+        imagePicker.add(Box.createHorizontalStrut(12));
+        imagePicker.add(btnPickImage);
+
+        // Mô tả + Hình ảnh gộp vào 1 panel con (BorderLayout riêng) rồi gán làm
+        // MỘT ô duy nhất chiếm hết chiều cao cột phải (gridheight=6) — để BorderLayout
+        // tự chia không gian (Mô tả giãn hết phần còn lại, Hình ảnh giữ đúng kích
+        // thước cố định), tránh GridBagLayout tính sai chiều cao khi chia theo hàng
+        // dùng chung với cột trái (bug từng làm khung ảnh 90x120 bị bóp còn ~20px).
+        JPanel rightColumn = new JPanel(new BorderLayout(0, 8));
+        rightColumn.setOpaque(false);
+
+        JPanel descBlock = new JPanel(new BorderLayout(0, 6));
+        descBlock.setOpaque(false);
+        JLabel descLabel = new JLabel("Mô tả:");
+        descLabel.setForeground(AppTheme.TEXT);
+        descBlock.add(descLabel, BorderLayout.NORTH);
+        descBlock.add(descScroll, BorderLayout.CENTER);
+        rightColumn.add(descBlock, BorderLayout.CENTER);
+
+        JPanel imageBlock = new JPanel(new BorderLayout(0, 6));
+        imageBlock.setOpaque(false);
+        JLabel imageLabel = new JLabel("Hình ảnh:");
+        imageLabel.setForeground(AppTheme.TEXT);
+        imageBlock.add(imageLabel, BorderLayout.NORTH);
+        JPanel imageBlockRow = new JPanel(new BorderLayout());
+        imageBlockRow.setOpaque(false);
+        imageBlockRow.add(imagePicker, BorderLayout.WEST);
+        imageBlock.add(imageBlockRow, BorderLayout.CENTER);
+        rightColumn.add(imageBlock, BorderLayout.SOUTH);
+
+        gbc.gridx = 2;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
+        gbc.gridheight = 6;
+        gbc.weightx = 1;
+        gbc.weighty = 1;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+        gbc.insets = new Insets(8, 32, 8, 0);
+        formCard.add(rightColumn, gbc);
 
         top.add(formCard);
         top.add(Box.createVerticalStrut(18));
@@ -129,7 +205,7 @@ public class AddBookPage implements AdminPage {
         buttonRow.setLayout(new BoxLayout(buttonRow, BoxLayout.X_AXIS));
         buttonRow.setBackground(AppTheme.BACKGROUND);
         buttonRow.setAlignmentX(JPanel.LEFT_ALIGNMENT);
-        buttonRow.setMaximumSize(new Dimension(620, 40));
+        buttonRow.setMaximumSize(new Dimension(1160, 40));
 
         buttonRow.add(Box.createHorizontalGlue());
 
@@ -141,7 +217,7 @@ public class AddBookPage implements AdminPage {
 
         JButton btnAdd = new JButton("Thêm sách");
         AppTheme.primary(btnAdd);
-        btnAdd.addActionListener(e -> onAdd(shell, txtISBN, txtTitle, txtPrice, cboPublisher, lstCategory, lstAuthor, txtDescription, txtImage));
+        btnAdd.addActionListener(e -> onAdd(shell, txtISBN, txtTitle, txtPrice, cboPublisher, lstCategory, lstAuthor, txtDescription, pickedImage));
         buttonRow.add(btnAdd);
 
         top.add(buttonRow);
@@ -153,26 +229,32 @@ public class AddBookPage implements AdminPage {
         return content;
     }
 
-    private void formRow(JPanel panel, GridBagConstraints gbc, int row, String label, JComponent field) {
-        gbc.gridx = 0;
+    /** col 0 = cột trái (gridx 0/1), col 1 = cột phải (gridx 2/3). */
+    private void formRow(JPanel panel, GridBagConstraints gbc, int col, int row, String label, JComponent field) {
+        int baseX = col * 2;
         gbc.gridy = row;
+        gbc.gridheight = 1;
+        gbc.weighty = 0;
+
+        gbc.gridx = baseX;
         gbc.weightx = 0;
         gbc.fill = GridBagConstraints.NONE;
         gbc.anchor = GridBagConstraints.NORTHWEST;
-        gbc.insets = new Insets(8, 0, 8, 14);
+        gbc.insets = new Insets(8, col == 0 ? 0 : 32, 8, 14);
         JLabel lbl = new JLabel(label);
         lbl.setForeground(AppTheme.TEXT);
         panel.add(lbl, gbc);
 
-        gbc.gridx = 1;
+        gbc.gridx = baseX + 1;
         gbc.weightx = 1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(8, 0, 8, 0);
         panel.add(field, gbc);
     }
 
     private void onAdd(AdminShellFrm shell, JTextField txtISBN, JTextField txtTitle,
             JTextField txtPrice, JComboBox<Publisher> cboPublisher, JList<Category> lstCategory,
-            JList<Author> lstAuthor, JTextArea txtDescription, JTextField txtImage) {
+            JList<Author> lstAuthor, JTextArea txtDescription, File[] pickedImage) {
         String isbn = txtISBN.getText().trim();
         String title = txtTitle.getText().trim();
 
@@ -204,7 +286,15 @@ public class AddBookPage implements AdminPage {
         book.setTitle(title);
         book.setPrice(price);
         book.setDescription(txtDescription.getText().trim());
-        book.setImage(txtImage.getText().trim());
+
+        if (pickedImage[0] != null) {
+            try {
+                book.setImage(BookImageStore.save(pickedImage[0], isbn));
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(shell, "Lưu ảnh thất bại, vui lòng thử lại!");
+                return;
+            }
+        }
 
         List<Integer> categoryIDs = new ArrayList<>();
         for (Category c : lstCategory.getSelectedValuesList()) {

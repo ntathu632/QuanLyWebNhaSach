@@ -63,7 +63,7 @@ public class BookDetailPage implements CustomerPage {
         card.setMaximumSize(new Dimension(900, 428));
         card.setPreferredSize(new Dimension(900, 428));
 
-        BookCoverPanel cover = new BookCoverPanel(book.getTitle(), book.getBookID());
+        BookCoverPanel cover = new BookCoverPanel(book.getTitle(), book.getBookID(), book.getImage());
         cover.setPreferredSize(new Dimension(260, 0));
         card.add(cover, BorderLayout.WEST);
 

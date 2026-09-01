@@ -124,6 +124,22 @@ Trạng thái: 🔴 Lỗi | 🟡 Cần chú ý | 🟢 OK
 
 💡 **Gợi ý thiết kế (từ chị thu, chưa code):** vì hầu hết sách thực tế đều có danh mục/tác giả/tồn kho/giỏ hàng/đơn hàng liên quan, tính năng "xóa cứng" gần như luôn bị chặn → nên cân nhắc đổi sang **ẩn sách (soft delete)** thay vì `DELETE` thật: thêm cột trạng thái (vd `isActive`/`status`) trên `Book`, "Xóa sách" chỉ set ẩn khỏi danh sách bán/storefront, vẫn giữ nguyên dữ liệu cho lịch sử đơn hàng. Cần bàn với anhthu vì đổi schema + nhiều chỗ query Book phải lọc theo trạng thái.
 
+## Admin > Quản lý sách > Thêm/Sửa sách > Ảnh bìa thật + layout full màn hình
+
+🟢 **ĐÃ FIX (2 phần):**
+
+1. **Ảnh bìa sách giờ là dữ liệu thật.** Trước đó `Book.image` chỉ là 1 chuỗi text không có file thật đi kèm, không hiển thị ở đâu cả. Giờ:
+   - `src/view/shared/BookImageStore.java` (mới) — lưu file ảnh admin chọn vào `images/books/<ISBN>.<ext>`, `Book.image` lưu tên file đã lưu.
+   - `AddBookPage`/`EditBookPage` — trường "Hình ảnh" đổi từ ô nhập text sang nút "Chọn ảnh..."/"Đổi ảnh..." mở `JFileChooser` thật + xem trước ảnh (thumbnail 90x120).
+   - `src/view/customer/BookCoverPanel.java` — vẽ ảnh thật nếu có file, nếu không thì fallback về bìa vẽ tay như cũ (sách seed cũ không có file thật vẫn hiển thị bình thường, không lỗi).
+
+2. **Layout Thêm/Sửa sách trước đó chỉ chiếm ~620px bên trái, bỏ trống gần nửa màn hình dù cửa sổ đã maximize.** Đổi sang layout 2 cột (trái: ISBN/Tên sách/Giá/NXB/Danh mục/Tác giả, phải: Mô tả to + Hình ảnh) dùng hết chiều rộng cửa sổ (~1160px form card thay vì 620px).
+   - Gặp lại đúng bug từng gặp trước đây (GridBagLayout bóp chiều cao hàng dùng chung giữa 2 cột) — sửa triệt để bằng cách gộp Mô tả + Hình ảnh vào 1 panel con `BorderLayout` riêng (Mô tả ở CENTER giãn hết, Hình ảnh ở SOUTH giữ cố định), thay vì để GridBagLayout tính chiều cao từng hàng dùng chung với cột trái.
+   - Bug phụ phát hiện khi debug: khung thumbnail (90x120) bị bóp còn ~20px dù đã set `setPreferredSize`/`setMinimumSize` — nguyên nhân là **chưa set `setMaximumSize`**, nên `BoxLayout` (chiều ngang, chứa thumbnail + nút chọn ảnh) dùng maximumSize mặc định (nhỏ, gần bằng preferred size do FlatLaf tính) làm trần chiều cao. Set thêm `setMaximumSize(90,120)` mới hết bóp.
+   - Đã verify bằng ảnh chụp thật: cả 2 trang Thêm sách và Sửa sách giờ full-width, khung ảnh đúng kích thước, không cần scroll, không exception trong `app_err.log`.
+
+🟢 **Đã verify end-to-end (luồng đầy đủ):** Thêm sách test (ISBN `8888777766`, kèm ảnh JPEG thật qua "Chọn ảnh...") → bấm "Thêm sách" → thành công, file lưu đúng `images/books/8888777766.jpg`. Đăng xuất, đăng nhập `customer01` → ảnh thật hiển thị đúng (cover-fit, bo góc) ở cả lưới "Tìm kiếm sách" và trang "Chi tiết sách". Sách seed cũ (không có file ảnh thật) vẫn hiển thị bìa vẽ tay như cũ, không lỗi. Không exception trong `app_err.log` suốt luồng. Đã dọn dữ liệu test (xóa sách ID 23 + file ảnh qua sqlcmd, vì sách có gán Danh mục/Tác giả nên bị chặn xóa qua UI theo đúng thiết kế).
+
 ---
 
 *File này để theo dõi tiến độ test thủ công qua GUI thật, không phải checklist code review tĩnh.*
