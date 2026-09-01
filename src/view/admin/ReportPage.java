@@ -15,6 +15,7 @@ import java.awt.Font;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.LinkedHashMap;
 import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -141,7 +142,6 @@ public class ReportPage implements AdminPage {
 
             JPanel top = new JPanel(new BorderLayout(0, 16));
             top.setBackground(AppTheme.BACKGROUND);
-            top.add(statRow, BorderLayout.NORTH);
 
             String[] columns = {"Mã đơn", "Ngày đặt", "Khách hàng", "Số tiền"};
             DefaultTableModel model = new DefaultTableModel(columns, 0) {
@@ -150,8 +150,12 @@ public class ReportPage implements AdminPage {
                     return false;
                 }
             };
-            for (ReportDAO.RevenueOrderRow r : rows) {
+            Object[][] exportData = new Object[rows.size() + 1][4];
+            exportData[0] = columns;
+            for (int i = 0; i < rows.size(); i++) {
+                ReportDAO.RevenueOrderRow r = rows.get(i);
                 model.addRow(new Object[]{r.orderID, r.orderDate, r.customerName, String.format("%,.0f₫", r.totalAmount)});
+                exportData[i + 1] = new Object[]{r.orderID, r.orderDate, r.customerName, r.totalAmount};
             }
             JTable table = new JTable(model);
             table.setRowHeight(28);
@@ -160,6 +164,25 @@ public class ReportPage implements AdminPage {
 
             JPanel tableCard = cardWrap(table, "Chi tiết đơn hàng trong khoảng thời gian");
             top.add(tableCard, BorderLayout.CENTER);
+
+            JButton btnExport = new JButton("Xuất Excel");
+            AppTheme.secondary(btnExport);
+            btnExport.addActionListener(ev -> {
+                LinkedHashMap<String, Object[][]> sheets = new LinkedHashMap<>();
+                sheets.put("Doanh thu", exportData);
+                ExcelExportUtil.export(shell, "BaoCao_DoanhThu", sheets);
+            });
+            JPanel exportRow = new JPanel();
+            exportRow.setLayout(new BoxLayout(exportRow, BoxLayout.X_AXIS));
+            exportRow.setBackground(AppTheme.BACKGROUND);
+            exportRow.add(Box.createHorizontalGlue());
+            exportRow.add(btnExport);
+
+            JPanel northArea = new JPanel(new BorderLayout(0, 10));
+            northArea.setBackground(AppTheme.BACKGROUND);
+            northArea.add(statRow, BorderLayout.NORTH);
+            northArea.add(exportRow, BorderLayout.SOUTH);
+            top.add(northArea, BorderLayout.NORTH);
 
             resultArea.add(top, BorderLayout.CENTER);
             resultArea.revalidate();
@@ -187,8 +210,12 @@ public class ReportPage implements AdminPage {
                 return false;
             }
         };
-        for (ReportDAO.InventoryRow r : rows) {
+        Object[][] exportData = new Object[rows.size() + 1][4];
+        exportData[0] = columns;
+        for (int i = 0; i < rows.size(); i++) {
+            ReportDAO.InventoryRow r = rows.get(i);
             model.addRow(new Object[]{r.bookTitle, r.importQuantity, r.exportQuantity, r.stockQuantity});
+            exportData[i + 1] = new Object[]{r.bookTitle, r.importQuantity, r.exportQuantity, r.stockQuantity};
         }
         JTable table = new JTable(model);
         table.setRowHeight(28);
@@ -209,6 +236,22 @@ public class ReportPage implements AdminPage {
         table.getColumnModel().getColumn(3).setCellRenderer(lowStockRenderer);
 
         panel.add(cardWrap(table, "Tồn kho theo sách (đỏ = dưới 10 cuốn)"), BorderLayout.CENTER);
+
+        JButton btnExport = new JButton("Xuất Excel");
+        AppTheme.secondary(btnExport);
+        btnExport.addActionListener(ev -> {
+            LinkedHashMap<String, Object[][]> sheets = new LinkedHashMap<>();
+            sheets.put("Tồn kho", exportData);
+            ExcelExportUtil.export(panel, "BaoCao_TonKho", sheets);
+        });
+        JPanel exportRow = new JPanel();
+        exportRow.setLayout(new BoxLayout(exportRow, BoxLayout.X_AXIS));
+        exportRow.setBackground(AppTheme.BACKGROUND);
+        exportRow.setBorder(new EmptyBorder(0, 0, 12, 0));
+        exportRow.add(Box.createHorizontalGlue());
+        exportRow.add(btnExport);
+        panel.add(exportRow, BorderLayout.NORTH);
+
         return panel;
     }
 
@@ -227,8 +270,12 @@ public class ReportPage implements AdminPage {
                 return false;
             }
         };
-        for (ReportDAO.BestSellerRow r : bestSellers) {
+        Object[][] bestSellerExport = new Object[bestSellers.size() + 1][2];
+        bestSellerExport[0] = bestSellerColumns;
+        for (int i = 0; i < bestSellers.size(); i++) {
+            ReportDAO.BestSellerRow r = bestSellers.get(i);
             bestSellerModel.addRow(new Object[]{r.bookTitle, r.totalSold});
+            bestSellerExport[i + 1] = new Object[]{r.bookTitle, r.totalSold};
         }
         JTable bestSellerTable = new JTable(bestSellerModel);
         bestSellerTable.setRowHeight(28);
@@ -250,8 +297,12 @@ public class ReportPage implements AdminPage {
                 return false;
             }
         };
-        for (ReportDAO.EmployeeSalesRow r : employeeSales) {
+        Object[][] empExport = new Object[employeeSales.size() + 1][3];
+        empExport[0] = empColumns;
+        for (int i = 0; i < employeeSales.size(); i++) {
+            ReportDAO.EmployeeSalesRow r = employeeSales.get(i);
             empModel.addRow(new Object[]{r.employeeName, r.orderCount, String.format("%,.0f₫", r.totalAmount)});
+            empExport[i + 1] = new Object[]{r.employeeName, r.orderCount, r.totalAmount};
         }
         JTable empTable = new JTable(empModel);
         empTable.setRowHeight(28);
@@ -262,6 +313,25 @@ public class ReportPage implements AdminPage {
         empCard.setAlignmentX(JPanel.LEFT_ALIGNMENT);
         empCard.setMaximumSize(new Dimension(Integer.MAX_VALUE, 260));
         panel.add(empCard);
+
+        panel.add(Box.createVerticalStrut(12));
+
+        JButton btnExport = new JButton("Xuất Excel");
+        AppTheme.secondary(btnExport);
+        btnExport.addActionListener(ev -> {
+            LinkedHashMap<String, Object[][]> sheets = new LinkedHashMap<>();
+            sheets.put("Sach ban chay", bestSellerExport);
+            sheets.put("Doanh so nhan vien", empExport);
+            ExcelExportUtil.export(panel, "BaoCao_BanHang", sheets);
+        });
+        JPanel exportRow = new JPanel();
+        exportRow.setLayout(new BoxLayout(exportRow, BoxLayout.X_AXIS));
+        exportRow.setBackground(AppTheme.BACKGROUND);
+        exportRow.setAlignmentX(JPanel.LEFT_ALIGNMENT);
+        exportRow.setMaximumSize(new Dimension(Integer.MAX_VALUE, 32));
+        exportRow.add(btnExport);
+        exportRow.add(Box.createHorizontalGlue());
+        panel.add(exportRow);
 
         panel.add(Box.createVerticalStrut(8));
 

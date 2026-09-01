@@ -6,26 +6,37 @@
 package view.admin;
 import view.shared.*;
 
+import dao.AuthorDAO;
 import dao.BookDAO;
+import dao.CategoryDAO;
+import dao.PublisherDAO;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.border.EmptyBorder;
+import model.Author;
 import model.Book;
+import model.Category;
+import model.Publisher;
 
 public class AddBookPage implements AdminPage {
 
@@ -66,8 +77,8 @@ public class AddBookPage implements AdminPage {
         formCard.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createMatteBorder(0, 4, 0, 0, AppTheme.PRIMARY),
                 new EmptyBorder(24, 24, 24, 24)));
-        formCard.setMaximumSize(new Dimension(620, 420));
-        formCard.setPreferredSize(new Dimension(620, 420));
+        formCard.setMaximumSize(new Dimension(620, 640));
+        formCard.setPreferredSize(new Dimension(620, 640));
         formCard.setAlignmentX(JPanel.LEFT_ALIGNMENT);
 
         GridBagConstraints gbc = new GridBagConstraints();
@@ -81,15 +92,35 @@ public class AddBookPage implements AdminPage {
         JTextField txtPrice = new JTextField();
         formRow(formCard, gbc, 2, "Giá bán: *", txtPrice);
 
+        Publisher[] publishers = new PublisherDAO().searchPublisher("");
+        JComboBox<Publisher> cboPublisher = new JComboBox<>(publishers);
+        formRow(formCard, gbc, 3, "Nhà xuất bản: *", cboPublisher);
+
+        Category[] categories = new CategoryDAO().searchCategory("");
+        JList<Category> lstCategory = new JList<>(categories);
+        lstCategory.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        lstCategory.setVisibleRowCount(4);
+        JScrollPane categoryScroll = new JScrollPane(lstCategory);
+        categoryScroll.setBorder(BorderFactory.createLineBorder(AppTheme.INPUT_BORDER));
+        formRow(formCard, gbc, 4, "Danh mục:", categoryScroll);
+
+        Author[] authors = new AuthorDAO().searchAuthor("");
+        JList<Author> lstAuthor = new JList<>(authors);
+        lstAuthor.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        lstAuthor.setVisibleRowCount(4);
+        JScrollPane authorScroll = new JScrollPane(lstAuthor);
+        authorScroll.setBorder(BorderFactory.createLineBorder(AppTheme.INPUT_BORDER));
+        formRow(formCard, gbc, 5, "Tác giả:", authorScroll);
+
         JTextArea txtDescription = new JTextArea(4, 20);
         txtDescription.setLineWrap(true);
         txtDescription.setWrapStyleWord(true);
         JScrollPane descScroll = new JScrollPane(txtDescription);
         descScroll.setBorder(BorderFactory.createLineBorder(AppTheme.INPUT_BORDER));
-        formRow(formCard, gbc, 3, "Mô tả:", descScroll);
+        formRow(formCard, gbc, 6, "Mô tả:", descScroll);
 
         JTextField txtImage = new JTextField();
-        formRow(formCard, gbc, 4, "Hình ảnh:", txtImage);
+        formRow(formCard, gbc, 7, "Hình ảnh:", txtImage);
 
         top.add(formCard);
         top.add(Box.createVerticalStrut(18));
@@ -110,12 +141,15 @@ public class AddBookPage implements AdminPage {
 
         JButton btnAdd = new JButton("Thêm sách");
         AppTheme.primary(btnAdd);
-        btnAdd.addActionListener(e -> onAdd(shell, txtISBN, txtTitle, txtPrice, txtDescription, txtImage));
+        btnAdd.addActionListener(e -> onAdd(shell, txtISBN, txtTitle, txtPrice, cboPublisher, lstCategory, lstAuthor, txtDescription, txtImage));
         buttonRow.add(btnAdd);
 
         top.add(buttonRow);
 
-        content.add(top, BorderLayout.NORTH);
+        JScrollPane pageScroll = new JScrollPane(top);
+        pageScroll.setBorder(null);
+        pageScroll.getVerticalScrollBar().setUnitIncrement(16);
+        content.add(pageScroll, BorderLayout.CENTER);
         return content;
     }
 
@@ -137,7 +171,8 @@ public class AddBookPage implements AdminPage {
     }
 
     private void onAdd(AdminShellFrm shell, JTextField txtISBN, JTextField txtTitle,
-            JTextField txtPrice, JTextArea txtDescription, JTextField txtImage) {
+            JTextField txtPrice, JComboBox<Publisher> cboPublisher, JList<Category> lstCategory,
+            JList<Author> lstAuthor, JTextArea txtDescription, JTextField txtImage) {
         String isbn = txtISBN.getText().trim();
         String title = txtTitle.getText().trim();
 
@@ -158,6 +193,12 @@ public class AddBookPage implements AdminPage {
             return;
         }
 
+        Publisher selectedPublisher = (Publisher) cboPublisher.getSelectedItem();
+        if (selectedPublisher == null) {
+            JOptionPane.showMessageDialog(shell, "Vui lòng chọn Nhà xuất bản!");
+            return;
+        }
+
         Book book = new Book();
         book.setISBN(isbn);
         book.setTitle(title);
@@ -165,7 +206,16 @@ public class AddBookPage implements AdminPage {
         book.setDescription(txtDescription.getText().trim());
         book.setImage(txtImage.getText().trim());
 
-        String error = new BookDAO().addBook(book);
+        List<Integer> categoryIDs = new ArrayList<>();
+        for (Category c : lstCategory.getSelectedValuesList()) {
+            categoryIDs.add(c.getCategoryID());
+        }
+        List<Integer> authorIDs = new ArrayList<>();
+        for (Author a : lstAuthor.getSelectedValuesList()) {
+            authorIDs.add(a.getAuthorID());
+        }
+
+        String error = new BookDAO().addBook(book, selectedPublisher.getPublisherID(), categoryIDs, authorIDs);
         if (error == null) {
             JOptionPane.showMessageDialog(shell, "Thêm sách thành công!");
             shell.navigateTo(new ManageBooksPage());

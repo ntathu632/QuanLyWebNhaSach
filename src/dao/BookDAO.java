@@ -7,7 +7,9 @@ package dao;
 import model.Book;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -94,29 +96,124 @@ public class BookDAO extends DAO {
     // FR-ADM-01 (Add Book): kiểm tra trùng ISBN trước (Book.ISBN UNIQUE) để trả
     // về thông báo cụ thể thay vì để CSDL từ chối rồi báo lỗi chung chung.
     // Validate giá > 0 (Book.price CHECK) do phía gọi (AddBookPage) đảm nhiệm
-    // trước khi gọi hàm này, theo đúng phân công trong SRS.
-    public String addBook(Book book) {
+    // trước khi gọi hàm này, theo đúng phân công trong SRS. publisherID bắt
+    // buộc (Book.publisherID NOT NULL); categoryIDs/authorIDs có thể rỗng —
+    // gán qua BookCategory/BookAuthor trong cùng transaction với INSERT Book
+    // để không bao giờ để lại 1 Book "mồ côi" nếu nửa sau thất bại.
+    public String addBook(Book book, int publisherID, List<Integer> categoryIDs, List<Integer> authorIDs) {
         try {
+            con.setAutoCommit(false);
+
             PreparedStatement psCheck = con.prepareStatement("SELECT 1 FROM Book WHERE ISBN = ?");
             psCheck.setString(1, book.getISBN());
             if (psCheck.executeQuery().next()) {
+                con.rollback();
                 return "ISBN này đã tồn tại, vui lòng dùng ISBN khác!";
             }
 
-            String sql = "INSERT INTO Book (ISBN, title, price, description, image) VALUES (?,?,?,?,?)";
-            PreparedStatement ps = con.prepareStatement(sql);
+            String sql = "INSERT INTO Book (ISBN, title, price, description, image, publisherID) VALUES (?,?,?,?,?,?)";
+            PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, book.getISBN());
             ps.setString(2, book.getTitle());
             ps.setFloat(3, book.getPrice());
             ps.setString(4, book.getDescription());
             ps.setString(5, book.getImage());
+            ps.setInt(6, publisherID);
             ps.executeUpdate();
+
+            ResultSet keys = ps.getGeneratedKeys();
+            if (!keys.next()) {
+                con.rollback();
+                return "Thêm sách thất bại, vui lòng thử lại!";
+            }
+            int bookID = keys.getInt(1);
+            book.setBookID(bookID);
+            book.setPublisherID(publisherID);
+
+            linkCategories(bookID, categoryIDs);
+            linkAuthors(bookID, authorIDs);
+
+            con.commit();
             return null;
 
         } catch (Exception ex) {
             ex.printStackTrace();
+            try {
+                con.rollback();
+            } catch (Exception rollbackEx) {
+                rollbackEx.printStackTrace();
+            }
             return "Thêm sách thất bại do lỗi hệ thống, vui lòng thử lại!";
+        } finally {
+            try {
+                con.setAutoCommit(true);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
+    }
+
+    private void linkCategories(int bookID, List<Integer> categoryIDs) throws java.sql.SQLException {
+        PreparedStatement ps = con.prepareStatement("INSERT INTO BookCategory (bookID, categoryID) VALUES (?,?)");
+        for (int categoryID : categoryIDs) {
+            ps.setInt(1, bookID);
+            ps.setInt(2, categoryID);
+            ps.executeUpdate();
+        }
+    }
+
+    private void linkAuthors(int bookID, List<Integer> authorIDs) throws java.sql.SQLException {
+        PreparedStatement ps = con.prepareStatement("INSERT INTO BookAuthor (bookID, authorID) VALUES (?,?)");
+        for (int authorID : authorIDs) {
+            ps.setInt(1, bookID);
+            ps.setInt(2, authorID);
+            ps.executeUpdate();
+        }
+    }
+
+    // Dùng để load lại lựa chọn hiện có khi mở EditBookPage.
+    public int getPublisherID(int bookID) {
+        try {
+            PreparedStatement ps = con.prepareStatement("SELECT publisherID FROM Book WHERE bookID = ?");
+            ps.setInt(1, bookID);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("publisherID");
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return 0;
+    }
+
+    public List<Integer> getCategoryIDs(int bookID) {
+        List<Integer> result = new ArrayList<>();
+        try {
+            PreparedStatement ps = con.prepareStatement("SELECT categoryID FROM BookCategory WHERE bookID = ?");
+            ps.setInt(1, bookID);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                result.add(rs.getInt("categoryID"));
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return result;
+    }
+
+    public List<Integer> getAuthorIDs(int bookID) {
+        List<Integer> result = new ArrayList<>();
+        try {
+            PreparedStatement ps = con.prepareStatement("SELECT authorID FROM BookAuthor WHERE bookID = ?");
+            ps.setInt(1, bookID);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                result.add(rs.getInt("authorID"));
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return result;
     }
 
     // FR-ADM-01 (Delete Book): Book.bookID được nhiều bảng khác tham chiếu
@@ -152,22 +249,49 @@ public class BookDAO extends DAO {
         }
     }
 
-    public boolean updateBook(Book book) {
+    public boolean updateBook(Book book, int publisherID, List<Integer> categoryIDs, List<Integer> authorIDs) {
         try {
-            String sql = "UPDATE Book SET ISBN = ?, title = ?, price = ?, description = ?, image = ? WHERE bookID = ?";
+            con.setAutoCommit(false);
+
+            String sql = "UPDATE Book SET ISBN = ?, title = ?, price = ?, description = ?, image = ?, publisherID = ? WHERE bookID = ?";
             PreparedStatement ps = con.prepareStatement(sql);
             ps.setString(1, book.getISBN());
             ps.setString(2, book.getTitle());
             ps.setFloat(3, book.getPrice());
             ps.setString(4, book.getDescription());
             ps.setString(5, book.getImage());
-            ps.setInt(6, book.getBookID());
+            ps.setInt(6, publisherID);
+            ps.setInt(7, book.getBookID());
             ps.executeUpdate();
+            book.setPublisherID(publisherID);
+
+            PreparedStatement psDelCat = con.prepareStatement("DELETE FROM BookCategory WHERE bookID = ?");
+            psDelCat.setInt(1, book.getBookID());
+            psDelCat.executeUpdate();
+            linkCategories(book.getBookID(), categoryIDs);
+
+            PreparedStatement psDelAuthor = con.prepareStatement("DELETE FROM BookAuthor WHERE bookID = ?");
+            psDelAuthor.setInt(1, book.getBookID());
+            psDelAuthor.executeUpdate();
+            linkAuthors(book.getBookID(), authorIDs);
+
+            con.commit();
             return true;
 
         } catch (Exception ex) {
             ex.printStackTrace();
+            try {
+                con.rollback();
+            } catch (Exception rollbackEx) {
+                rollbackEx.printStackTrace();
+            }
             return false;
+        } finally {
+            try {
+                con.setAutoCommit(true);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
     }
 }

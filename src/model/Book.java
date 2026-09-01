@@ -18,6 +18,7 @@ public class Book implements Serializable {
     private float price;
     private String description;
     private String image;
+    private int publisherID;
 
     public Book() {
     }
@@ -77,5 +78,13 @@ public class Book implements Serializable {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public int getPublisherID() {
+        return publisherID;
+    }
+
+    public void setPublisherID(int publisherID) {
+        this.publisherID = publisherID;
     }
 }

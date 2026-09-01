@@ -58,4 +58,9 @@ public class Author implements Serializable {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    @Override
+    public String toString() {
+        return authorName;
+    }
 }
