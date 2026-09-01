@@ -8,14 +8,18 @@ package view.shared;
 
 import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableColumn;
 
 public final class AppTheme {
 
@@ -213,6 +217,31 @@ public final class AppTheme {
      */
     public static void maximize(javax.swing.JFrame frame) {
         frame.setExtendedState(javax.swing.JFrame.MAXIMIZED_BOTH);
+    }
+
+    /**
+     * Căn lề cell và header của 1 cột JTable theo cùng 1 kiểu, và (tùy chọn)
+     * ghim độ rộng cột. Mặc định Swing/FlatLaf căn giữa header nhưng căn trái
+     * nội dung cell, khiến các cột nhìn bị lệch dù biên cột thẳng hàng thật —
+     * dùng hàm này để header và cell luôn cùng 1 alignment.
+     */
+    public static void alignTableColumn(JTable table, int columnIndex, int alignment, int minWidth, int maxWidth) {
+        DefaultTableCellRenderer cellRenderer = new DefaultTableCellRenderer();
+        cellRenderer.setHorizontalAlignment(alignment);
+        TableColumn column = table.getColumnModel().getColumn(columnIndex);
+        column.setCellRenderer(cellRenderer);
+        if (minWidth > 0) {
+            column.setMinWidth(minWidth);
+            column.setMaxWidth(maxWidth);
+        }
+        javax.swing.table.TableCellRenderer defaultHeaderRenderer = table.getTableHeader().getDefaultRenderer();
+        column.setHeaderRenderer((tbl, value, isSelected, hasFocus, row, col) -> {
+            Component c = defaultHeaderRenderer.getTableCellRendererComponent(tbl, value, isSelected, hasFocus, row, col);
+            if (c instanceof JLabel) {
+                ((JLabel) c).setHorizontalAlignment(alignment);
+            }
+            return c;
+        });
     }
 
     private static String hex(Color c) {

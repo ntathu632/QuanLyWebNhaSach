@@ -169,7 +169,7 @@ public class OrderDAO extends DAO {
         List<Order> list = new ArrayList<>();
         try {
             String sql = "SELECT o.orderID, o.orderDate, o.totalAmount, o.shippingAddress, o.status, "
-                    + "c.customerID, c.fullName "
+                    + "c.customerID, c.fullName, c.phone, c.email, c.address "
                     + "FROM Orders o JOIN Customer c ON o.customerID = c.customerID "
                     + "WHERE NOT EXISTS (SELECT 1 FROM Invoice iv WHERE iv.orderID = o.orderID) "
                     + "ORDER BY o.orderDate DESC";
@@ -185,6 +185,9 @@ public class OrderDAO extends DAO {
                 Customer c = new Customer();
                 c.setCustomerID(rs.getInt("customerID"));
                 c.setFullName(rs.getString("fullName"));
+                c.setPhone(rs.getString("phone"));
+                c.setEmail(rs.getString("email"));
+                c.setAddress(rs.getString("address"));
                 o.setCustomer(c);
                 list.add(o);
             }
