@@ -14,6 +14,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 
 public class DashboardPage implements AdminPage {
@@ -50,7 +51,10 @@ public class DashboardPage implements AdminPage {
         top.add(Box.createVerticalStrut(18));
         top.add(buildChartsGrid());
 
-        content.add(top, BorderLayout.NORTH);
+        JScrollPane pageScroll = new JScrollPane(top);
+        pageScroll.setBorder(null);
+        pageScroll.getVerticalScrollBar().setUnitIncrement(16);
+        content.add(pageScroll, BorderLayout.CENTER);
         return content;
     }
 

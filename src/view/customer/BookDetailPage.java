@@ -151,7 +151,10 @@ public class BookDetailPage implements CustomerPage {
         top.add(Box.createVerticalStrut(20));
         top.add(buildReviewSection(shell));
 
-        content.add(top, BorderLayout.NORTH);
+        JScrollPane pageScroll = new JScrollPane(top);
+        pageScroll.setBorder(null);
+        pageScroll.getVerticalScrollBar().setUnitIncrement(16);
+        content.add(pageScroll, BorderLayout.CENTER);
         return content;
     }
 

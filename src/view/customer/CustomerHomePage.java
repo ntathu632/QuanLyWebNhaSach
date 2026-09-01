@@ -26,6 +26,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 import model.Book;
 import model.Category;
@@ -60,7 +61,13 @@ public class CustomerHomePage implements CustomerPage {
         body.add(Box.createVerticalStrut(28));
         body.add(buildFeaturedBooks(shell));
 
-        return body;
+        JPanel content = new JPanel(new BorderLayout());
+        content.setBackground(AppTheme.BACKGROUND);
+        JScrollPane scroll = new JScrollPane(body);
+        scroll.setBorder(null);
+        scroll.getVerticalScrollBar().setUnitIncrement(16);
+        content.add(scroll, BorderLayout.CENTER);
+        return content;
     }
 
     private JPanel buildHeroBanner(CustomerShellFrm shell) {

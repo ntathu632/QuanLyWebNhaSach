@@ -161,6 +161,18 @@ Trạng thái: 🔴 Lỗi | 🟡 Cần chú ý | 🟢 OK
 
 🟢 **ĐÃ FIX:** chị thu phát hiện khi tự bấm vào 1 sách xem chi tiết, card thông tin sách + card đánh giá đều bị ghim bên trái, bỏ trống hẳn nửa cửa sổ bên phải (cùng gốc bug với Admin Add/Edit Book và Customer AccountPage — dùng `LEFT_ALIGNMENT` thay vì canh giữa trong 1 `BoxLayout` full-width). Đã sửa `BookDetailPage.java`: đổi cả 2 card sang `CENTER_ALIGNMENT`, nới rộng 900→1000px, tăng độ rộng khối mô tả (480→560px) cho cân đối hơn với card rộng hơn. Verify bằng ảnh chụp thật trên sách "Clean Code" — card giờ nằm giữa, không còn trống hẳn 1 bên. Không exception trong `app_err.log`.
 
+## Customer > Tài khoản của tôi (làm lại theo mẫu tham khảo)
+
+🟢 **Viết lại theo mẫu layout chị thu gửi** ("Manage Account" — sidebar phụ + khối hồ sơ + từng mục có nút Sửa riêng): chỉ đưa vào dữ liệu thật có trong DB (Customer.fullName/phone/email/address, đơn hàng qua OrderDAO), không bịa các mục mẫu không có thật (điểm thưởng, thú cưng, gói thành viên, nhiều địa chỉ...).
+- Sidebar trong trang: "Quản lý tài khoản" (đang ở), "Lịch sử đơn hàng", "Đổi mật khẩu", "Đăng xuất" — đều là luồng có thật, tái dùng `OrderHistoryPage`/`ChangePasswordDialog`/logout sẵn có (thêm `CustomerShellFrm.logout()` public để dùng chung với navbar).
+- Mỗi trường (Mật khẩu, Họ tên, SĐT, Email, Địa chỉ) là 1 hàng riêng, bấm "Sửa" chuyển sang ô nhập tại chỗ (`CardLayout` view/edit) + Lưu/Hủy, thay vì gộp chung 1 form dài.
+
+🔴 **Lỗi phát hiện ngay sau đó, đã fix:**
+1. Thiếu `JScrollPane` bao ngoài phần nội dung chính → khi màn hình không đủ cao, các hàng dưới (Địa chỉ, có lúc cả Email) bị cắt mất hẳn, không cuộn được. Phát hiện ra đây là **lỗi lặp ở nhiều trang khác** (chị thu nhận xét "hầu hết các trang đều bị fix cứng màn hình"). Đã rà soát và sửa thêm ở: `CustomerHomePage`, `BookDetailPage`, `PaymentPage`, `CheckoutPage` (Customer) và `DashboardPage`, `ManageBooksPage` (Admin) — tất cả trước đó dùng `content.add(top, BorderLayout.NORTH)` không bọc scroll. Các trang dạng "header nhỏ + bảng JTable ở CENTER" (ManageAccountPage, OrderHistoryPage, ReportPage...) đã an toàn từ trước vì JTable tự có scroll riêng, không cần sửa.
+2. Mỗi hàng thông tin đặt `setMaximumSize` cứng 60px nhưng nội dung (nhãn + giá trị in đậm) cần hơn 60px → chữ bị cắt mất nửa dưới. Tăng lên 78px + thêm khoảng cách 4px giữa nhãn và giá trị.
+3. Mật khẩu hiển thị chấm tròn "••••••••••" — đổi thành dấu `**********` theo đúng yêu cầu.
+- Verify lại bằng ảnh chụp thật: đủ 5 hàng, cuộn được, chữ không còn bị cắt, mật khẩu hiển thị đúng dấu `*`. Không exception trong `app_err.log`.
+
 ---
 
 *File này để theo dõi tiến độ test thủ công qua GUI thật, không phải checklist code review tĩnh.*

@@ -86,7 +86,10 @@ public class ManageBooksPage implements AdminPage {
         top.add(Box.createVerticalStrut(18));
         top.add(buildPreviewTableCard(shell, books));
 
-        content.add(top, BorderLayout.NORTH);
+        JScrollPane pageScroll = new JScrollPane(top);
+        pageScroll.setBorder(null);
+        pageScroll.getVerticalScrollBar().setUnitIncrement(16);
+        content.add(pageScroll, BorderLayout.CENTER);
         return content;
     }
 

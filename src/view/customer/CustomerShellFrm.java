@@ -74,6 +74,13 @@ public class CustomerShellFrm extends javax.swing.JFrame {
         userLabel.setText("Xin chào, " + name);
     }
 
+    /** Đăng xuất — dùng chung cho icon trên navbar và sidebar trong AccountPage. */
+    public void logout() {
+        new DAO();
+        (new LoginFrm()).setVisible(true);
+        this.dispose();
+    }
+
     private void initShell() {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setBackground(AppTheme.BACKGROUND);
@@ -205,11 +212,7 @@ public class CustomerShellFrm extends javax.swing.JFrame {
         btnLogout.setToolTipText("Đăng xuất");
         btnLogout.putClientProperty("FlatLaf.style",
                 "background: #4F5D42; hoverBackground: #5C6E4F; pressedBackground: #3F4B35; borderWidth: 0; arc: 8; margin: 6,10,6,10");
-        btnLogout.addActionListener(e -> {
-            new DAO();
-            (new LoginFrm()).setVisible(true);
-            this.dispose();
-        });
+        btnLogout.addActionListener(e -> logout());
         right.add(btnLogout);
 
         navbar.add(right, BorderLayout.EAST);

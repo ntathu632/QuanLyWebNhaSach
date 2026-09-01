@@ -21,6 +21,7 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import model.Order;
@@ -108,7 +109,10 @@ public class CheckoutPage implements CustomerPage {
 
         top.add(buttonRow);
 
-        content.add(top, BorderLayout.NORTH);
+        JScrollPane pageScroll = new JScrollPane(top);
+        pageScroll.setBorder(null);
+        pageScroll.getVerticalScrollBar().setUnitIncrement(16);
+        content.add(pageScroll, BorderLayout.CENTER);
         return content;
     }
 
