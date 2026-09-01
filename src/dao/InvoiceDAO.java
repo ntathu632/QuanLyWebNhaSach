@@ -25,7 +25,9 @@ public class InvoiceDAO extends DAO {
 
     // Trả về null nếu thành công, hoặc thông báo lỗi cụ thể (thiếu tồn kho,
     // hoặc lỗi hệ thống) — theo đúng pattern String-error đã dùng ở các DAO khác.
-    public String createInStoreSale(int customerID, List<OrderDetail> details, String paymentMethod, int employeeID) {
+    // outOrderId[0] được set = orderID vừa tạo khi thành công — cần cho
+    // InStoreSalePage in hóa đơn ngay sau khi lập (số hóa đơn trên biên lai).
+    public String createInStoreSale(int customerID, List<OrderDetail> details, String paymentMethod, int employeeID, int[] outOrderId) {
         if (details == null || details.isEmpty()) {
             return "Hóa đơn chưa có sách nào!";
         }
@@ -106,6 +108,9 @@ public class InvoiceDAO extends DAO {
             psPayment.executeUpdate();
 
             con.commit();
+            if (outOrderId != null && outOrderId.length > 0) {
+                outOrderId[0] = orderID;
+            }
             return null;
 
         } catch (Exception ex) {

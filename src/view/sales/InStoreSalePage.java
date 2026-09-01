@@ -22,7 +22,9 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -34,6 +36,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
@@ -331,9 +334,10 @@ public class InStoreSalePage implements SalesPage {
                 customer = new CustomerDAO().getOrCreateWalkInCustomer();
             }
             String paymentMethod = (String) cboPaymentMethod.getSelectedItem();
-            String error = new InvoiceDAO().createInStoreSale(customer.getCustomerID(), cartItems, paymentMethod, shell.employee.getEmployeeID());
+            int[] outOrderId = new int[1];
+            String error = new InvoiceDAO().createInStoreSale(customer.getCustomerID(), cartItems, paymentMethod, shell.employee.getEmployeeID(), outOrderId);
             if (error == null) {
-                JOptionPane.showMessageDialog(shell, "Lập hóa đơn thành công! Tổng tiền: " + totalLabel.getText().replace("Tổng cộng: ", ""));
+                showReceiptDialog(shell, outOrderId[0], customer, shell.employee.getFullName(), paymentMethod, cartItems);
                 shell.navigateTo(new InStoreSalePage());
             } else {
                 JOptionPane.showMessageDialog(shell, error);
@@ -407,6 +411,63 @@ public class InStoreSalePage implements SalesPage {
 
     private static String escape(String s) {
         return s == null ? "" : s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
+    }
+
+    /**
+     * Hiện biên lai vừa lập (số hóa đơn = orderID) trong 1 khung chữ đơn cách
+     * (monospace) để cột thẳng hàng, kèm nút in trực tiếp bằng
+     * JTextArea.print() — mở hộp thoại máy in hệ thống, không cần thư viện
+     * PDF/print riêng.
+     */
+    private void showReceiptDialog(SalesShellFrm shell, int orderID, Customer customer, String employeeName,
+            String paymentMethod, List<OrderDetail> items) {
+        JTextArea receipt = new JTextArea(buildReceiptText(orderID, customer, employeeName, paymentMethod, items));
+        receipt.setEditable(false);
+        receipt.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 13));
+        receipt.setBackground(Color.WHITE);
+        receipt.setBorder(new EmptyBorder(10, 12, 10, 12));
+
+        JScrollPane scroll = new JScrollPane(receipt);
+        scroll.setPreferredSize(new Dimension(420, 380));
+        scroll.setBorder(BorderFactory.createLineBorder(AppTheme.INPUT_BORDER));
+
+        Object[] options = {"In hóa đơn", "Đóng"};
+        int choice = JOptionPane.showOptionDialog(shell, scroll, "Lập hóa đơn thành công! Hóa đơn #" + orderID,
+                JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+        if (choice == 0) {
+            try {
+                receipt.print();
+            } catch (java.awt.print.PrinterException ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(shell, "In hóa đơn thất bại: " + ex.getMessage());
+            }
+        }
+    }
+
+    private String buildReceiptText(int orderID, Customer customer, String employeeName,
+            String paymentMethod, List<OrderDetail> items) {
+        SimpleDateFormat fmt = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+        StringBuilder sb = new StringBuilder();
+        sb.append("          BOOKSHOP - HÓA ĐƠN BÁN HÀNG\n");
+        sb.append("========================================\n");
+        sb.append("Hóa đơn số: #").append(orderID).append("\n");
+        sb.append("Ngày lập  : ").append(fmt.format(new Date())).append("\n");
+        sb.append("Nhân viên : ").append(employeeName == null ? "-" : employeeName).append("\n");
+        sb.append("Khách hàng: ").append(customer.getFullName())
+                .append(customer.getPhone() == null ? "" : " (" + customer.getPhone() + ")").append("\n");
+        sb.append("----------------------------------------\n");
+        float total = 0f;
+        for (OrderDetail d : items) {
+            sb.append(String.format("%-22.22s %3d %12s%n",
+                    d.getBook().getTitle(), d.getQuantity(), String.format("%,.0f", d.getSubtotal())));
+            total += d.getSubtotal();
+        }
+        sb.append("----------------------------------------\n");
+        sb.append(String.format("%-26s %12s%n", "Tổng cộng:", String.format("%,.0f₫", total)));
+        sb.append("Thanh toán: ").append(paymentMethod).append("\n");
+        sb.append("========================================\n");
+        sb.append("           Cảm ơn quý khách!\n");
+        return sb.toString();
     }
 
     private Customer pickCustomer(SalesShellFrm shell) {
