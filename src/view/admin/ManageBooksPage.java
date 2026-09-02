@@ -28,6 +28,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import model.Book;
@@ -263,6 +264,10 @@ public class ManageBooksPage implements AdminPage {
         table.setShowGrid(true);
         table.setGridColor(AppTheme.TABLE_GRID);
         table.getTableHeader().setReorderingAllowed(false);
+        AppTheme.alignTableColumn(table, 0, SwingConstants.CENTER, 50, 50);
+        AppTheme.alignTableColumn(table, 1, SwingConstants.CENTER, 140, 140);
+        AppTheme.alignTableColumn(table, 2, SwingConstants.LEFT, 0, 0);
+        AppTheme.alignTableColumn(table, 3, SwingConstants.RIGHT, 110, 110);
         table.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {

@@ -33,6 +33,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import model.Account;
@@ -105,6 +106,10 @@ public class ManageAccountPage implements AdminPage {
         table.setShowGrid(true);
         table.setGridColor(AppTheme.TABLE_GRID);
         table.getTableHeader().setReorderingAllowed(false);
+        AppTheme.alignTableColumn(table, 0, SwingConstants.LEFT, 0, 0);
+        AppTheme.alignTableColumn(table, 1, SwingConstants.LEFT, 200, 200);
+        AppTheme.alignTableColumn(table, 2, SwingConstants.CENTER, 140, 140);
+        AppTheme.alignTableColumn(table, 3, SwingConstants.CENTER, 110, 110);
 
         final List<Account> currentItems = new ArrayList<>();
 

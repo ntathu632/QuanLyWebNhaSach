@@ -28,6 +28,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -161,6 +162,10 @@ public class ReportPage implements AdminPage {
             table.setRowHeight(28);
             table.setGridColor(AppTheme.TABLE_GRID);
             table.getTableHeader().setReorderingAllowed(false);
+            AppTheme.alignTableColumn(table, 0, SwingConstants.CENTER, 80, 80);
+            AppTheme.alignTableColumn(table, 1, SwingConstants.CENTER, 150, 150);
+            AppTheme.alignTableColumn(table, 2, SwingConstants.LEFT, 0, 0);
+            AppTheme.alignTableColumn(table, 3, SwingConstants.RIGHT, 130, 130);
 
             JPanel tableCard = cardWrap(table, "Chi tiết đơn hàng trong khoảng thời gian");
             top.add(tableCard, BorderLayout.CENTER);
@@ -221,6 +226,10 @@ public class ReportPage implements AdminPage {
         table.setRowHeight(28);
         table.setGridColor(AppTheme.TABLE_GRID);
         table.getTableHeader().setReorderingAllowed(false);
+        AppTheme.alignTableColumn(table, 0, SwingConstants.LEFT, 0, 0);
+        AppTheme.alignTableColumn(table, 1, SwingConstants.CENTER, 90, 90);
+        AppTheme.alignTableColumn(table, 2, SwingConstants.CENTER, 90, 90);
+        AppTheme.alignTableColumn(table, 3, SwingConstants.RIGHT, 140, 140);
 
         DefaultTableCellRenderer lowStockRenderer = new DefaultTableCellRenderer() {
             @Override
@@ -281,6 +290,8 @@ public class ReportPage implements AdminPage {
         bestSellerTable.setRowHeight(28);
         bestSellerTable.setGridColor(AppTheme.TABLE_GRID);
         bestSellerTable.getTableHeader().setReorderingAllowed(false);
+        AppTheme.alignTableColumn(bestSellerTable, 0, SwingConstants.LEFT, 0, 0);
+        AppTheme.alignTableColumn(bestSellerTable, 1, SwingConstants.CENTER, 160, 160);
 
         JPanel bestSellerCard = cardWrap(bestSellerTable, "Sách bán chạy (top 10, tính theo số lượng trong mọi đơn hàng)");
         bestSellerCard.setAlignmentX(JPanel.LEFT_ALIGNMENT);
@@ -308,6 +319,9 @@ public class ReportPage implements AdminPage {
         empTable.setRowHeight(28);
         empTable.setGridColor(AppTheme.TABLE_GRID);
         empTable.getTableHeader().setReorderingAllowed(false);
+        AppTheme.alignTableColumn(empTable, 0, SwingConstants.LEFT, 0, 0);
+        AppTheme.alignTableColumn(empTable, 1, SwingConstants.CENTER, 130, 130);
+        AppTheme.alignTableColumn(empTable, 2, SwingConstants.RIGHT, 150, 150);
 
         JPanel empCard = cardWrap(empTable, "Doanh số theo nhân viên xử lý (theo hóa đơn — Invoice)");
         empCard.setAlignmentX(JPanel.LEFT_ALIGNMENT);

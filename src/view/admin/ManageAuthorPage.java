@@ -22,6 +22,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import model.Author;
@@ -87,6 +88,10 @@ public class ManageAuthorPage implements AdminPage {
         table.setShowGrid(true);
         table.setGridColor(AppTheme.TABLE_GRID);
         table.getTableHeader().setReorderingAllowed(false);
+        AppTheme.alignTableColumn(table, 0, SwingConstants.CENTER, 50, 50);
+        AppTheme.alignTableColumn(table, 1, SwingConstants.LEFT, 0, 0);
+        AppTheme.alignTableColumn(table, 2, SwingConstants.LEFT, 140, 140);
+        AppTheme.alignTableColumn(table, 3, SwingConstants.LEFT, 260, 260);
 
         final List<Author> currentItems = new ArrayList<>();
 

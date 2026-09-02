@@ -25,6 +25,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import model.Category;
@@ -90,6 +91,9 @@ public class ManageCategoryPage implements AdminPage {
         table.setShowGrid(true);
         table.setGridColor(AppTheme.TABLE_GRID);
         table.getTableHeader().setReorderingAllowed(false);
+        AppTheme.alignTableColumn(table, 0, SwingConstants.CENTER, 50, 50);
+        AppTheme.alignTableColumn(table, 1, SwingConstants.LEFT, 0, 0);
+        AppTheme.alignTableColumn(table, 2, SwingConstants.LEFT, 300, 300);
 
         final List<Category> currentItems = new ArrayList<>();
 

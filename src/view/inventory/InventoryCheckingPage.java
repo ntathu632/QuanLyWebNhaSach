@@ -19,6 +19,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import model.Inventory;
@@ -72,6 +73,8 @@ public class InventoryCheckingPage implements InventoryPage {
         table.setRowHeight(28);
         table.setGridColor(AppTheme.TABLE_GRID);
         table.getTableHeader().setReorderingAllowed(false);
+        AppTheme.alignTableColumn(table, 0, SwingConstants.LEFT, 0, 0);
+        AppTheme.alignTableColumn(table, 1, SwingConstants.CENTER, 160, 160);
 
         Runnable reload = () -> {
             List<Inventory> rows = inventoryDAO.allInventory();
