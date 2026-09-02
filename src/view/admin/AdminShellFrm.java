@@ -137,8 +137,9 @@ public class AdminShellFrm extends javax.swing.JFrame {
         addNavItem(sidebar, "category", FlatIcon.Kind.TAG, "Quản lý danh mục", () -> navigateTo(new ManageCategoryPage()));
         addNavItem(sidebar, "author", FlatIcon.Kind.PEN, "Quản lý tác giả", () -> navigateTo(new ManageAuthorPage()));
         addNavItem(sidebar, "publisher", FlatIcon.Kind.BUILDING, "Quản lý nhà xuất bản", () -> navigateTo(new ManagePublisherPage()));
-        addNavItem(sidebar, "accounts", FlatIcon.Kind.USER, "Quản lý tài khoản", () -> navigateTo(new ManageAccountPage()));
+        addNavItem(sidebar, "customers", FlatIcon.Kind.USER, "Quản lý khách hàng", () -> navigateTo(new ManageCustomerPage()));
         addNavItem(sidebar, "employees", FlatIcon.Kind.USERS, "Quản lý nhân viên", () -> navigateTo(new ManageEmployeePage()));
+        addNavItem(sidebar, "accounts", FlatIcon.Kind.SEARCH, "Quản lý tài khoản", () -> navigateTo(new ManageAccountPage()));
 
         sidebar.add(sidebarSeparator());
         sidebar.add(sidebarSectionLabel("BÁO CÁO"));

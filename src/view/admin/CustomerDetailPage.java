@@ -28,6 +28,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -43,15 +44,26 @@ public class CustomerDetailPage implements AdminPage {
 
     private final Customer customer;
     private final Account account;
+    private final AdminPage backTarget;
+    private final String navKey;
 
     public CustomerDetailPage(Customer customer, Account account) {
+        this(customer, account, new ManageAccountPage(), "accounts");
+    }
+
+    // Cho phép mở từ ManageCustomerPage (Quản lý khách hàng) thay vì luôn
+    // quay về ManageAccountPage — nút "quay lại" và mục sidebar tô sáng phải
+    // khớp đúng nơi đã điều hướng tới đây.
+    public CustomerDetailPage(Customer customer, Account account, AdminPage backTarget, String navKey) {
         this.customer = customer;
         this.account = account;
+        this.backTarget = backTarget;
+        this.navKey = navKey;
     }
 
     @Override
     public String navKey() {
-        return "accounts";
+        return navKey;
     }
 
     @Override
@@ -61,7 +73,7 @@ public class CustomerDetailPage implements AdminPage {
 
     @Override
     public AdminPage backTarget() {
-        return new ManageAccountPage();
+        return backTarget;
     }
 
     @Override
@@ -118,9 +130,10 @@ public class CustomerDetailPage implements AdminPage {
         card.setAlignmentX(JPanel.LEFT_ALIGNMENT);
         card.setMaximumSize(new Dimension(Integer.MAX_VALUE, 130));
 
-        card.add(infoField("Username", account.getUsername()));
+        card.add(infoField("Username", account == null ? "— (chưa có tài khoản)" : account.getUsername()));
         card.add(infoField("Họ tên", customer.getFullName()));
-        card.add(infoField("Trạng thái tài khoản", "Active".equals(account.getStatus()) ? "Đang hoạt động" : "Đã khóa"));
+        card.add(infoField("Trạng thái tài khoản", account == null ? "—"
+                : ("Active".equals(account.getStatus()) ? "Đang hoạt động" : "Đã khóa")));
         card.add(infoField("Email", nullToDash(customer.getEmail())));
         card.add(infoField("Số điện thoại", nullToDash(customer.getPhone())));
         card.add(infoField("Địa chỉ", nullToDash(customer.getAddress())));
@@ -231,12 +244,17 @@ public class CustomerDetailPage implements AdminPage {
         table.setRowHeight(28);
         table.setGridColor(AppTheme.TABLE_GRID);
         table.getTableHeader().setReorderingAllowed(false);
+        AppTheme.alignTableColumn(table, 0, SwingConstants.CENTER, 80, 80);
+        AppTheme.alignTableColumn(table, 1, SwingConstants.CENTER, 150, 150);
+        AppTheme.alignTableColumn(table, 2, SwingConstants.RIGHT, 130, 130);
+        AppTheme.alignTableColumn(table, 3, SwingConstants.CENTER, 120, 120);
         table.getColumnModel().getColumn(3).setCellRenderer(new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable t, Object value, boolean isSelected,
                     boolean hasFocus, int row, int column) {
                 Component c = super.getTableCellRendererComponent(t, value, isSelected, hasFocus, row, column);
                 c.setForeground(statusColor(String.valueOf(value)));
+                setHorizontalAlignment(CENTER);
                 return c;
             }
         });
@@ -300,6 +318,10 @@ public class CustomerDetailPage implements AdminPage {
         table.setRowHeight(28);
         table.setGridColor(AppTheme.TABLE_GRID);
         table.getTableHeader().setReorderingAllowed(false);
+        AppTheme.alignTableColumn(table, 0, SwingConstants.LEFT, 0, 0);
+        AppTheme.alignTableColumn(table, 1, SwingConstants.CENTER, 80, 80);
+        AppTheme.alignTableColumn(table, 2, SwingConstants.LEFT, 220, 220);
+        AppTheme.alignTableColumn(table, 3, SwingConstants.CENTER, 150, 150);
 
         JScrollPane scroll = new JScrollPane(table);
         scroll.setBorder(BorderFactory.createLineBorder(AppTheme.INPUT_BORDER));
@@ -338,6 +360,10 @@ public class CustomerDetailPage implements AdminPage {
         }
         JTable table = new JTable(model);
         table.setRowHeight(26);
+        AppTheme.alignTableColumn(table, 0, SwingConstants.LEFT, 0, 0);
+        AppTheme.alignTableColumn(table, 1, SwingConstants.CENTER, 80, 80);
+        AppTheme.alignTableColumn(table, 2, SwingConstants.RIGHT, 100, 100);
+        AppTheme.alignTableColumn(table, 3, SwingConstants.RIGHT, 100, 100);
         panel.add(new JScrollPane(table), BorderLayout.CENTER);
 
         JOptionPane.showMessageDialog(shell, panel, "Chi tiết đơn hàng #" + order.getOrderID(), JOptionPane.PLAIN_MESSAGE);

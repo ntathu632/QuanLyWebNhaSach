@@ -148,6 +148,29 @@ public class AccountDAO extends DAO {
         return null;
     }
 
+    // Lấy Account gắn với 1 Customer (chiều ngược của getCustomerByUsername) —
+    // cần cho ManageCustomerPage khi mở "Xem chi tiết" từ 1 dòng Customer thay
+    // vì từ 1 dòng Account. Trả về null nếu Customer này chưa có Account (ví
+    // dụ "Khách vãng lai" hoặc khách được Sales tạo nhanh tại quầy).
+    public Account getAccountForCustomer(int customerID) {
+        try {
+            PreparedStatement ps = con.prepareStatement(
+                    "SELECT username, role, status FROM Account WHERE customerID = ?");
+            ps.setInt(1, customerID);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                Account a = new Account();
+                a.setUsername(rs.getString("username"));
+                a.setRole(rs.getString("role"));
+                a.setStatus(rs.getString("status"));
+                return a;
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
     // FR-COM-02 (Change Password) — chung cho mọi actor có tài khoản. Xác
     // minh lại mật khẩu hiện tại trực tiếp trong câu UPDATE (WHERE password
     // = mật khẩu cũ) để chỉ đổi được đúng 1 dòng nếu khớp, tránh phải SELECT
