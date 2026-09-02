@@ -17,6 +17,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import model.Customer;
@@ -72,6 +73,11 @@ public class SearchCustomerPage implements SalesPage {
         table.setRowHeight(28);
         table.setGridColor(AppTheme.TABLE_GRID);
         table.getTableHeader().setReorderingAllowed(false);
+        AppTheme.alignTableColumn(table, 0, SwingConstants.CENTER, 60, 60);
+        AppTheme.alignTableColumn(table, 1, SwingConstants.LEFT, 0, 0);
+        AppTheme.alignTableColumn(table, 2, SwingConstants.CENTER, 130, 130);
+        AppTheme.alignTableColumn(table, 3, SwingConstants.LEFT, 200, 200);
+        AppTheme.alignTableColumn(table, 4, SwingConstants.LEFT, 220, 220);
 
         Runnable doSearch = () -> {
             Customer[] found = new CustomerDAO().searchCustomer(txtKeyword.getText().trim());

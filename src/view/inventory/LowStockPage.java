@@ -16,6 +16,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -62,6 +63,10 @@ public class LowStockPage implements InventoryPage {
         table.setRowHeight(28);
         table.setGridColor(AppTheme.TABLE_GRID);
         table.getTableHeader().setReorderingAllowed(false);
+        AppTheme.alignTableColumn(table, 0, SwingConstants.LEFT, 0, 0);
+        AppTheme.alignTableColumn(table, 1, SwingConstants.CENTER, 90, 90);
+        AppTheme.alignTableColumn(table, 2, SwingConstants.CENTER, 90, 90);
+        AppTheme.alignTableColumn(table, 3, SwingConstants.RIGHT, 140, 140);
         table.getColumnModel().getColumn(3).setCellRenderer(new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable t, Object value, boolean isSelected,
