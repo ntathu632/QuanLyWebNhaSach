@@ -449,6 +449,64 @@ GO
 
 
 /*
+   15. SUPPLIER
+   Không có trong Entity Class.drawio gốc — bổ sung để nhân viên kho có thể
+   ghi nhận nhập/trả hàng gắn với 1 nhà cung cấp cụ thể, khác Publisher (đơn
+   vị xuất bản, không phải nơi kho nhập hàng thực tế).
+*/
+
+CREATE TABLE Supplier (
+    supplierID INT IDENTITY(1,1) PRIMARY KEY,
+    supplierName NVARCHAR(150) NOT NULL,
+    address NVARCHAR(255) NULL,
+    phone VARCHAR(20) NULL,
+    email VARCHAR(150) NULL
+);
+GO
+
+
+/*
+   16. STOCKTRANSACTION
+   Không có trong Entity Class.drawio gốc — bổ sung để nhân viên kho có nhật
+   ký nhập/trả hàng (trước đây Inventory.importQuantity chỉ là 1 số cộng dồn,
+   không lưu lại từng lần nhập là ai/khi nào/bao nhiêu/từ nhà cung cấp nào).
+   Dùng chung 1 bảng cho cả 2 chiều (type='Import'/'Return') thay vì 2 bảng
+   riêng vì cùng hình dạng dữ liệu, chỉ khác chiều tác động lên tồn kho.
+*/
+
+CREATE TABLE StockTransaction (
+    stockTransactionID INT IDENTITY(1,1) PRIMARY KEY,
+    bookID INT NOT NULL,
+    supplierID INT NOT NULL,
+    employeeID INT NOT NULL,
+    type VARCHAR(20) NOT NULL,
+    quantity INT NOT NULL,
+    transactionDate DATETIME2 NOT NULL
+        CONSTRAINT DF_StockTransaction_Date DEFAULT SYSDATETIME(),
+    note NVARCHAR(255) NULL,
+
+    CONSTRAINT CK_StockTransaction_Type
+        CHECK (type IN ('Import', 'Return')),
+
+    CONSTRAINT CK_StockTransaction_Quantity
+        CHECK (quantity > 0),
+
+    CONSTRAINT FK_StockTransaction_Book
+        FOREIGN KEY (bookID)
+        REFERENCES Book(bookID),
+
+    CONSTRAINT FK_StockTransaction_Supplier
+        FOREIGN KEY (supplierID)
+        REFERENCES Supplier(supplierID),
+
+    CONSTRAINT FK_StockTransaction_Employee
+        FOREIGN KEY (employeeID)
+        REFERENCES Employee(employeeID)
+);
+GO
+
+
+/*
    INDEXES
  */
 
@@ -506,6 +564,18 @@ VALUES
 (N'Penguin Random House', N'New York, USA', '+12127829000', 'support@penguinrandomhouse.com'),
 (N'HarperCollins', N'London, United Kingdom', '+442087417070', 'contact@harpercollins.co.uk'),
 (N'O''Reilly Media', N'California, USA', '+17078277000', 'support@oreilly.com');
+GO
+
+/* =========================
+   INSERT SUPPLIER
+   ========================= */
+
+INSERT INTO Supplier (supplierName, address, phone, email)
+VALUES
+(N'Công ty Phát hành sách Fahasa', N'60-62 Lê Lợi, Quận 1, TP.HCM', '02838222567', 'lienhe@fahasa.com'),
+(N'Công ty CP Văn hóa Phương Nam', N'940 Ba Tháng Hai, Quận 11, TP.HCM', '02839575195', 'contact@pnc.com.vn'),
+(N'Công ty Sách Alpha Books', N'176 Thái Hà, Đống Đa, Hà Nội', '02435730407', 'info@alphabooks.vn'),
+(N'Công ty TNHH Thái Hà Books', N'119 C5 Từ Liêm, Hà Nội', '02462701734', 'lienhe@thaihabooks.com');
 GO
 
 /* =========================

@@ -113,7 +113,13 @@ public class InventoryShellFrm extends javax.swing.JFrame {
 
         addNavItem(sidebar, "lowstock", FlatIcon.Kind.CHART, "Sách sắp hết hàng", () -> navigateTo(new LowStockPage()));
         addNavItem(sidebar, "import", FlatIcon.Kind.PLUS, "Nhập sách", () -> navigateTo(new ImportBooksPage()));
+        addNavItem(sidebar, "return", FlatIcon.Kind.TRASH, "Xuất trả NCC", () -> navigateTo(new ReturnToSupplierPage()));
         addNavItem(sidebar, "checking", FlatIcon.Kind.BOOK, "Kiểm kê kho", () -> navigateTo(new InventoryCheckingPage()));
+        addNavItem(sidebar, "history", FlatIcon.Kind.RECEIPT, "Lịch sử nhập/trả", () -> navigateTo(new StockHistoryPage()));
+
+        sidebar.add(sidebarSeparator());
+        sidebar.add(sidebarSectionLabel("TRA CỨU"));
+        addNavItem(sidebar, "books", FlatIcon.Kind.SEARCH, "Tra cứu sách", () -> navigateTo(new InventorySearchBookPage()));
 
         sidebar.add(Box.createVerticalGlue());
         sidebar.add(sidebarSeparator());

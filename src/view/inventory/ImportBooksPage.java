@@ -8,14 +8,20 @@ import view.shared.*;
 
 import dao.BookDAO;
 import dao.InventoryDAO;
+import dao.StockTransactionDAO;
+import dao.SupplierDAO;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -26,6 +32,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import model.Book;
+import model.Supplier;
 
 public class ImportBooksPage implements InventoryPage {
 
@@ -123,14 +130,49 @@ public class ImportBooksPage implements InventoryPage {
                 return;
             }
             Book selected = currentBooks.get(row);
-            String input = JOptionPane.showInputDialog(shell,
-                    "Số lượng nhập kho cho \"" + selected.getTitle() + "\":", "1");
-            if (input == null) {
+
+            Supplier[] suppliers = new SupplierDAO().searchSupplier("");
+            if (suppliers.length == 0) {
+                JOptionPane.showMessageDialog(shell, "Chưa có nhà cung cấp nào! Vui lòng nhờ Admin thêm nhà cung cấp trước.");
                 return;
             }
+
+            JPanel panel = new JPanel(new GridBagLayout());
+            GridBagConstraints gbc = new GridBagConstraints();
+            gbc.insets = new Insets(6, 0, 6, 10);
+            gbc.anchor = GridBagConstraints.WEST;
+
+            JTextField txtQuantity = new JTextField("1", 18);
+            JComboBox<Supplier> cboSupplier = new JComboBox<>(suppliers);
+            JTextField txtNote = new JTextField(18);
+
+            gbc.gridx = 0;
+            gbc.gridy = 0;
+            panel.add(new JLabel("Số lượng nhập: *"), gbc);
+            gbc.gridx = 1;
+            panel.add(txtQuantity, gbc);
+
+            gbc.gridx = 0;
+            gbc.gridy = 1;
+            panel.add(new JLabel("Nhà cung cấp: *"), gbc);
+            gbc.gridx = 1;
+            panel.add(cboSupplier, gbc);
+
+            gbc.gridx = 0;
+            gbc.gridy = 2;
+            panel.add(new JLabel("Ghi chú:"), gbc);
+            gbc.gridx = 1;
+            panel.add(txtNote, gbc);
+
+            int result = JOptionPane.showConfirmDialog(shell, panel,
+                    "Nhập kho \"" + selected.getTitle() + "\"", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+            if (result != JOptionPane.OK_OPTION) {
+                return;
+            }
+
             int quantity;
             try {
-                quantity = Integer.parseInt(input.trim());
+                quantity = Integer.parseInt(txtQuantity.getText().trim());
                 if (quantity <= 0) {
                     throw new NumberFormatException();
                 }
@@ -138,11 +180,17 @@ public class ImportBooksPage implements InventoryPage {
                 JOptionPane.showMessageDialog(shell, "Số lượng không hợp lệ!");
                 return;
             }
-            if (inventoryDAO.importStock(selected.getBookID(), quantity)) {
-                JOptionPane.showMessageDialog(shell, "Đã nhập " + quantity + " quyển \"" + selected.getTitle() + "\" vào kho!");
+
+            Supplier supplier = (Supplier) cboSupplier.getSelectedItem();
+            String note = txtNote.getText().trim();
+            String error = new StockTransactionDAO().recordImport(selected.getBookID(), supplier.getSupplierID(),
+                    shell.employee.getEmployeeID(), quantity, note);
+            if (error == null) {
+                JOptionPane.showMessageDialog(shell, "Đã nhập " + quantity + " quyển \"" + selected.getTitle()
+                        + "\" từ " + supplier.getSupplierName() + "!");
                 doSearch.run();
             } else {
-                JOptionPane.showMessageDialog(shell, "Nhập kho thất bại! Vui lòng thử lại.");
+                JOptionPane.showMessageDialog(shell, error);
             }
         });
         tableHeader.add(btnImport, BorderLayout.EAST);

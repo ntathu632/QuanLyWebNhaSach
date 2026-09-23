@@ -1,0 +1,225 @@
+/*
+ * Trang Xuất trả hàng nhà cung cấp — sách lỗi/ế bị chặn (không có luồng nào
+ * trước đây), giờ ghi nhận qua StockTransactionDAO.recordReturn() (trừ
+ * stockQuantity, ghi log type='Return'), cùng dùng chung nhật ký với
+ * StockHistoryPage. Chỉ cho chọn sách còn tồn kho > 0 để trả.
+ */
+package view.inventory;
+import view.shared.*;
+
+import dao.BookDAO;
+import dao.InventoryDAO;
+import dao.StockTransactionDAO;
+import dao.SupplierDAO;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
+import model.Book;
+import model.Supplier;
+
+public class ReturnToSupplierPage implements InventoryPage {
+
+    @Override
+    public String navKey() {
+        return "return";
+    }
+
+    @Override
+    public String title() {
+        return "Xuất Trả Nhà Cung Cấp";
+    }
+
+    @Override
+    public JPanel content(InventoryShellFrm shell) {
+        JPanel content = new JPanel(new BorderLayout(0, 16));
+        content.setBackground(AppTheme.BACKGROUND);
+        content.setBorder(new EmptyBorder(28, 28, 28, 28));
+
+        JLabel heading = new JLabel("Xuất trả nhà cung cấp");
+        heading.setFont(heading.getFont().deriveFont(Font.BOLD, 22f));
+        heading.setForeground(AppTheme.TEXT);
+        heading.setBorder(new EmptyBorder(0, 0, 4, 0));
+
+        JLabel hint = new JLabel("Chọn 1 sách còn tồn kho (ví dụ sách lỗi, ế hàng) để xuất trả lại nhà cung cấp.");
+        hint.setFont(hint.getFont().deriveFont(12f));
+        hint.setForeground(new Color(0x8A, 0x83, 0x74));
+
+        JPanel headerText = new JPanel();
+        headerText.setLayout(new javax.swing.BoxLayout(headerText, javax.swing.BoxLayout.Y_AXIS));
+        headerText.setBackground(AppTheme.BACKGROUND);
+        headerText.add(heading);
+        headerText.add(hint);
+        headerText.add(javax.swing.Box.createVerticalStrut(10));
+
+        JTextField txtKeyword = new JTextField();
+        txtKeyword.putClientProperty("JTextField.placeholderText", "Tìm theo mã sách, ISBN hoặc tên sách...");
+        JButton btnSearch = new JButton("Tìm kiếm");
+        AppTheme.primary(btnSearch);
+
+        JPanel searchBar = new JPanel(new BorderLayout(10, 0));
+        searchBar.setBackground(AppTheme.BACKGROUND);
+        searchBar.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
+        searchBar.add(txtKeyword, BorderLayout.CENTER);
+        searchBar.add(btnSearch, BorderLayout.EAST);
+
+        JPanel header = new JPanel(new BorderLayout(0, 10));
+        header.setBackground(AppTheme.BACKGROUND);
+        header.add(headerText, BorderLayout.NORTH);
+        header.add(searchBar, BorderLayout.CENTER);
+        content.add(header, BorderLayout.NORTH);
+
+        String[] columns = {"ID", "ISBN", "Tên sách", "Tồn kho hiện tại"};
+        DefaultTableModel model = new DefaultTableModel(columns, 0) {
+            @Override
+            public boolean isCellEditable(int row, int col) {
+                return false;
+            }
+        };
+        JTable table = new JTable(model);
+        table.setRowHeight(30);
+        table.setGridColor(AppTheme.TABLE_GRID);
+        table.getTableHeader().setReorderingAllowed(false);
+        AppTheme.alignTableColumn(table, 0, SwingConstants.CENTER, 50, 50);
+        AppTheme.alignTableColumn(table, 1, SwingConstants.CENTER, 140, 140);
+        AppTheme.alignTableColumn(table, 2, SwingConstants.LEFT, 0, 0);
+        AppTheme.alignTableColumn(table, 3, SwingConstants.CENTER, 140, 140);
+
+        final List<Book> currentBooks = new ArrayList<>();
+        InventoryDAO inventoryDAO = new InventoryDAO();
+
+        // Chỉ hiện sách còn tồn kho > 0 — không thể trả sách không có trong kho.
+        Runnable doSearch = () -> {
+            String keyword = txtKeyword.getText().trim();
+            Book[] found = new BookDAO().searchBook(keyword);
+            currentBooks.clear();
+            model.setRowCount(0);
+            for (Book b : found) {
+                int stock = inventoryDAO.getInventoryForBook(b.getBookID()).getStockQuantity();
+                if (stock > 0) {
+                    currentBooks.add(b);
+                    model.addRow(new Object[]{b.getBookID(), b.getISBN(), b.getTitle(), stock});
+                }
+            }
+        };
+
+        btnSearch.addActionListener(e -> doSearch.run());
+        txtKeyword.addActionListener(e -> doSearch.run());
+
+        JPanel tableCard = new JPanel(new BorderLayout(0, 10));
+        tableCard.setBackground(Color.WHITE);
+        tableCard.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createMatteBorder(0, 4, 0, 0, AppTheme.SECONDARY),
+                new EmptyBorder(14, 16, 14, 16)));
+
+        JPanel tableHeader = new JPanel(new BorderLayout());
+        tableHeader.setBackground(Color.WHITE);
+        JLabel resultTitle = new JLabel("Kết quả");
+        resultTitle.setFont(resultTitle.getFont().deriveFont(Font.BOLD, 14f));
+        resultTitle.setForeground(AppTheme.TEXT);
+        tableHeader.add(resultTitle, BorderLayout.WEST);
+
+        JButton btnReturn = new JButton("Xuất trả");
+        AppTheme.secondary(btnReturn);
+        btnReturn.addActionListener(e -> {
+            int row = table.getSelectedRow();
+            if (row < 0 || row >= currentBooks.size()) {
+                JOptionPane.showMessageDialog(shell, "Vui lòng chọn 1 sách để xuất trả!");
+                return;
+            }
+            Book selected = currentBooks.get(row);
+            int stock = inventoryDAO.getInventoryForBook(selected.getBookID()).getStockQuantity();
+
+            Supplier[] suppliers = new SupplierDAO().searchSupplier("");
+            if (suppliers.length == 0) {
+                JOptionPane.showMessageDialog(shell, "Chưa có nhà cung cấp nào! Vui lòng nhờ Admin thêm nhà cung cấp trước.");
+                return;
+            }
+
+            JPanel panel = new JPanel(new GridBagLayout());
+            GridBagConstraints gbc = new GridBagConstraints();
+            gbc.insets = new Insets(6, 0, 6, 10);
+            gbc.anchor = GridBagConstraints.WEST;
+
+            JTextField txtQuantity = new JTextField("1", 18);
+            JComboBox<Supplier> cboSupplier = new JComboBox<>(suppliers);
+            JTextField txtNote = new JTextField(18);
+
+            gbc.gridx = 0;
+            gbc.gridy = 0;
+            panel.add(new JLabel("Số lượng trả (còn " + stock + "): *"), gbc);
+            gbc.gridx = 1;
+            panel.add(txtQuantity, gbc);
+
+            gbc.gridx = 0;
+            gbc.gridy = 1;
+            panel.add(new JLabel("Trả cho nhà cung cấp: *"), gbc);
+            gbc.gridx = 1;
+            panel.add(cboSupplier, gbc);
+
+            gbc.gridx = 0;
+            gbc.gridy = 2;
+            panel.add(new JLabel("Lý do / ghi chú:"), gbc);
+            gbc.gridx = 1;
+            panel.add(txtNote, gbc);
+
+            int result = JOptionPane.showConfirmDialog(shell, panel,
+                    "Xuất trả \"" + selected.getTitle() + "\"", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+            if (result != JOptionPane.OK_OPTION) {
+                return;
+            }
+
+            int quantity;
+            try {
+                quantity = Integer.parseInt(txtQuantity.getText().trim());
+                if (quantity <= 0) {
+                    throw new NumberFormatException();
+                }
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(shell, "Số lượng không hợp lệ!");
+                return;
+            }
+
+            Supplier supplier = (Supplier) cboSupplier.getSelectedItem();
+            String note = txtNote.getText().trim();
+            String error = new StockTransactionDAO().recordReturn(selected.getBookID(), supplier.getSupplierID(),
+                    shell.employee.getEmployeeID(), quantity, note);
+            if (error == null) {
+                JOptionPane.showMessageDialog(shell, "Đã xuất trả " + quantity + " quyển \"" + selected.getTitle()
+                        + "\" cho " + supplier.getSupplierName() + "!");
+                doSearch.run();
+            } else {
+                JOptionPane.showMessageDialog(shell, error);
+            }
+        });
+        tableHeader.add(btnReturn, BorderLayout.EAST);
+        tableCard.add(tableHeader, BorderLayout.NORTH);
+
+        JScrollPane scroll = new JScrollPane(table);
+        scroll.setBorder(BorderFactory.createLineBorder(AppTheme.INPUT_BORDER));
+        tableCard.add(scroll, BorderLayout.CENTER);
+
+        content.add(tableCard, BorderLayout.CENTER);
+
+        doSearch.run();
+
+        return content;
+    }
+}

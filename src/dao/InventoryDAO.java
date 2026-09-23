@@ -1,6 +1,8 @@
 /*
- * FR-INV-01 (Import Books), FR-INV-02 (Update Stock Quantity — dùng chung),
- * FR-INV-03 (Inventory Checking), FR-INV-04 (View Low-Stock Books).
+ * FR-INV-02 (Update Stock Quantity — dùng chung), FR-INV-03 (Inventory
+ * Checking), FR-INV-04 (View Low-Stock Books). FR-INV-01 (Import Books) giờ
+ * nằm ở StockTransactionDAO.recordImport() — gộp chung 1 transaction với
+ * việc ghi log nhập kho (StockTransaction).
  */
 package dao;
 
@@ -40,35 +42,6 @@ public class InventoryDAO extends DAO {
             ex.printStackTrace();
         }
         return inv;
-    }
-
-    // FR-INV-01: cộng thêm "quantity" vào importQuantity + stockQuantity —
-    // tạo mới dòng Inventory nếu sách này chưa từng có (xem getInventoryForBook).
-    public boolean importStock(int bookID, int quantity) {
-        try {
-            PreparedStatement psCheck = con.prepareStatement("SELECT 1 FROM Inventory WHERE bookID = ?");
-            psCheck.setInt(1, bookID);
-            if (psCheck.executeQuery().next()) {
-                PreparedStatement ps = con.prepareStatement(
-                        "UPDATE Inventory SET importQuantity = importQuantity + ?, stockQuantity = stockQuantity + ? WHERE bookID = ?");
-                ps.setInt(1, quantity);
-                ps.setInt(2, quantity);
-                ps.setInt(3, bookID);
-                ps.executeUpdate();
-            } else {
-                PreparedStatement ps = con.prepareStatement(
-                        "INSERT INTO Inventory (bookID, importQuantity, exportQuantity, stockQuantity) VALUES (?,?,0,?)");
-                ps.setInt(1, bookID);
-                ps.setInt(2, quantity);
-                ps.setInt(3, quantity);
-                ps.executeUpdate();
-            }
-            return true;
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return false;
-        }
     }
 
     // FR-INV-03: sửa thẳng stockQuantity theo số lượng kiểm đếm thực tế —

@@ -2,3 +2,4 @@ build/
 dist/
 app_out.log
 app_err.log
+CLAUDE.md
