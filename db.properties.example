@@ -1,0 +1,5 @@
+# Thông tin kết nối SQL Server. Copy file này thành db.properties (cùng thư mục)
+# rồi điền tài khoản SQL Server trên máy của bạn. KHÔNG commit db.properties.
+db.url=jdbc:sqlserver://localhost;database=BookshopManagementDB;encrypt=true;trustServerCertificate=true
+db.user=sa
+db.password=

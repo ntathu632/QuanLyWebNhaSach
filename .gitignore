@@ -2,4 +2,7 @@ build/
 dist/
 app_out.log
 app_err.log
-CLAUDE.md
+nbproject/private/
+db.properties
+QUY_TAC_COMMIT.md
+TEST_FINDINGS.md
