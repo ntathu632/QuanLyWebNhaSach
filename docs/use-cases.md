@@ -3,8 +3,8 @@
 > Rút trực tiếp từ code hiện tại (không suy đoán theo yêu cầu đề bài), tính đến
 > commit `49ea8e2` + các thay đổi/chức năng đang làm dở chưa commit (Nhà cung
 > cấp, Xuất trả NCC, Lịch sử nhập/trả, Tra cứu sách bên Kho). Cơ sở đối chiếu:
-> menu sidebar/navbar của từng Shell (`AdminShellFrm`, `SalesShellFrm`,
-> `InventoryShellFrm`, `CustomerShellFrm`) + nút hành động trong từng trang.
+> menu sidebar/navbar của từng Shell (`AdminShellFrm`, `InStoreSaleFrm`,
+> `LowStockFrm`, `CustomerHomeFrm`) + nút hành động trong từng trang.
 >
 > Đây là **bước 1 — liệt kê tổng quan** để xác nhận trước khi viết đặc tả chi
 > tiết (precondition, main flow, alternative flow...) cho từng use case ở bước
@@ -14,23 +14,23 @@
 
 | Actor | Mô tả | Vào hệ thống qua |
 |---|---|---|
-| **Khách hàng** (Customer) | Người mua sách trực tuyến | `CustomerShellFrm` |
-| **Nhân viên bán hàng** (Sales Staff) | Lập hóa đơn tại quầy, xử lý đơn online | `SalesShellFrm` |
-| **Nhân viên kho** (Inventory Staff) | Nhập/xuất/kiểm kê tồn kho | `InventoryShellFrm` |
+| **Khách hàng** (Customer) | Người mua sách trực tuyến | `CustomerHomeFrm` |
+| **Nhân viên bán hàng** (Sales Staff) | Lập hóa đơn tại quầy, xử lý đơn online | `InStoreSaleFrm` |
+| **Nhân viên kho** (Inventory Staff) | Nhập/xuất/kiểm kê tồn kho | `LowStockFrm` |
 | **Quản trị viên** (Admin) | Quản lý toàn bộ danh mục dữ liệu + báo cáo | `AdminShellFrm` |
 
 3 vai trò nhân viên (Sales/Inventory/Admin) đều là `Employee` gắn với 1
-`Account`, đăng nhập chung 1 màn hình `LoginFrm` rồi hệ thống tự điều hướng
+`Account`, đăng nhập chung 1 màn hình `LoginDialog` rồi hệ thống tự điều hướng
 theo `Account.Role`. Khách hàng là `Customer` gắn với 1 `Account` riêng.
 
 ### Use case dùng chung cho mọi actor đã đăng nhập
 
 | Use case | Actor | Nguồn |
 |---|---|---|
-| Đăng nhập | Cả 4 actor | `LoginFrm` |
+| Đăng nhập | Cả 4 actor | `LoginDialog` |
 | Đăng xuất | Cả 4 actor | nút "Đăng xuất" mỗi Shell |
 | Đổi mật khẩu | Cả 4 actor | `ChangePasswordDialog` |
-| Đăng ký tài khoản | Khách hàng | `RegisterFrm` (chỉ Khách hàng tự đăng ký được; tài khoản nhân viên do Admin tạo qua "Quản lý nhân viên") |
+| Đăng ký tài khoản | Khách hàng | `RegisterDialog` (chỉ Khách hàng tự đăng ký được; tài khoản nhân viên do Admin tạo qua "Quản lý nhân viên") |
 
 ---
 
@@ -64,54 +64,54 @@ theo `Account.Role`. Khách hàng là `Customer` gắn với 1 `Account` riêng.
 | | Xem báo cáo Bán hàng (sách bán chạy + doanh số theo nhân viên) | | `ReportPage` |
 | | Xuất Excel báo cáo | 1 nút riêng cho mỗi tab (Doanh thu/Tồn kho/Bán hàng) | `ReportPage`, `ExcelExportUtil` |
 
-### 2.2 Nhân viên bán hàng (Sales Staff) — `SalesShellFrm`
+### 2.2 Nhân viên bán hàng (Sales Staff) — `InStoreSaleFrm`
 
 | Nhóm | Use case | Ghi chú | Nguồn |
 |---|---|---|---|
-| Bán hàng | Lập hóa đơn tại quầy | Tìm sách, thêm dòng, xóa dòng, chọn khách quen hoặc tạo khách mới nhanh | `InStoreSalePage` |
-| | Tạo khách hàng mới (nhanh, trong lúc bán) | | `InStoreSalePage` |
-| | Xem hóa đơn đã lập | | `InvoiceHistoryPage` |
-| | Xem chi tiết hóa đơn | | `InvoiceHistoryPage` |
-| | Hủy hóa đơn | | `InvoiceHistoryPage` |
-| | Xem danh sách đơn hàng online | | `OrderManagementPage` |
-| | Xem chi tiết đơn hàng online | | `OrderManagementPage` |
-| | Cập nhật trạng thái đơn hàng online | | `OrderManagementPage` |
-| Tra cứu | Tra cứu khách hàng | | `SearchCustomerPage` |
-| | Tra cứu sách | | `SalesSearchBookPage` |
-| | Xem cảnh báo tồn kho thấp | | `LowStockPage` (sales) |
+| Bán hàng | Lập hóa đơn tại quầy | Tìm sách, thêm dòng, xóa dòng, chọn khách quen hoặc tạo khách mới nhanh | `InStoreSaleFrm` |
+| | Tạo khách hàng mới (nhanh, trong lúc bán) | | `InStoreSaleFrm` |
+| | Xem hóa đơn đã lập | | `InvoiceHistoryFrm` |
+| | Xem chi tiết hóa đơn | | `InvoiceHistoryFrm` |
+| | Hủy hóa đơn | | `InvoiceHistoryFrm` |
+| | Xem danh sách đơn hàng online | | `OrderManagementFrm` |
+| | Xem chi tiết đơn hàng online | | `OrderManagementFrm` |
+| | Cập nhật trạng thái đơn hàng online | | `OrderManagementFrm` |
+| Tra cứu | Tra cứu khách hàng | | `SearchCustomerFrm` |
+| | Tra cứu sách | | `SalesSearchBookFrm` |
+| | Xem cảnh báo tồn kho thấp | | `SalesLowStockFrm` |
 
-### 2.3 Nhân viên kho (Inventory Staff) — `InventoryShellFrm`
-
-| Nhóm | Use case | Ghi chú | Nguồn |
-|---|---|---|---|
-| Kho sách | Xem sách sắp hết hàng | Trang mặc định sau đăng nhập | `LowStockPage` (inventory) |
-| | Nhập sách | Tìm sách, nhập số lượng vào kho | `ImportBooksPage` |
-| | Xuất trả nhà cung cấp *(chưa commit)* | Chỉ sách còn tồn kho > 0; chọn NCC + số lượng + lý do | `ReturnToSupplierPage` |
-| | Kiểm kê kho *(chưa commit)* | Nhập số lượng đếm thực tế; hệ thống chỉ điều chỉnh khi có chênh lệch | `InventoryCheckingPage` |
-| | Xem lịch sử nhập/trả *(chưa commit)* | Nhật ký chung cho Nhập sách + Xuất trả NCC | `StockHistoryPage` |
-| Tra cứu | Tra cứu sách *(chưa commit)* | | `InventorySearchBookPage` |
-
-### 2.4 Khách hàng (Customer) — `CustomerShellFrm`
+### 2.3 Nhân viên kho (Inventory Staff) — `LowStockFrm`
 
 | Nhóm | Use case | Ghi chú | Nguồn |
 |---|---|---|---|
-| Mua sắm | Xem trang chủ | | `CustomerHomePage` |
-| | Tìm kiếm sách | Ô tìm nhanh trên navbar + trang tìm kiếm riêng | `SearchBookForPurchasePage` |
-| | Xem chi tiết sách | Ảnh bìa, giá, mô tả, đánh giá sao trung bình | `BookDetailPage` |
-| | Thêm sách vào giỏ hàng | | `BookDetailPage` |
-| | Xem giỏ hàng | | `ShoppingCartPage` |
-| | Xóa sách khỏi giỏ hàng | | `ShoppingCartPage` |
-| | Đặt hàng (checkout) | Xác nhận thông tin đơn trước khi thanh toán | `CheckoutPage` |
-| | Thanh toán đơn hàng | Có thể hủy đơn ở bước này | `PaymentPage` |
-| | Thanh toán mô phỏng VNPay/Momo | Xác nhận đã thanh toán hoặc hủy giao dịch quay lại | `MockPaymentGatewayPage` |
-| | Xem lịch sử đơn hàng | | `OrderHistoryPage` |
-| | Xem chi tiết đơn hàng | | `OrderHistoryPage` |
-| | Hủy đơn hàng | | `OrderHistoryPage` |
-| Đánh giá | Xem đánh giá của sách | Xem được kể cả khi chưa mua sách đó | `BookDetailPage` |
-| | Gửi đánh giá sách | Chỉ khi đã mua **và** đơn đã thanh toán | `BookDetailPage` (extend của "Xem chi tiết sách") |
-| Tài khoản | Xem/sửa thông tin cá nhân | Họ tên, SĐT, Email, Địa chỉ (từng trường sửa riêng) | `AccountPage` |
-| | Đổi ảnh đại diện | | `AccountPage`, `AvatarStore` |
-| | Xem thống kê cá nhân | Tổng số đơn hàng, tổng chi tiêu | `AccountPage` |
+| Kho sách | Xem sách sắp hết hàng | Trang mặc định sau đăng nhập | `LowStockFrm` |
+| | Nhập sách | Tìm sách, nhập số lượng vào kho | `ImportBooksFrm` |
+| | Xuất trả nhà cung cấp *(chưa commit)* | Chỉ sách còn tồn kho > 0; chọn NCC + số lượng + lý do | `ReturnToSupplierFrm` |
+| | Kiểm kê kho *(chưa commit)* | Nhập số lượng đếm thực tế; hệ thống chỉ điều chỉnh khi có chênh lệch | `InventoryCheckingFrm` |
+| | Xem lịch sử nhập/trả *(chưa commit)* | Nhật ký chung cho Nhập sách + Xuất trả NCC | `StockHistoryFrm` |
+| Tra cứu | Tra cứu sách *(chưa commit)* | | `InventorySearchBookFrm` |
+
+### 2.4 Khách hàng (Customer) — `CustomerHomeFrm`
+
+| Nhóm | Use case | Ghi chú | Nguồn |
+|---|---|---|---|
+| Mua sắm | Xem trang chủ | | `CustomerHomeFrm` |
+| | Tìm kiếm sách | Ô tìm nhanh trên navbar + trang tìm kiếm riêng | `SearchBookForPurchaseFrm` |
+| | Xem chi tiết sách | Ảnh bìa, giá, mô tả, đánh giá sao trung bình | `BookDetailFrm` |
+| | Thêm sách vào giỏ hàng | | `BookDetailFrm` |
+| | Xem giỏ hàng | | `ShoppingCartFrm` |
+| | Xóa sách khỏi giỏ hàng | | `ShoppingCartFrm` |
+| | Đặt hàng (checkout) | Xác nhận thông tin đơn trước khi thanh toán | `CheckoutFrm` |
+| | Thanh toán đơn hàng | Có thể hủy đơn ở bước này | `PaymentFrm` |
+| | Thanh toán mô phỏng VNPay/Momo | Xác nhận đã thanh toán hoặc hủy giao dịch quay lại | `MockPaymentGatewayFrm` |
+| | Xem lịch sử đơn hàng | | `OrderHistoryFrm` |
+| | Xem chi tiết đơn hàng | | `OrderHistoryFrm` |
+| | Hủy đơn hàng | | `OrderHistoryFrm` |
+| Đánh giá | Xem đánh giá của sách | Xem được kể cả khi chưa mua sách đó | `BookDetailFrm` |
+| | Gửi đánh giá sách | Chỉ khi đã mua **và** đơn đã thanh toán | `BookDetailFrm` (extend của "Xem chi tiết sách") |
+| Tài khoản | Xem/sửa thông tin cá nhân | Họ tên, SĐT, Email, Địa chỉ (từng trường sửa riêng) | `AccountFrm` |
+| | Đổi ảnh đại diện | | `AccountFrm`, `AvatarStore` |
+| | Xem thống kê cá nhân | Tổng số đơn hàng, tổng chi tiêu | `AccountFrm` |
 
 ---
 

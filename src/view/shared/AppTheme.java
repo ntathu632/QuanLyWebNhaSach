@@ -55,7 +55,39 @@ public final class AppTheme {
     public static final Color CHART_GRID = new Color(0xE3, 0xDD, 0xC9);
     public static final Color CHART_MUTED_TEXT = new Color(0x8A, 0x83, 0x74);
 
+    // Typography: Cormorant Garamond lo phần cảm xúc/thẩm mỹ (logo, tiêu đề
+    // lớn, heading, tiêu đề section — Bold; chữ cần nhấn mạnh — Medium
+    // Italic), Raleway lo phần chức năng/thông tin (menu, nội dung, mô tả,
+    // button, input, giá tiền... — Medium). File .ttf đóng gói trong
+    // src/fonts/ (giấy phép SIL OFL) và được nạp trong install(), nên máy
+    // chạy app không cần cài font. Trong Form Editor chọn đúng tên dưới đây.
+    public static final String FONT_HEADING = "Cormorant Garamond";
+    public static final String FONT_EMPHASIS = "Cormorant Garamond Medium Italic";
+    public static final String FONT_UI = "Raleway Medium";
+    private static final String[] FONT_FILES = {
+        "CormorantGaramond-Bold.ttf", "CormorantGaramond-MediumItalic.ttf", "Raleway-Medium.ttf"
+    };
+
     private AppTheme() {
+    }
+
+    /** Font tiêu đề (Cormorant Garamond Bold) — cho tiêu đề dựng bằng code, vd. trong hộp thoại. */
+    public static Font headingFont(float size) {
+        return new Font(FONT_HEADING, Font.BOLD, Math.round(size));
+    }
+
+    private static void registerFonts() {
+        java.awt.GraphicsEnvironment ge = java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment();
+        for (String file : FONT_FILES) {
+            try (java.io.InputStream in = AppTheme.class.getResourceAsStream("/fonts/" + file)) {
+                if (in != null) {
+                    ge.registerFont(Font.createFont(Font.TRUETYPE_FONT, in));
+                }
+            } catch (Exception ex) {
+                // Thiếu/hỏng file font -> Swing tự rơi về font mặc định, app vẫn chạy.
+                ex.printStackTrace();
+            }
+        }
     }
 
     /**
@@ -64,13 +96,15 @@ public final class AppTheme {
      */
     public static void install() {
         FlatLightLaf.setup();
+        registerFonts();
 
-        // Tăng cỡ chữ mặc định toàn app thêm 2pt (FlatLaf mặc định khá nhỏ,
-        // ~13px) — mọi component (label, field, button, table...) đều tự
-        // scale theo "defaultFont" này nên chỉ cần đặt 1 chỗ duy nhất.
+        // Font mặc định toàn app = Raleway Medium, lớn hơn cỡ mặc định của
+        // FlatLaf 2pt (FlatLaf khá nhỏ, ~13px) — mọi component (label, field,
+        // button, table...) đều lấy theo "defaultFont" này nên chỉ cần đặt 1 chỗ.
         Font base = UIManager.getFont("defaultFont");
         if (base != null) {
-            UIManager.put("defaultFont", base.deriveFont(base.getSize2D() + 2f));
+            UIManager.put("defaultFont", new javax.swing.plaf.FontUIResource(
+                    FONT_UI, Font.PLAIN, Math.round(base.getSize2D() + 2f)));
         }
 
         // Từ FlatLaf 2.0+, "unified background" bật mặc định khiến title bar tự lấy
@@ -128,7 +162,7 @@ public final class AppTheme {
                 + " default.focusedBackground: #" + hex(PRIMARY) + ";"
                 + " default.borderColor: #" + hex(PRIMARY) + ";"
                 + " default.focusedBorderColor: #" + hex(PRIMARY_HOVER) + ";"
-                + " borderWidth: 0; font: bold");
+                + " borderWidth: 0");
     }
 
     /** Áp style nút phụ/hủy (cam đất) — dùng cho: Reset, Remove, Cancel, Back... */
@@ -145,7 +179,7 @@ public final class AppTheme {
                 + " default.focusedBackground: #" + hex(SECONDARY) + ";"
                 + " default.borderColor: #" + hex(SECONDARY) + ";"
                 + " default.focusedBorderColor: #" + hex(SECONDARY_HOVER) + ";"
-                + " borderWidth: 0; font: bold");
+                + " borderWidth: 0");
     }
 
     /**
@@ -217,6 +251,19 @@ public final class AppTheme {
      */
     public static void maximize(javax.swing.JFrame frame) {
         frame.setExtendedState(javax.swing.JFrame.MAXIMIZED_BOTH);
+    }
+
+    /**
+     * Chuyển sang JFrame "to" ở đúng vị trí/kích thước của "from" (đang phóng
+     * to thì vẫn phóng to) rồi đóng "from" — để chuyển trang giữa các JFrame
+     * Form nhìn liền mạch, không bị nhảy cửa sổ.
+     */
+    public static void switchFrame(javax.swing.JFrame from, javax.swing.JFrame to) {
+        to.setExtendedState(javax.swing.JFrame.NORMAL);
+        to.setBounds(from.getBounds());
+        to.setExtendedState(from.getExtendedState());
+        to.setVisible(true);
+        from.dispose();
     }
 
     /**

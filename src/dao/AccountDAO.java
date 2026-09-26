@@ -91,8 +91,8 @@ public class AccountDAO extends DAO {
     }
 
     // Lấy Customer gắn với 1 Account (qua Account.customerID) — cần thiết để
-    // sau khi đăng nhập thành công với role="Customer", LoginFrm có Customer
-    // thật để mở CustomerShellFrm (các màn khách hàng đều thao tác trên Customer,
+    // sau khi đăng nhập thành công với role="Customer", các trang Khách hàng có Customer
+    // thật để thao tác (các màn khách hàng đều thao tác trên Customer,
     // không phải trên Account).
     public Customer getCustomerByUsername(String username) {
         try {

@@ -8,7 +8,6 @@
 package view.admin;
 import view.shared.*;
 
-import dao.DAO;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -155,8 +154,7 @@ public class AdminShellFrm extends javax.swing.JFrame {
 
         JButton btnLogout = sidebarButton(FlatIcon.Kind.LOGOUT, "Đăng xuất");
         btnLogout.addActionListener(e -> {
-            new DAO();
-            (new LoginFrm()).setVisible(true);
+            view.customer.CustomerHomeFrm.openAsGuest();
             this.dispose();
         });
         sidebar.add(btnLogout);

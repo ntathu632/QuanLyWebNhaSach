@@ -52,12 +52,12 @@ Customer (xem mục "Lỗi quan hệ" bên dưới), nên Sales Staff coi như *
 
 | Module (theo code) | Có trong sơ đồ? | Nguồn code |
 |---|---|---|
-| Lập hóa đơn tại quầy (+ tạo khách hàng mới nhanh) | ✅ = "Purchase in Store" | `InStoreSalePage` |
-| Xem/hủy hóa đơn đã lập | ❌ thiếu | `InvoiceHistoryPage` |
-| Xem/cập nhật trạng thái đơn hàng online | ❌ thiếu | `OrderManagementPage` |
-| Tra cứu khách hàng | ❌ thiếu | `SearchCustomerPage` |
-| Tra cứu sách | ❌ thiếu | `SalesSearchBookPage` |
-| Xem cảnh báo tồn kho thấp | ❌ thiếu | `LowStockPage` (sales) |
+| Lập hóa đơn tại quầy (+ tạo khách hàng mới nhanh) | ✅ = "Purchase in Store" | `InStoreSaleFrm` |
+| Xem/hủy hóa đơn đã lập | ❌ thiếu | `InvoiceHistoryFrm` |
+| Xem/cập nhật trạng thái đơn hàng online | ❌ thiếu | `OrderManagementFrm` |
+| Tra cứu khách hàng | ❌ thiếu | `SearchCustomerFrm` |
+| Tra cứu sách | ❌ thiếu | `SalesSearchBookFrm` |
+| Xem cảnh báo tồn kho thấp | ❌ thiếu | `SalesLowStockFrm` |
 
 ## 3. Inventory Staff — thiếu 4/6 module
 
@@ -66,12 +66,12 @@ Inventory Checking**.
 
 | Module (theo code) | Có trong sơ đồ? | Nguồn code |
 |---|---|---|
-| Nhập sách | ✅ = "Import Books" | `ImportBooksPage` |
-| Kiểm kê kho | ✅ = "Inventory Checking" | `InventoryCheckingPage` |
-| Xem sách sắp hết hàng | ❌ thiếu | `LowStockPage` (inventory) |
-| Xuất trả nhà cung cấp | ❌ thiếu *(module chưa commit)* | `ReturnToSupplierPage` |
-| Xem lịch sử nhập/trả | ❌ thiếu *(module chưa commit)* | `StockHistoryPage` |
-| Tra cứu sách | ❌ thiếu *(module chưa commit)* | `InventorySearchBookPage` |
+| Nhập sách | ✅ = "Import Books" | `ImportBooksFrm` |
+| Kiểm kê kho | ✅ = "Inventory Checking" | `InventoryCheckingFrm` |
+| Xem sách sắp hết hàng | ❌ thiếu | `LowStockFrm` |
+| Xuất trả nhà cung cấp | ❌ thiếu *(module chưa commit)* | `ReturnToSupplierFrm` |
+| Xem lịch sử nhập/trả | ❌ thiếu *(module chưa commit)* | `StockHistoryFrm` |
+| Tra cứu sách | ❌ thiếu *(module chưa commit)* | `InventorySearchBookFrm` |
 
 ## 4. Customer — thiếu khoảng 14/17 use case
 
@@ -80,22 +80,22 @@ Cancel Online Order**.
 
 | Use case (theo code) | Có trong sơ đồ? | Nguồn code |
 |---|---|---|
-| Đặt hàng (checkout) → Thanh toán | ✅ ~ gộp trong "Purchase Online" | `CheckoutPage`, `PaymentPage` |
-| Hủy đơn hàng | ✅ = "Cancel Online Order" | `OrderHistoryPage` |
-| Xem trang chủ | ❌ thiếu | `CustomerHomePage` |
-| Tìm kiếm sách | ❌ thiếu | `SearchBookForPurchasePage` |
-| Xem chi tiết sách | ❌ thiếu | `BookDetailPage` |
-| Thêm sách vào giỏ hàng | ❌ thiếu | `BookDetailPage` |
-| Xem giỏ hàng | ❌ thiếu | `ShoppingCartPage` |
-| Xóa sách khỏi giỏ hàng | ❌ thiếu | `ShoppingCartPage` |
-| Thanh toán mô phỏng VNPay/Momo | ❌ thiếu (chi tiết bước thanh toán) | `MockPaymentGatewayPage` |
-| Xem lịch sử đơn hàng | ❌ thiếu | `OrderHistoryPage` |
-| Xem chi tiết đơn hàng | ❌ thiếu | `OrderHistoryPage` |
-| Xem đánh giá sách | ❌ thiếu | `BookDetailPage` |
-| Gửi đánh giá sách | ❌ thiếu | `BookDetailPage` |
-| Xem/sửa thông tin cá nhân | ❌ thiếu | `AccountPage` |
-| Đổi ảnh đại diện | ❌ thiếu | `AccountPage`, `AvatarStore` |
-| Xem thống kê cá nhân (tổng đơn/tổng chi tiêu) | ❌ thiếu | `AccountPage` |
+| Đặt hàng (checkout) → Thanh toán | ✅ ~ gộp trong "Purchase Online" | `CheckoutFrm`, `PaymentFrm` |
+| Hủy đơn hàng | ✅ = "Cancel Online Order" | `OrderHistoryFrm` |
+| Xem trang chủ | ❌ thiếu | `CustomerHomeFrm` |
+| Tìm kiếm sách | ❌ thiếu | `SearchBookForPurchaseFrm` |
+| Xem chi tiết sách | ❌ thiếu | `BookDetailFrm` |
+| Thêm sách vào giỏ hàng | ❌ thiếu | `BookDetailFrm` |
+| Xem giỏ hàng | ❌ thiếu | `ShoppingCartFrm` |
+| Xóa sách khỏi giỏ hàng | ❌ thiếu | `ShoppingCartFrm` |
+| Thanh toán mô phỏng VNPay/Momo | ❌ thiếu (chi tiết bước thanh toán) | `MockPaymentGatewayFrm` |
+| Xem lịch sử đơn hàng | ❌ thiếu | `OrderHistoryFrm` |
+| Xem chi tiết đơn hàng | ❌ thiếu | `OrderHistoryFrm` |
+| Xem đánh giá sách | ❌ thiếu | `BookDetailFrm` |
+| Gửi đánh giá sách | ❌ thiếu | `BookDetailFrm` |
+| Xem/sửa thông tin cá nhân | ❌ thiếu | `AccountFrm` |
+| Đổi ảnh đại diện | ❌ thiếu | `AccountFrm`, `AvatarStore` |
+| Xem thống kê cá nhân (tổng đơn/tổng chi tiêu) | ❌ thiếu | `AccountFrm` |
 
 ---
 
@@ -104,13 +104,13 @@ Cancel Online Order**.
 1. **"Purchase Online" và "Cancel Online Order" đang bị gắn vào cả "Sale
    Staff Login" lẫn "Customer Login"** trong sơ đồ cũ. Theo code, đặt hàng
    online và hủy đơn online chỉ là hành động của **Customer**
-   (`CheckoutPage`, `PaymentPage`, `OrderHistoryPage`) — Sales Staff không
+   (`CheckoutFrm`, `PaymentFrm`, `OrderHistoryFrm`) — Sales Staff không
    tự mua hàng, chỉ **xem/cập nhật trạng thái** đơn hàng online
-   (`OrderManagementPage`, đã liệt kê ở mục 2, hiện chưa có trong sơ đồ nào).
+   (`OrderManagementFrm`, đã liệt kê ở mục 2, hiện chưa có trong sơ đồ nào).
 2. **"Register Account" đang generalize (mũi tên rỗng, is-a) vào "Manage
    Accounts"** — tức vẽ như Đăng ký tài khoản là 1 dạng con của nghiệp vụ
    Quản lý tài khoản bên Admin. Thực tế đăng ký là Customer tự làm
-   (`RegisterFrm`), không liên quan gì đến Admin quản lý tài khoản — nên bỏ
+   (`RegisterDialog`), không liên quan gì đến Admin quản lý tài khoản — nên bỏ
    quan hệ generalize này, chỉ giữ association Customer — Register Account.
 
 ---

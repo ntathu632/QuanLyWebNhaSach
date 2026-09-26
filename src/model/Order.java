@@ -95,7 +95,7 @@ public class Order implements Serializable {
         this.details = details;
     }
 
-    // Không có trong class diagram gốc, nhưng cần thiết để CheckoutPage lưu phương thức
+    // Không có trong class diagram gốc, nhưng cần thiết để CheckoutFrm lưu phương thức
     // thanh toán đã chọn, sau đó PaymentPage/PaymentDAO đọc lại để tạo Payment tương ứng.
     public String getPaymentMethod() {
         return paymentMethod;

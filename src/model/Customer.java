@@ -24,7 +24,7 @@ public class Customer implements Serializable {
 
     // Không có trong class diagram gốc — chỉ dùng để nhớ username của Account
     // gắn với Customer này (populate qua AccountDAO.getCustomerByUsername()),
-    // cần cho FR-COM-02 (Change Password) vì CustomerShellFrm chỉ giữ Customer,
+    // cần cho FR-COM-02 (Change Password) vì các trang Khách hàng chỉ giữ Customer,
     // không giữ Account. Không lưu xuống CSDL.
     private String username;
 

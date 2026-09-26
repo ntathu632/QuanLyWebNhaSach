@@ -79,7 +79,7 @@ public class CustomerDAO extends DAO {
 
     // Cập nhật ảnh đại diện — tách riêng khỏi updateCustomer() vì đây là 1
     // thao tác độc lập (chọn file rồi lưu ngay), không đi qua flow "Sửa" từng
-    // trường của AccountPage.
+    // trường của AccountFrm.
     public boolean updateAvatar(int customerID, String avatarFilename) {
         try {
             PreparedStatement ps = con.prepareStatement("UPDATE Customer SET avatar = ? WHERE customerID = ?");
