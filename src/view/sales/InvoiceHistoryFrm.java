@@ -557,7 +557,7 @@ public class InvoiceHistoryFrm extends javax.swing.JFrame {
 
     /** Xem chi tiết 1 hóa đơn — thông tin thanh toán + danh sách sách đã bán. */
     private void showInvoiceDetail(Invoice invoice) {
-        OrderDetailPopup.show(this, "Chi tiết hóa đơn #" + invoice.getInvoiceID(), new String[][]{
+        SalesOrderDetailDialog.show(this, "Chi tiết hóa đơn #" + invoice.getInvoiceID(), new String[][]{
             {"Khách hàng:", invoice.getCustomerName()},
             {"Nhân viên lập:", invoice.getEmployeeName()},
             {"Phương thức thanh toán:", invoice.getPaymentMethod()},

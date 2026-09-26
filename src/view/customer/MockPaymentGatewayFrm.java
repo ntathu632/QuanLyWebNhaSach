@@ -307,7 +307,9 @@ public class MockPaymentGatewayFrm extends javax.swing.JFrame {
 
         lblSecure.setFont(new java.awt.Font("Raleway Medium", 0, 12)); // NOI18N
         lblSecure.setForeground(new java.awt.Color(235, 235, 235));
-        lblSecure.setText("🔒 Kết nối an toàn (giả lập, không phải cổng thật)");
+        lblSecure.setIcon(new view.shared.FlatIcon(view.shared.FlatIcon.Kind.LOCK, new java.awt.Color(235, 235, 235), 14));
+        lblSecure.setText("Kết nối an toàn (giả lập, không phải cổng thật)");
+        lblSecure.setIconTextGap(6);
         pnlGatewayHeader.add(lblSecure, java.awt.BorderLayout.EAST);
 
         pnlGateway.add(pnlGatewayHeader, java.awt.BorderLayout.NORTH);

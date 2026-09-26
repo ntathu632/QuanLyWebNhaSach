@@ -20,7 +20,7 @@ import javax.swing.Icon;
 public final class FlatIcon implements Icon {
 
     public enum Kind {
-        BOOK, RECEIPT, USERS, USER, MONEY, TAG, PEN, BUILDING, CHART, LOGOUT, HOME, PLUS, TRASH, BACK, SEARCH
+        BOOK, RECEIPT, USERS, USER, MONEY, TAG, PEN, BUILDING, CHART, LOGOUT, HOME, PLUS, TRASH, BACK, SEARCH, LOCK
     }
 
     private final Kind kind;
@@ -143,6 +143,14 @@ public final class FlatIcon implements Icon {
                 g2.draw(new Rectangle2D.Float(s * 0.38f, s * 0.10f, s * 0.24f, s * 0.14f));
                 g2.draw(new java.awt.geom.Line2D.Float(s * 0.40f, s * 0.36f, s * 0.40f, s * 0.76f));
                 g2.draw(new java.awt.geom.Line2D.Float(s * 0.60f, s * 0.36f, s * 0.60f, s * 0.76f));
+            }
+            case LOCK -> {
+                // Thân khóa bo góc + quai cong phía trên + lỗ khóa.
+                g2.draw(new RoundRectangle2D.Float(s * 0.18f, s * 0.44f, s * 0.64f, s * 0.48f, s * 0.10f, s * 0.10f));
+                g2.draw(new java.awt.geom.Arc2D.Float(s * 0.30f, s * 0.10f, s * 0.40f, s * 0.52f, 0, 180, java.awt.geom.Arc2D.OPEN));
+                g2.draw(new java.awt.geom.Line2D.Float(s * 0.30f, s * 0.36f, s * 0.30f, s * 0.44f));
+                g2.draw(new java.awt.geom.Line2D.Float(s * 0.70f, s * 0.36f, s * 0.70f, s * 0.44f));
+                g2.fill(new java.awt.geom.Ellipse2D.Float(s * 0.43f, s * 0.58f, s * 0.14f, s * 0.14f));
             }
         }
         g2.dispose();

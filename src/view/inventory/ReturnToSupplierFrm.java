@@ -12,16 +12,9 @@ import dao.BookDAO;
 import dao.InventoryDAO;
 import dao.StockTransactionDAO;
 import dao.SupplierDAO;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
 import model.Book;
@@ -503,52 +496,13 @@ public class ReturnToSupplierFrm extends javax.swing.JFrame {
             return;
         }
 
-        JPanel panel = new JPanel(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(6, 0, 6, 10);
-        gbc.anchor = GridBagConstraints.WEST;
-
-        JTextField txtQuantity = new JTextField("1", 18);
-        JComboBox<Supplier> cboSupplier = new JComboBox<>(suppliers);
-        JTextField txtNote = new JTextField(18);
-
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        panel.add(new JLabel("Số lượng trả (còn " + stock + "): *"), gbc);
-        gbc.gridx = 1;
-        panel.add(txtQuantity, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        panel.add(new JLabel("Trả cho nhà cung cấp: *"), gbc);
-        gbc.gridx = 1;
-        panel.add(cboSupplier, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        panel.add(new JLabel("Lý do / ghi chú:"), gbc);
-        gbc.gridx = 1;
-        panel.add(txtNote, gbc);
-
-        int result = JOptionPane.showConfirmDialog(this, panel,
-                "Xuất trả \"" + selected.getTitle() + "\"", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
-        if (result != JOptionPane.OK_OPTION) {
+        StockTransactionDialog.Result input = StockTransactionDialog.askReturn(this, selected.getTitle(), stock, suppliers);
+        if (input == null) {
             return;
         }
-
-        int quantity;
-        try {
-            quantity = Integer.parseInt(txtQuantity.getText().trim());
-            if (quantity <= 0) {
-                throw new NumberFormatException();
-            }
-        } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this, "Số lượng không hợp lệ!");
-            return;
-        }
-
-        Supplier supplier = (Supplier) cboSupplier.getSelectedItem();
-        String note = txtNote.getText().trim();
+        int quantity = input.quantity;
+        Supplier supplier = input.supplier;
+        String note = input.note;
         String error = new StockTransactionDAO().recordReturn(selected.getBookID(), supplier.getSupplierID(),
                 employee.getEmployeeID(), quantity, note);
         if (error == null) {

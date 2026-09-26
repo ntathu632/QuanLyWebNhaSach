@@ -16,6 +16,7 @@ import model.Employee;
 import model.Inventory;
 import view.shared.AppTheme;
 import view.shared.ChangePasswordDialog;
+import view.shared.QuantityDialog;
 
 /**
  *
@@ -442,23 +443,14 @@ public class InventoryCheckingFrm extends javax.swing.JFrame {
             return;
         }
         Inventory selected = currentItems.get(row);
-        String input = JOptionPane.showInputDialog(this,
+        Integer input = QuantityDialog.ask(this, "Kiểm kê",
                 "Số lượng đếm được thực tế cho \"" + selected.getBookTitle() + "\" "
                 + "(hệ thống đang ghi " + selected.getStockQuantity() + "):",
-                String.valueOf(selected.getStockQuantity()));
+                String.valueOf(selected.getStockQuantity()), 0);
         if (input == null) {
             return;
         }
-        int actual;
-        try {
-            actual = Integer.parseInt(input.trim());
-            if (actual < 0) {
-                throw new NumberFormatException();
-            }
-        } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this, "Số lượng không hợp lệ!");
-            return;
-        }
+        int actual = input;
 
         if (actual == selected.getStockQuantity()) {
             JOptionPane.showMessageDialog(this, "Khớp với hệ thống, không cần điều chỉnh.");

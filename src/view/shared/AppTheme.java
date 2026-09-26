@@ -266,6 +266,14 @@ public final class AppTheme {
         from.dispose();
     }
 
+    /** Cửa sổ chứa "c" (hoặc chính "c" nếu là cửa sổ) — làm owner cho các JDialog Form. */
+    public static java.awt.Window windowOf(Component c) {
+        if (c == null || c instanceof java.awt.Window) {
+            return (java.awt.Window) c;
+        }
+        return javax.swing.SwingUtilities.getWindowAncestor(c);
+    }
+
     /**
      * Căn lề cell và header của 1 cột JTable theo cùng 1 kiểu, và (tùy chọn)
      * ghim độ rộng cột. Mặc định Swing/FlatLaf căn giữa header nhưng căn trái

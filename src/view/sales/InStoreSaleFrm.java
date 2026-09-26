@@ -24,8 +24,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,7 +38,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
@@ -53,6 +50,7 @@ import model.OrderDetail;
 import view.customer.BookCoverPanel;
 import view.shared.AppTheme;
 import view.shared.ChangePasswordDialog;
+import view.shared.QuantityDialog;
 
 /**
  *
@@ -667,14 +665,14 @@ public class InStoreSaleFrm extends javax.swing.JFrame {
     }//GEN-LAST:event_btnLogoutActionPerformed
 
     private void btnPickCustomerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPickCustomerActionPerformed
-        Customer picked = pickCustomer();
+        Customer picked = PickCustomerDialog.ask(this);
         if (picked != null) {
             setCustomer(picked);
         }
     }//GEN-LAST:event_btnPickCustomerActionPerformed
 
     private void btnAddCustomerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddCustomerActionPerformed
-        Customer created = addNewCustomer();
+        Customer created = AddCustomerDialog.ask(this);
         if (created != null) {
             setCustomer(created);
         }
@@ -732,7 +730,8 @@ public class InStoreSaleFrm extends javax.swing.JFrame {
         String error = new InvoiceDAO().createInStoreSale(customer.getCustomerID(), cartItems, paymentMethod,
                 employee.getEmployeeID(), outOrderId);
         if (error == null) {
-            showReceiptDialog(outOrderId[0], customer, employee.getFullName(), paymentMethod, cartItems);
+            ReceiptDialog.show(this, outOrderId[0],
+                    buildReceiptText(outOrderId[0], customer, employee.getFullName(), paymentMethod, cartItems));
             // Mở lại trang trống cho hóa đơn tiếp theo.
             SalesNav.go(this, employee, "instore");
         } else {
@@ -766,21 +765,12 @@ public class InStoreSaleFrm extends javax.swing.JFrame {
     }
 
     private void addBookToCart(Book book, int stock) {
-        String input = JOptionPane.showInputDialog(this,
-                "Số lượng cho \"" + book.getTitle() + "\" (còn " + stock + "):", "1");
+        Integer input = QuantityDialog.ask(this, "Thêm vào hóa đơn",
+                "Số lượng cho \"" + book.getTitle() + "\" (còn " + stock + "):", "1", 1);
         if (input == null) {
             return;
         }
-        int qty;
-        try {
-            qty = Integer.parseInt(input.trim());
-            if (qty <= 0) {
-                throw new NumberFormatException();
-            }
-        } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this, "Số lượng không hợp lệ!");
-            return;
-        }
+        int qty = input;
         cartItems.add(new OrderDetail(qty, book.getPrice(), book.getPrice() * qty, book));
         refreshCart();
     }
@@ -856,37 +846,6 @@ public class InStoreSaleFrm extends javax.swing.JFrame {
         return s == null ? "" : s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
     }
 
-    /**
-     * Hiện biên lai vừa lập (số hóa đơn = orderID) trong 1 khung chữ đơn cách
-     * (monospace) để cột thẳng hàng, kèm nút in trực tiếp bằng
-     * JTextArea.print() — mở hộp thoại máy in hệ thống, không cần thư viện
-     * PDF/print riêng.
-     */
-    private void showReceiptDialog(int orderID, Customer customer, String employeeName,
-            String paymentMethod, List<OrderDetail> items) {
-        JTextArea receipt = new JTextArea(buildReceiptText(orderID, customer, employeeName, paymentMethod, items));
-        receipt.setEditable(false);
-        receipt.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 13));
-        receipt.setBackground(Color.WHITE);
-        receipt.setBorder(new EmptyBorder(10, 12, 10, 12));
-
-        JScrollPane scroll = new JScrollPane(receipt);
-        scroll.setPreferredSize(new Dimension(420, 380));
-        scroll.setBorder(BorderFactory.createLineBorder(AppTheme.INPUT_BORDER));
-
-        Object[] options = {"In hóa đơn", "Đóng"};
-        int choice = JOptionPane.showOptionDialog(this, scroll, "Lập hóa đơn thành công! Hóa đơn #" + orderID,
-                JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
-        if (choice == 0) {
-            try {
-                receipt.print();
-            } catch (java.awt.print.PrinterException ex) {
-                ex.printStackTrace();
-                JOptionPane.showMessageDialog(this, "In hóa đơn thất bại: " + ex.getMessage());
-            }
-        }
-    }
-
     private String buildReceiptText(int orderID, Customer customer, String employeeName,
             String paymentMethod, List<OrderDetail> items) {
         SimpleDateFormat fmt = new SimpleDateFormat("dd/MM/yyyy HH:mm");
@@ -911,91 +870,6 @@ public class InStoreSaleFrm extends javax.swing.JFrame {
         sb.append("========================================\n");
         sb.append("           Cảm ơn quý khách!\n");
         return sb.toString();
-    }
-
-    private Customer pickCustomer() {
-        String keyword = JOptionPane.showInputDialog(this, "Nhập tên/SĐT/email khách hàng:");
-        if (keyword == null || keyword.trim().isEmpty()) {
-            return null;
-        }
-        Customer[] found = new CustomerDAO().searchCustomer(keyword.trim());
-        if (found.length == 0) {
-            JOptionPane.showMessageDialog(this, "Không tìm thấy khách hàng nào!");
-            return null;
-        }
-        String[] options = new String[found.length];
-        for (int i = 0; i < found.length; i++) {
-            options[i] = found[i].getFullName() + " - " + found[i].getPhone();
-        }
-        String choice = (String) JOptionPane.showInputDialog(this, "Chọn khách hàng:", "Kết quả",
-                JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
-        if (choice == null) {
-            return null;
-        }
-        return found[Arrays.asList(options).indexOf(choice)];
-    }
-
-    /**
-     * FR-SALE-09: tạo nhanh 1 khách hàng thật ngay tại quầy khi khách chưa có
-     * trong hệ thống — thay vì bắt buộc dùng chung "Khách vãng lai". Email
-     * là NOT NULL + UNIQUE trong CSDL nhưng nhân viên thường không hỏi email
-     * khi bán tại quầy, nên để trống thì tự sinh 1 email placeholder theo số
-     * điện thoại (cùng kiểu placeholder @bookshop.local đã dùng cho khách
-     * vãng lai) thay vì chặn luôn nếu nhân viên không có email khách.
-     */
-    private Customer addNewCustomer() {
-        JPanel panel = new JPanel(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new java.awt.Insets(6, 0, 6, 10);
-        gbc.anchor = GridBagConstraints.WEST;
-
-        JTextField txtName = new JTextField(18);
-        JTextField txtPhone = new JTextField(18);
-        JTextField txtEmail = new JTextField(18);
-        JTextField txtAddress = new JTextField(18);
-
-        String[] labels = {"Họ tên *:", "Số điện thoại *:", "Email (tùy chọn):", "Địa chỉ (tùy chọn):"};
-        JTextField[] fields = {txtName, txtPhone, txtEmail, txtAddress};
-        for (int i = 0; i < labels.length; i++) {
-            gbc.gridx = 0;
-            gbc.gridy = i;
-            gbc.fill = GridBagConstraints.NONE;
-            panel.add(new JLabel(labels[i]), gbc);
-            gbc.gridx = 1;
-            gbc.fill = GridBagConstraints.HORIZONTAL;
-            panel.add(fields[i], gbc);
-        }
-
-        int result = JOptionPane.showConfirmDialog(this, panel, "Thêm khách hàng mới",
-                JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
-        if (result != JOptionPane.OK_OPTION) {
-            return null;
-        }
-
-        String name = txtName.getText().trim();
-        String phone = txtPhone.getText().trim();
-        if (name.isEmpty() || phone.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Vui lòng nhập Họ tên và Số điện thoại!");
-            return null;
-        }
-        String email = txtEmail.getText().trim();
-        if (email.isEmpty()) {
-            email = "khach" + phone + "@bookshop.local";
-        }
-
-        Customer customer = new Customer();
-        customer.setFullName(name);
-        customer.setPhone(phone);
-        customer.setEmail(email);
-        String address = txtAddress.getText().trim();
-        customer.setAddress(address.isEmpty() ? null : address);
-
-        String error = new CustomerDAO().addCustomer(customer);
-        if (error != null) {
-            JOptionPane.showMessageDialog(this, error);
-            return null;
-        }
-        return customer;
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

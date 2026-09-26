@@ -501,36 +501,7 @@ public class OrderHistoryFrm extends javax.swing.JFrame {
 
     /** Hộp thoại chi tiết 1 đơn: trạng thái, địa chỉ, tổng tiền + bảng các sách trong đơn. */
     private void showOrderDetail(Order order) {
-        List<OrderDetail> details = new OrderDAO().getOrderDetails(order.getOrderID());
-
-        JPanel panel = new JPanel(new BorderLayout(0, 10));
-        panel.setPreferredSize(new java.awt.Dimension(480, 300));
-
-        JLabel info = new JLabel("<html>Trạng thái: <b>" + statusLabel(order.getStatus()) + "</b><br>"
-                + "Địa chỉ giao hàng: " + (order.getShippingAddress() == null ? "" : order.getShippingAddress()) + "<br>"
-                + "Tổng tiền: <b>" + String.format("%,.0f₫", order.getTotalAmount()) + "</b></html>");
-        panel.add(info, BorderLayout.NORTH);
-
-        String[] columns = {"Sách", "Số lượng", "Đơn giá", "Thành tiền"};
-        DefaultTableModel model = new DefaultTableModel(columns, 0) {
-            @Override
-            public boolean isCellEditable(int row, int col) {
-                return false;
-            }
-        };
-        for (OrderDetail d : details) {
-            model.addRow(new Object[]{d.getBook().getTitle(), d.getQuantity(),
-                String.format("%,.0f₫", d.getUnitPrice()), String.format("%,.0f₫", d.getSubtotal())});
-        }
-        JTable table = new JTable(model);
-        table.setRowHeight(26);
-        AppTheme.alignTableColumn(table, 0, SwingConstants.LEFT, 0, 0);
-        AppTheme.alignTableColumn(table, 1, SwingConstants.CENTER, 80, 80);
-        AppTheme.alignTableColumn(table, 2, SwingConstants.RIGHT, 100, 100);
-        AppTheme.alignTableColumn(table, 3, SwingConstants.RIGHT, 100, 100);
-        panel.add(new JScrollPane(table), BorderLayout.CENTER);
-
-        JOptionPane.showMessageDialog(this, panel, "Chi tiết đơn hàng #" + order.getOrderID(), JOptionPane.PLAIN_MESSAGE);
+        OrderDetailDialog.show(this, order, statusLabel(order.getStatus()));
     }
 
     private String statusLabel(String status) {

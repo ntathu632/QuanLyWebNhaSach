@@ -10,16 +10,10 @@ package view.sales;
 
 import dao.OrderDAO;
 import dao.PaymentDAO;
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
 import model.Customer;
@@ -35,7 +29,6 @@ import view.shared.ChangePasswordDialog;
 public class OrderManagementFrm extends javax.swing.JFrame {
 
     private static final SimpleDateFormat DATE_FMT = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-    private static final String[] STATUSES = {"Pending", "Paid", "Cancelled"};
     private static final String ALL_STATUSES = "Tất cả trạng thái";
 
     private final Employee employee;
@@ -518,26 +511,8 @@ public class OrderManagementFrm extends javax.swing.JFrame {
         }
         Order selected = currentOrders.get(row);
 
-        JPanel panel = new JPanel(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new java.awt.Insets(6, 0, 6, 10);
-        gbc.anchor = GridBagConstraints.WEST;
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        panel.add(new JLabel("Trạng thái mới:"), gbc);
-        JComboBox<String> cboStatus = new JComboBox<>(STATUSES);
-        cboStatus.setSelectedItem(selected.getStatus());
-        cboStatus.setPreferredSize(new Dimension(180, cboStatus.getPreferredSize().height));
-        gbc.gridx = 1;
-        panel.add(cboStatus, gbc);
-
-        int result = JOptionPane.showConfirmDialog(this, panel,
-                "Cập nhật trạng thái đơn #" + selected.getOrderID(), JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
-        if (result != JOptionPane.OK_OPTION) {
-            return;
-        }
-        String newStatus = (String) cboStatus.getSelectedItem();
-        if (newStatus.equals(selected.getStatus())) {
+        String newStatus = UpdateOrderStatusDialog.ask(this, selected.getOrderID(), selected.getStatus());
+        if (newStatus == null || newStatus.equals(selected.getStatus())) {
             return;
         }
         if (new OrderDAO().updateOrderStatus(selected.getOrderID(), newStatus)) {
@@ -579,7 +554,7 @@ public class OrderManagementFrm extends javax.swing.JFrame {
     /** FR-SALE-02: xem chi tiết 1 đơn hàng online — thông tin khách hàng + danh sách sách đã đặt. */
     private void showOrderDetail(Order order) {
         Customer c = order.getCustomer();
-        OrderDetailPopup.show(this, "Chi tiết đơn hàng #" + order.getOrderID(), new String[][]{
+        SalesOrderDetailDialog.show(this, "Chi tiết đơn hàng #" + order.getOrderID(), new String[][]{
             {"Khách hàng:", c.getFullName()},
             {"Điện thoại:", c.getPhone() == null ? "—" : c.getPhone()},
             {"Email:", c.getEmail() == null ? "—" : c.getEmail()},
