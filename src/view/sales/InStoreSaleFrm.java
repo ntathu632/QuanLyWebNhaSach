@@ -47,7 +47,7 @@ import model.Category;
 import model.Customer;
 import model.Employee;
 import model.OrderDetail;
-import view.customer.BookCoverPanel;
+import view.shared.BookCoverPanel;
 import view.shared.AppTheme;
 import view.shared.ChangePasswordDialog;
 import view.shared.QuantityDialog;
@@ -60,7 +60,7 @@ public class InStoreSaleFrm extends javax.swing.JPanel implements SalesPage {
 
     private SalesShellFrm shell;
 
-    private static final Color MUTED = new Color(0x8A, 0x83, 0x74);
+    private static final Color MUTED = new Color(0x8C, 0x7B, 0x6D);
     private static final String ALL_CATEGORIES = "Tất cả danh mục";
 
     private final Employee employee;
@@ -158,10 +158,10 @@ public class InStoreSaleFrm extends javax.swing.JPanel implements SalesPage {
         cboPaymentMethod = new javax.swing.JComboBox<>();
         btnSubmit = new javax.swing.JButton();
 
-        setBackground(new java.awt.Color(243, 238, 221));
+        setBackground(new java.awt.Color(255, 255, 255));
         setLayout(new java.awt.BorderLayout());
 
-        pnlContent.setBackground(new java.awt.Color(243, 238, 221));
+        pnlContent.setBackground(new java.awt.Color(255, 255, 255));
 
         lblTitle.setFont(new java.awt.Font("Cormorant Garamond", 1, 30)); // NOI18N
         lblTitle.setText("Lập hóa đơn bán hàng");
@@ -169,7 +169,7 @@ public class InStoreSaleFrm extends javax.swing.JPanel implements SalesPage {
         lblCustomer.setFont(new java.awt.Font("Raleway Medium", 0, 14)); // NOI18N
         lblCustomer.setText("Khách hàng: Khách vãng lai");
 
-        btnPickCustomer.setBackground(new java.awt.Color(192, 96, 74));
+        btnPickCustomer.setBackground(new java.awt.Color(122, 74, 51));
         btnPickCustomer.setFont(new java.awt.Font("Raleway Medium", 0, 14)); // NOI18N
         btnPickCustomer.setForeground(new java.awt.Color(255, 255, 255));
         btnPickCustomer.setText("Chọn khách quen...");
@@ -181,7 +181,7 @@ public class InStoreSaleFrm extends javax.swing.JPanel implements SalesPage {
             }
         });
 
-        btnAddCustomer.setBackground(new java.awt.Color(192, 96, 74));
+        btnAddCustomer.setBackground(new java.awt.Color(122, 74, 51));
         btnAddCustomer.setFont(new java.awt.Font("Raleway Medium", 0, 14)); // NOI18N
         btnAddCustomer.setForeground(new java.awt.Color(255, 255, 255));
         btnAddCustomer.setText("+ Khách hàng mới...");
@@ -197,7 +197,7 @@ public class InStoreSaleFrm extends javax.swing.JPanel implements SalesPage {
         pnlColumns.setLayout(new java.awt.GridLayout(1, 2, 20, 0));
 
         pnlSearch.setBackground(new java.awt.Color(255, 255, 255));
-        pnlSearch.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(216, 211, 196), 1, true));
+        pnlSearch.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(234, 223, 209), 1, true));
 
         lblSearchTitle.setFont(new java.awt.Font("Raleway Medium", 0, 15)); // NOI18N
         lblSearchTitle.setText("Tìm sách");
@@ -208,7 +208,7 @@ public class InStoreSaleFrm extends javax.swing.JPanel implements SalesPage {
             }
         });
 
-        btnSearch.setBackground(new java.awt.Color(107, 127, 92));
+        btnSearch.setBackground(new java.awt.Color(122, 74, 51));
         btnSearch.setFont(new java.awt.Font("Raleway Medium", 0, 14)); // NOI18N
         btnSearch.setForeground(new java.awt.Color(255, 255, 255));
         btnSearch.setText("Tìm");
@@ -281,7 +281,7 @@ public class InStoreSaleFrm extends javax.swing.JPanel implements SalesPage {
         pnlColumns.add(pnlSearch);
 
         pnlInvoice.setBackground(new java.awt.Color(255, 255, 255));
-        pnlInvoice.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(216, 211, 196), 1, true));
+        pnlInvoice.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(234, 223, 209), 1, true));
 
         lblInvoiceTitle.setFont(new java.awt.Font("Raleway Medium", 0, 15)); // NOI18N
         lblInvoiceTitle.setText("Hóa đơn hiện tại");
@@ -302,13 +302,13 @@ public class InStoreSaleFrm extends javax.swing.JPanel implements SalesPage {
                 return canEdit [columnIndex];
             }
         });
-        tblCart.setGridColor(new java.awt.Color(216, 211, 196));
+        tblCart.setGridColor(new java.awt.Color(234, 223, 209));
         tblCart.setRowHeight(28);
         tblCart.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         tblCart.getTableHeader().setReorderingAllowed(false);
         scrCart.setViewportView(tblCart);
 
-        btnRemoveLine.setBackground(new java.awt.Color(192, 96, 74));
+        btnRemoveLine.setBackground(new java.awt.Color(122, 74, 51));
         btnRemoveLine.setFont(new java.awt.Font("Raleway Medium", 0, 14)); // NOI18N
         btnRemoveLine.setForeground(new java.awt.Color(255, 255, 255));
         btnRemoveLine.setText("Xóa dòng đã chọn");
@@ -321,12 +321,12 @@ public class InStoreSaleFrm extends javax.swing.JPanel implements SalesPage {
         });
 
         lblTotal.setFont(new java.awt.Font("Raleway Medium", 0, 16)); // NOI18N
-        lblTotal.setForeground(new java.awt.Color(192, 57, 43));
+        lblTotal.setForeground(new java.awt.Color(138, 87, 59));
         lblTotal.setText("Tổng cộng: 0₫");
 
         cboPaymentMethod.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Cash on Delivery", "Credit Card", "Bank Transfer", "E-Wallet" }));
 
-        btnSubmit.setBackground(new java.awt.Color(107, 127, 92));
+        btnSubmit.setBackground(new java.awt.Color(122, 74, 51));
         btnSubmit.setFont(new java.awt.Font("Raleway Medium", 0, 14)); // NOI18N
         btnSubmit.setForeground(new java.awt.Color(255, 255, 255));
         btnSubmit.setText("Lập hóa đơn");
@@ -596,7 +596,7 @@ public class InStoreSaleFrm extends javax.swing.JPanel implements SalesPage {
             String paymentMethod, List<OrderDetail> items) {
         SimpleDateFormat fmt = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         StringBuilder sb = new StringBuilder();
-        sb.append("          BOOKSHOP - HÓA ĐƠN BÁN HÀNG\n");
+        sb.append("    VINTAGE BOOKS - HÓA ĐƠN BÁN HÀNG\n");
         sb.append("========================================\n");
         sb.append("Hóa đơn số: #").append(orderID).append("\n");
         sb.append("Ngày lập  : ").append(fmt.format(new Date())).append("\n");

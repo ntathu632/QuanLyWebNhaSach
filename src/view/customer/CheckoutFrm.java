@@ -80,21 +80,21 @@ public class CheckoutFrm extends javax.swing.JPanel implements CustomerPage {
         btnBack = new javax.swing.JButton();
         btnConfirm = new javax.swing.JButton();
 
-        setBackground(new java.awt.Color(243, 238, 221));
+        setBackground(new java.awt.Color(255, 255, 255));
         setLayout(new java.awt.BorderLayout());
 
-        pnlContent.setBackground(new java.awt.Color(243, 238, 221));
+        pnlContent.setBackground(new java.awt.Color(255, 255, 255));
 
         lblTitle.setFont(new java.awt.Font("Cormorant Garamond", 1, 30)); // NOI18N
         lblTitle.setText("Xác nhận đơn hàng");
 
         pnlCard.setBackground(new java.awt.Color(255, 255, 255));
-        pnlCard.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(216, 211, 196), 1, true));
+        pnlCard.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(234, 223, 209), 1, true));
 
         lblTotalCaption.setText("Tổng tiền:");
 
         lblTotal.setFont(new java.awt.Font("Raleway Medium", 0, 20)); // NOI18N
-        lblTotal.setForeground(new java.awt.Color(192, 57, 43));
+        lblTotal.setForeground(new java.awt.Color(138, 87, 59));
         lblTotal.setText("0₫");
 
         lblAddressCaption.setText("Địa chỉ giao hàng:");
@@ -103,7 +103,7 @@ public class CheckoutFrm extends javax.swing.JPanel implements CustomerPage {
 
         cboPaymentMethod.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "VNPay", "Momo", "Bank Transfer", "Cash on Delivery" }));
 
-        btnBack.setBackground(new java.awt.Color(192, 96, 74));
+        btnBack.setBackground(new java.awt.Color(122, 74, 51));
         btnBack.setFont(new java.awt.Font("Raleway Medium", 0, 14)); // NOI18N
         btnBack.setForeground(new java.awt.Color(255, 255, 255));
         btnBack.setText("Quay lại giỏ hàng");
@@ -115,7 +115,7 @@ public class CheckoutFrm extends javax.swing.JPanel implements CustomerPage {
             }
         });
 
-        btnConfirm.setBackground(new java.awt.Color(107, 127, 92));
+        btnConfirm.setBackground(new java.awt.Color(122, 74, 51));
         btnConfirm.setFont(new java.awt.Font("Raleway Medium", 0, 14)); // NOI18N
         btnConfirm.setForeground(new java.awt.Color(255, 255, 255));
         btnConfirm.setText("Xác nhận đặt hàng");

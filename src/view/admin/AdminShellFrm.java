@@ -54,12 +54,12 @@ public class AdminShellFrm extends javax.swing.JFrame {
 
         updateTopbarLeft(page);
         setActiveNav(page.navKey());
-        setTitle("Bookshop Management - " + page.title());
+        setTitle("Vintage Books - " + page.title());
     }
 
     private void initShell() {
         getContentPane().setBackground(AppTheme.BACKGROUND);
-        // Title bar (FlatLaf vẽ riêng, cũng màu HEADER) và khối "Bookshop Admin"
+        // Title bar (FlatLaf vẽ riêng, cũng màu HEADER) và khối "Vintage Books Admin"
         // ngay bên dưới cùng là màu xanh olive — nếu không có đường kẻ phân tách,
         // 2 khối sẽ nhìn dính liền thành 1. Thêm viền sáng màu nền để tách rõ.
         ((JComponent) getContentPane()).setBorder(BorderFactory.createMatteBorder(2, 0, 0, 0, AppTheme.BACKGROUND));
@@ -194,27 +194,25 @@ public class AdminShellFrm extends javax.swing.JFrame {
         setDefaultCloseOperation(3);
         getContentPane().setLayout(new java.awt.BorderLayout());
 
-        sidebar.setBackground(AppTheme.HEADER);
+        sidebar.setBackground(AppTheme.SIDEBAR_BG);
         sidebar.setPreferredSize(new java.awt.Dimension(AppTheme.SIDEBAR_WIDTH, 0));
         sidebar.setLayout(new javax.swing.BoxLayout(sidebar, javax.swing.BoxLayout.Y_AXIS));
-        brandPanel.setBackground(AppTheme.HEADER);
+        brandPanel.setBackground(AppTheme.SIDEBAR_BG);
         brandPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 18, 0, 12));
         brandPanel.setAlignmentX(0.0F);
         brandPanel.setMaximumSize(new java.awt.Dimension(Integer.MAX_VALUE, AppTheme.TOPBAR_HEIGHT));
         brandPanel.setMinimumSize(new java.awt.Dimension(AppTheme.SIDEBAR_WIDTH, AppTheme.TOPBAR_HEIGHT));
         brandPanel.setPreferredSize(new java.awt.Dimension(AppTheme.SIDEBAR_WIDTH, AppTheme.TOPBAR_HEIGHT));
         brandPanel.setLayout(new java.awt.BorderLayout());
-        brand.setText("Bookshop Admin");
-        brand.setIcon(new FlatIcon(FlatIcon.Kind.BOOK, java.awt.Color.WHITE, 20));
-        brand.setIconTextGap(10);
-        brand.setForeground(new java.awt.Color(255, 255, 255));
-        brand.setFont(brand.getFont().deriveFont(java.awt.Font.BOLD, 17f));
+        brand.setText("Vintage Books");
+        brand.setForeground(new java.awt.Color(122, 74, 51));
+        brand.setFont(new java.awt.Font("Cormorant Garamond", 1, 32)); // NOI18N
         brandPanel.add(brand, java.awt.BorderLayout.CENTER);
         sidebar.add(brandPanel);
 
         brandDivider.setMaximumSize(new java.awt.Dimension(2147483647, 2));
         brandDivider.setPreferredSize(new java.awt.Dimension(0, 2));
-        brandDivider.setBackground(AppTheme.PRIMARY_HOVER);
+        brandDivider.setBackground(AppTheme.LINE);
         brandDivider.setLayout(new java.awt.FlowLayout());
         sidebar.add(brandDivider);
 
@@ -225,8 +223,9 @@ public class AdminShellFrm extends javax.swing.JFrame {
         btnNavDashboard.setAlignmentX(0.0F);
         btnNavDashboard.setMaximumSize(new java.awt.Dimension(2147483647, 42));
         sidebar.add(btnNavDashboard);
-        sidebarSeparator1.setBackground(AppTheme.PRIMARY_HOVER);
+        sidebarSeparator1.setBackground(AppTheme.LINE);
         sidebarSeparator1.setMaximumSize(new java.awt.Dimension(2147483647, 1));
+        sidebarSeparator1.setPreferredSize(new java.awt.Dimension(0, 1));
         sidebarSeparator1.setLayout(new java.awt.FlowLayout());
         sidebar.add(sidebarSeparator1);
 
@@ -292,8 +291,9 @@ public class AdminShellFrm extends javax.swing.JFrame {
         btnNavAccounts.setAlignmentX(0.0F);
         btnNavAccounts.setMaximumSize(new java.awt.Dimension(2147483647, 42));
         sidebar.add(btnNavAccounts);
-        sidebarSeparator2.setBackground(AppTheme.PRIMARY_HOVER);
+        sidebarSeparator2.setBackground(AppTheme.LINE);
         sidebarSeparator2.setMaximumSize(new java.awt.Dimension(2147483647, 1));
+        sidebarSeparator2.setPreferredSize(new java.awt.Dimension(0, 1));
         sidebarSeparator2.setLayout(new java.awt.FlowLayout());
         sidebar.add(sidebarSeparator2);
 
@@ -311,8 +311,9 @@ public class AdminShellFrm extends javax.swing.JFrame {
         btnNavReports.setMaximumSize(new java.awt.Dimension(2147483647, 42));
         sidebar.add(btnNavReports);
         sidebar.add(filler1);
-        sidebarSeparator3.setBackground(AppTheme.PRIMARY_HOVER);
+        sidebarSeparator3.setBackground(AppTheme.LINE);
         sidebarSeparator3.setMaximumSize(new java.awt.Dimension(2147483647, 1));
+        sidebarSeparator3.setPreferredSize(new java.awt.Dimension(0, 1));
         sidebarSeparator3.setLayout(new java.awt.FlowLayout());
         sidebar.add(sidebarSeparator3);
 

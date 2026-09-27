@@ -52,7 +52,7 @@ public class ShoppingCartFrm extends javax.swing.JPanel implements CustomerPage 
 
     @Override
     public String navKey() {
-        return "";
+        return "cart";
     }
 
     @Override
@@ -89,16 +89,16 @@ public class ShoppingCartFrm extends javax.swing.JPanel implements CustomerPage 
         btnRemove = new javax.swing.JButton();
         btnCheckout = new javax.swing.JButton();
 
-        setBackground(new java.awt.Color(243, 238, 221));
+        setBackground(new java.awt.Color(255, 255, 255));
         setLayout(new java.awt.BorderLayout());
 
-        pnlContent.setBackground(new java.awt.Color(243, 238, 221));
+        pnlContent.setBackground(new java.awt.Color(255, 255, 255));
 
         lblTitle.setFont(new java.awt.Font("Cormorant Garamond", 1, 30)); // NOI18N
         lblTitle.setText("Giỏ hàng");
 
         pnlCard.setBackground(new java.awt.Color(255, 255, 255));
-        pnlCard.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(216, 211, 196), 1, true));
+        pnlCard.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(234, 223, 209), 1, true));
 
         tblItems.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -116,7 +116,7 @@ public class ShoppingCartFrm extends javax.swing.JPanel implements CustomerPage 
                 return canEdit [columnIndex];
             }
         });
-        tblItems.setGridColor(new java.awt.Color(216, 211, 196));
+        tblItems.setGridColor(new java.awt.Color(234, 223, 209));
         tblItems.setRowHeight(30);
         tblItems.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         tblItems.getTableHeader().setReorderingAllowed(false);
@@ -125,7 +125,7 @@ public class ShoppingCartFrm extends javax.swing.JPanel implements CustomerPage 
         lblTotal.setFont(new java.awt.Font("Raleway Medium", 0, 16)); // NOI18N
         lblTotal.setText("Tổng cộng: 0₫");
 
-        btnRemove.setBackground(new java.awt.Color(192, 96, 74));
+        btnRemove.setBackground(new java.awt.Color(122, 74, 51));
         btnRemove.setFont(new java.awt.Font("Raleway Medium", 0, 14)); // NOI18N
         btnRemove.setForeground(new java.awt.Color(255, 255, 255));
         btnRemove.setText("Xóa sách đã chọn");
@@ -137,7 +137,7 @@ public class ShoppingCartFrm extends javax.swing.JPanel implements CustomerPage 
             }
         });
 
-        btnCheckout.setBackground(new java.awt.Color(107, 127, 92));
+        btnCheckout.setBackground(new java.awt.Color(122, 74, 51));
         btnCheckout.setFont(new java.awt.Font("Raleway Medium", 0, 14)); // NOI18N
         btnCheckout.setForeground(new java.awt.Color(255, 255, 255));
         btnCheckout.setText("Tiến hành thanh toán");

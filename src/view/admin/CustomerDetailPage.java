@@ -333,7 +333,7 @@ public class CustomerDetailPage extends javax.swing.JPanel implements AdminPage 
         infoField1.setOpaque(false);
         infoField1.setLayout(new javax.swing.BoxLayout(infoField1, javax.swing.BoxLayout.Y_AXIS));
         infoLabel1.setFont(infoLabel1.getFont().deriveFont(12f));
-        infoLabel1.setForeground(new java.awt.Color(138, 131, 116));
+        infoLabel1.setForeground(new java.awt.Color(140, 123, 109));
         infoLabel1.setText("Username");
         infoLabel1.setAlignmentX(0.0F);
         infoField1.add(infoLabel1);
@@ -348,7 +348,7 @@ public class CustomerDetailPage extends javax.swing.JPanel implements AdminPage 
         infoField2.setOpaque(false);
         infoField2.setLayout(new javax.swing.BoxLayout(infoField2, javax.swing.BoxLayout.Y_AXIS));
         infoLabel2.setFont(infoLabel2.getFont().deriveFont(12f));
-        infoLabel2.setForeground(new java.awt.Color(138, 131, 116));
+        infoLabel2.setForeground(new java.awt.Color(140, 123, 109));
         infoLabel2.setText("Họ tên");
         infoLabel2.setAlignmentX(0.0F);
         infoField2.add(infoLabel2);
@@ -363,7 +363,7 @@ public class CustomerDetailPage extends javax.swing.JPanel implements AdminPage 
         infoField3.setOpaque(false);
         infoField3.setLayout(new javax.swing.BoxLayout(infoField3, javax.swing.BoxLayout.Y_AXIS));
         infoLabel3.setFont(infoLabel3.getFont().deriveFont(12f));
-        infoLabel3.setForeground(new java.awt.Color(138, 131, 116));
+        infoLabel3.setForeground(new java.awt.Color(140, 123, 109));
         infoLabel3.setText("Trạng thái tài khoản");
         infoLabel3.setAlignmentX(0.0F);
         infoField3.add(infoLabel3);
@@ -378,7 +378,7 @@ public class CustomerDetailPage extends javax.swing.JPanel implements AdminPage 
         infoField4.setOpaque(false);
         infoField4.setLayout(new javax.swing.BoxLayout(infoField4, javax.swing.BoxLayout.Y_AXIS));
         infoLabel4.setFont(infoLabel4.getFont().deriveFont(12f));
-        infoLabel4.setForeground(new java.awt.Color(138, 131, 116));
+        infoLabel4.setForeground(new java.awt.Color(140, 123, 109));
         infoLabel4.setText("Email");
         infoLabel4.setAlignmentX(0.0F);
         infoField4.add(infoLabel4);
@@ -393,7 +393,7 @@ public class CustomerDetailPage extends javax.swing.JPanel implements AdminPage 
         infoField5.setOpaque(false);
         infoField5.setLayout(new javax.swing.BoxLayout(infoField5, javax.swing.BoxLayout.Y_AXIS));
         infoLabel5.setFont(infoLabel5.getFont().deriveFont(12f));
-        infoLabel5.setForeground(new java.awt.Color(138, 131, 116));
+        infoLabel5.setForeground(new java.awt.Color(140, 123, 109));
         infoLabel5.setText("Số điện thoại");
         infoLabel5.setAlignmentX(0.0F);
         infoField5.add(infoLabel5);
@@ -408,7 +408,7 @@ public class CustomerDetailPage extends javax.swing.JPanel implements AdminPage 
         infoField6.setOpaque(false);
         infoField6.setLayout(new javax.swing.BoxLayout(infoField6, javax.swing.BoxLayout.Y_AXIS));
         infoLabel6.setFont(infoLabel6.getFont().deriveFont(12f));
-        infoLabel6.setForeground(new java.awt.Color(138, 131, 116));
+        infoLabel6.setForeground(new java.awt.Color(140, 123, 109));
         infoLabel6.setText("Địa chỉ");
         infoLabel6.setAlignmentX(0.0F);
         infoField6.add(infoLabel6);
@@ -442,7 +442,7 @@ public class CustomerDetailPage extends javax.swing.JPanel implements AdminPage 
         statCard1.add(statValue1);
         statCard1.add(filler9);
         statCaption1.setFont(statCaption1.getFont().deriveFont(12f));
-        statCaption1.setForeground(new java.awt.Color(138, 131, 116));
+        statCaption1.setForeground(new java.awt.Color(140, 123, 109));
         statCaption1.setText("Tổng số đơn hàng");
         statCaption1.setAlignmentX(0.0F);
         statCard1.add(statCaption1);
@@ -462,7 +462,7 @@ public class CustomerDetailPage extends javax.swing.JPanel implements AdminPage 
         statCard2.add(statValue2);
         statCard2.add(filler11);
         statCaption2.setFont(statCaption2.getFont().deriveFont(12f));
-        statCaption2.setForeground(new java.awt.Color(138, 131, 116));
+        statCaption2.setForeground(new java.awt.Color(140, 123, 109));
         statCaption2.setText("Tổng chi tiêu (đơn đã thanh toán)");
         statCaption2.setAlignmentX(0.0F);
         statCard2.add(statCaption2);
@@ -482,7 +482,7 @@ public class CustomerDetailPage extends javax.swing.JPanel implements AdminPage 
         statCard3.add(statValue3);
         statCard3.add(filler13);
         statCaption3.setFont(statCaption3.getFont().deriveFont(12f));
-        statCaption3.setForeground(new java.awt.Color(138, 131, 116));
+        statCaption3.setForeground(new java.awt.Color(140, 123, 109));
         statCaption3.setText("Số đánh giá đã viết");
         statCaption3.setAlignmentX(0.0F);
         statCard3.add(statCaption3);
@@ -513,7 +513,7 @@ public class CustomerDetailPage extends javax.swing.JPanel implements AdminPage 
         orderScroll.setViewportView(orderTable);
         orderCard.add(orderScroll, java.awt.BorderLayout.CENTER);
 
-        orderEmpty.setForeground(new java.awt.Color(138, 131, 116));
+        orderEmpty.setForeground(new java.awt.Color(140, 123, 109));
         orderEmpty.setText("Khách hàng chưa có đơn hàng nào.");
         orderCard.add(orderEmpty, java.awt.BorderLayout.SOUTH);
         top.add(orderCard);
@@ -539,7 +539,7 @@ public class CustomerDetailPage extends javax.swing.JPanel implements AdminPage 
         reviewScroll.setViewportView(reviewTable);
         reviewCard.add(reviewScroll, java.awt.BorderLayout.CENTER);
 
-        reviewEmpty.setForeground(new java.awt.Color(138, 131, 116));
+        reviewEmpty.setForeground(new java.awt.Color(140, 123, 109));
         reviewEmpty.setText("Khách hàng chưa viết đánh giá nào.");
         reviewCard.add(reviewEmpty, java.awt.BorderLayout.SOUTH);
         top.add(reviewCard);

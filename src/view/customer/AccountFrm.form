@@ -3,7 +3,7 @@
 <Form version="1.5" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
   <Properties>
     <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-      <Color blue="dd" green="ee" red="f3" type="rgb"/>
+      <Color blue="ff" green="ff" red="ff" type="rgb"/>
     </Property>
   </Properties>
   <AuxValues>
@@ -23,7 +23,7 @@
     <Container class="javax.swing.JPanel" name="pnlContent">
       <Properties>
         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="dd" green="ee" red="f3" type="rgb"/>
+          <Color blue="ff" green="ff" red="ff" type="rgb"/>
         </Property>
       </Properties>
       <Constraints>
@@ -37,8 +37,6 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" pref="28" max="-2" attributes="0"/>
-                  <Component id="pnlSidebar" min="-2" pref="220" max="-2" attributes="0"/>
-                  <EmptySpace min="-2" pref="24" max="-2" attributes="0"/>
                   <Component id="scrMain" max="32767" attributes="0"/>
                   <EmptySpace min="-2" pref="28" max="-2" attributes="0"/>
               </Group>
@@ -48,154 +46,13 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" pref="28" max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="pnlSidebar" alignment="0" min="-2" max="-2" attributes="0"/>
-                      <Component id="scrMain" alignment="0" max="32767" attributes="0"/>
-                  </Group>
+                  <Component id="scrMain" max="32767" attributes="0"/>
                   <EmptySpace min="-2" pref="28" max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
       </Layout>
       <SubComponents>
-        <Container class="javax.swing.JPanel" name="pnlSidebar">
-          <Properties>
-            <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="ff" green="ff" red="ff" type="rgb"/>
-            </Property>
-            <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-              <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
-                <LineBorder roundedCorners="true">
-                  <Color PropertyName="color" blue="c4" green="d3" red="d8" type="rgb"/>
-                </LineBorder>
-              </Border>
-            </Property>
-          </Properties>
-
-          <Layout>
-            <DimensionLayout dim="0">
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="btnSideAccount" alignment="0" max="32767" attributes="0"/>
-                          <Component id="btnSideOrders" alignment="0" max="32767" attributes="0"/>
-                          <Component id="btnSidePassword" alignment="0" max="32767" attributes="0"/>
-                          <Component id="btnSideLogout" alignment="0" max="32767" attributes="0"/>
-                      </Group>
-                      <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
-                  </Group>
-              </Group>
-            </DimensionLayout>
-            <DimensionLayout dim="1">
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="-2" pref="14" max="-2" attributes="0"/>
-                      <Component id="btnSideAccount" min="-2" pref="40" max="-2" attributes="0"/>
-                      <Component id="btnSideOrders" min="-2" pref="40" max="-2" attributes="0"/>
-                      <Component id="btnSidePassword" min="-2" pref="40" max="-2" attributes="0"/>
-                      <Component id="btnSideLogout" min="-2" pref="40" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="14" max="-2" attributes="0"/>
-                  </Group>
-              </Group>
-            </DimensionLayout>
-          </Layout>
-          <SubComponents>
-            <Component class="javax.swing.JButton" name="btnSideAccount">
-              <Properties>
-                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                  <Color blue="e6" green="ef" red="f3" type="rgb"/>
-                </Property>
-                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Raleway Medium" size="14" style="0"/>
-                </Property>
-                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                  <Color blue="5c" green="7f" red="6b" type="rgb"/>
-                </Property>
-                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="new view.shared.FlatIcon(view.shared.FlatIcon.Kind.USER, view.shared.AppTheme.PRIMARY, 16)" type="code"/>
-                </Property>
-                <Property name="text" type="java.lang.String" value="Quản lý tài khoản"/>
-                <Property name="borderPainted" type="boolean" value="false"/>
-                <Property name="focusPainted" type="boolean" value="false"/>
-                <Property name="horizontalAlignment" type="int" value="2"/>
-                <Property name="iconTextGap" type="int" value="10"/>
-              </Properties>
-            </Component>
-            <Component class="javax.swing.JButton" name="btnSideOrders">
-              <Properties>
-                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                  <Color blue="ff" green="ff" red="ff" type="rgb"/>
-                </Property>
-                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Raleway Medium" size="14" style="0"/>
-                </Property>
-                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                  <Color blue="28" green="33" red="3a" type="rgb"/>
-                </Property>
-                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="new view.shared.FlatIcon(view.shared.FlatIcon.Kind.RECEIPT, new java.awt.Color(138, 131, 116), 16)" type="code"/>
-                </Property>
-                <Property name="text" type="java.lang.String" value="Lịch sử đơn hàng"/>
-                <Property name="borderPainted" type="boolean" value="false"/>
-                <Property name="focusPainted" type="boolean" value="false"/>
-                <Property name="horizontalAlignment" type="int" value="2"/>
-                <Property name="iconTextGap" type="int" value="10"/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSideOrdersActionPerformed"/>
-              </Events>
-            </Component>
-            <Component class="javax.swing.JButton" name="btnSidePassword">
-              <Properties>
-                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                  <Color blue="ff" green="ff" red="ff" type="rgb"/>
-                </Property>
-                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Raleway Medium" size="14" style="0"/>
-                </Property>
-                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                  <Color blue="28" green="33" red="3a" type="rgb"/>
-                </Property>
-                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="new view.shared.FlatIcon(view.shared.FlatIcon.Kind.PEN, new java.awt.Color(138, 131, 116), 16)" type="code"/>
-                </Property>
-                <Property name="text" type="java.lang.String" value="Đổi mật khẩu"/>
-                <Property name="borderPainted" type="boolean" value="false"/>
-                <Property name="focusPainted" type="boolean" value="false"/>
-                <Property name="horizontalAlignment" type="int" value="2"/>
-                <Property name="iconTextGap" type="int" value="10"/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSidePasswordActionPerformed"/>
-              </Events>
-            </Component>
-            <Component class="javax.swing.JButton" name="btnSideLogout">
-              <Properties>
-                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                  <Color blue="ff" green="ff" red="ff" type="rgb"/>
-                </Property>
-                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Raleway Medium" size="14" style="0"/>
-                </Property>
-                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                  <Color blue="28" green="33" red="3a" type="rgb"/>
-                </Property>
-                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="new view.shared.FlatIcon(view.shared.FlatIcon.Kind.LOGOUT, new java.awt.Color(138, 131, 116), 16)" type="code"/>
-                </Property>
-                <Property name="text" type="java.lang.String" value="Đăng xuất"/>
-                <Property name="borderPainted" type="boolean" value="false"/>
-                <Property name="focusPainted" type="boolean" value="false"/>
-                <Property name="horizontalAlignment" type="int" value="2"/>
-                <Property name="iconTextGap" type="int" value="10"/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSideLogoutActionPerformed"/>
-              </Events>
-            </Component>
-          </SubComponents>
-        </Container>
         <Container class="javax.swing.JScrollPane" name="scrMain">
           <Properties>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
@@ -209,7 +66,7 @@
             <Container class="javax.swing.JPanel" name="pnlMain">
               <Properties>
                 <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                  <Color blue="dd" green="ee" red="f3" type="rgb"/>
+                  <Color blue="ff" green="ff" red="ff" type="rgb"/>
                 </Property>
               </Properties>
 
@@ -338,7 +195,7 @@
                               <Font name="Raleway Medium" size="12" style="0"/>
                             </Property>
                             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                              <Color blue="74" green="83" red="8a" type="rgb"/>
+                              <Color blue="6d" green="7b" red="8c" type="rgb"/>
                             </Property>
                             <Property name="text" type="java.lang.String" value="Tổng số đơn hàng"/>
                           </Properties>
@@ -400,7 +257,7 @@
                             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                               <Font name="Raleway Medium" size="20" style="0"/>
                             </Property>
-                            <Property name="text" type="java.lang.String" value="0₫"/>
+                            <Property name="text" type="java.lang.String" value="0 &#x111;"/>
                           </Properties>
                         </Component>
                         <Component class="javax.swing.JLabel" name="lblStatSpentCaption">
@@ -409,7 +266,7 @@
                               <Font name="Raleway Medium" size="12" style="0"/>
                             </Property>
                             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                              <Color blue="74" green="83" red="8a" type="rgb"/>
+                              <Color blue="6d" green="7b" red="8c" type="rgb"/>
                             </Property>
                             <Property name="text" type="java.lang.String" value="Tổng chi tiêu (đơn đã thanh toán)"/>
                           </Properties>
@@ -486,7 +343,7 @@
                           <Font name="Raleway Medium" size="13" style="0"/>
                         </Property>
                         <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                          <Color blue="48" green="54" red="5a" type="rgb"/>
+                          <Color blue="40" green="4d" red="5e" type="rgb"/>
                         </Property>
                         <Property name="text" type="java.lang.String" value="Mã khách hàng: ..."/>
                       </Properties>
@@ -497,7 +354,7 @@
                           <Font name="Raleway Medium" size="13" style="0"/>
                         </Property>
                         <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                          <Color blue="48" green="54" red="5a" type="rgb"/>
+                          <Color blue="40" green="4d" red="5e" type="rgb"/>
                         </Property>
                         <Property name="text" type="java.lang.String" value="Username: ..."/>
                       </Properties>
@@ -508,7 +365,7 @@
                           <Font name="Raleway Medium" size="13" style="0"/>
                         </Property>
                         <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                          <Color blue="48" green="54" red="5a" type="rgb"/>
+                          <Color blue="40" green="4d" red="5e" type="rgb"/>
                         </Property>
                         <Property name="text" type="java.lang.String" value="Email: ..."/>
                       </Properties>
@@ -519,7 +376,7 @@
                           <Font name="Raleway Medium" size="13" style="0"/>
                         </Property>
                         <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                          <Color blue="48" green="54" red="5a" type="rgb"/>
+                          <Color blue="40" green="4d" red="5e" type="rgb"/>
                         </Property>
                         <Property name="text" type="java.lang.String" value="Số điện thoại: ..."/>
                       </Properties>
@@ -578,7 +435,7 @@
                           <Font name="Raleway Medium" size="12" style="0"/>
                         </Property>
                         <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                          <Color blue="74" green="83" red="8a" type="rgb"/>
+                          <Color blue="6d" green="7b" red="8c" type="rgb"/>
                         </Property>
                         <Property name="text" type="java.lang.String" value="Mật khẩu"/>
                       </Properties>
@@ -594,7 +451,7 @@
                     <Component class="javax.swing.JButton" name="btnEditPassword">
                       <Properties>
                         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                          <Color blue="5c" green="7f" red="6b" type="rgb"/>
+                          <Color blue="33" green="4a" red="7a" type="rgb"/>
                         </Property>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="Raleway Medium" size="14" style="0"/>
@@ -673,7 +530,7 @@
                           <Font name="Raleway Medium" size="12" style="0"/>
                         </Property>
                         <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                          <Color blue="74" green="83" red="8a" type="rgb"/>
+                          <Color blue="6d" green="7b" red="8c" type="rgb"/>
                         </Property>
                         <Property name="text" type="java.lang.String" value="Họ tên"/>
                       </Properties>
@@ -689,7 +546,7 @@
                     <Component class="javax.swing.JButton" name="btnEditFullName">
                       <Properties>
                         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                          <Color blue="4a" green="60" red="c0" type="rgb"/>
+                          <Color blue="33" green="4a" red="7a" type="rgb"/>
                         </Property>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="Raleway Medium" size="14" style="0"/>
@@ -760,7 +617,7 @@
                     <Component class="javax.swing.JButton" name="btnCancelFullName">
                       <Properties>
                         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                          <Color blue="4a" green="60" red="c0" type="rgb"/>
+                          <Color blue="33" green="4a" red="7a" type="rgb"/>
                         </Property>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="Raleway Medium" size="14" style="0"/>
@@ -779,7 +636,7 @@
                     <Component class="javax.swing.JButton" name="btnSaveFullName">
                       <Properties>
                         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                          <Color blue="5c" green="7f" red="6b" type="rgb"/>
+                          <Color blue="33" green="4a" red="7a" type="rgb"/>
                         </Property>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="Raleway Medium" size="14" style="0"/>
@@ -860,7 +717,7 @@
                           <Font name="Raleway Medium" size="12" style="0"/>
                         </Property>
                         <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                          <Color blue="74" green="83" red="8a" type="rgb"/>
+                          <Color blue="6d" green="7b" red="8c" type="rgb"/>
                         </Property>
                         <Property name="text" type="java.lang.String" value="Số điện thoại"/>
                       </Properties>
@@ -876,7 +733,7 @@
                     <Component class="javax.swing.JButton" name="btnEditPhone">
                       <Properties>
                         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                          <Color blue="4a" green="60" red="c0" type="rgb"/>
+                          <Color blue="33" green="4a" red="7a" type="rgb"/>
                         </Property>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="Raleway Medium" size="14" style="0"/>
@@ -947,7 +804,7 @@
                     <Component class="javax.swing.JButton" name="btnCancelPhone">
                       <Properties>
                         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                          <Color blue="4a" green="60" red="c0" type="rgb"/>
+                          <Color blue="33" green="4a" red="7a" type="rgb"/>
                         </Property>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="Raleway Medium" size="14" style="0"/>
@@ -966,7 +823,7 @@
                     <Component class="javax.swing.JButton" name="btnSavePhone">
                       <Properties>
                         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                          <Color blue="5c" green="7f" red="6b" type="rgb"/>
+                          <Color blue="33" green="4a" red="7a" type="rgb"/>
                         </Property>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="Raleway Medium" size="14" style="0"/>
@@ -1047,7 +904,7 @@
                           <Font name="Raleway Medium" size="12" style="0"/>
                         </Property>
                         <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                          <Color blue="74" green="83" red="8a" type="rgb"/>
+                          <Color blue="6d" green="7b" red="8c" type="rgb"/>
                         </Property>
                         <Property name="text" type="java.lang.String" value="Email"/>
                       </Properties>
@@ -1063,7 +920,7 @@
                     <Component class="javax.swing.JButton" name="btnEditEmail">
                       <Properties>
                         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                          <Color blue="4a" green="60" red="c0" type="rgb"/>
+                          <Color blue="33" green="4a" red="7a" type="rgb"/>
                         </Property>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="Raleway Medium" size="14" style="0"/>
@@ -1134,7 +991,7 @@
                     <Component class="javax.swing.JButton" name="btnCancelEmail">
                       <Properties>
                         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                          <Color blue="4a" green="60" red="c0" type="rgb"/>
+                          <Color blue="33" green="4a" red="7a" type="rgb"/>
                         </Property>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="Raleway Medium" size="14" style="0"/>
@@ -1153,7 +1010,7 @@
                     <Component class="javax.swing.JButton" name="btnSaveEmail">
                       <Properties>
                         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                          <Color blue="5c" green="7f" red="6b" type="rgb"/>
+                          <Color blue="33" green="4a" red="7a" type="rgb"/>
                         </Property>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="Raleway Medium" size="14" style="0"/>
@@ -1234,7 +1091,7 @@
                           <Font name="Raleway Medium" size="12" style="0"/>
                         </Property>
                         <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                          <Color blue="74" green="83" red="8a" type="rgb"/>
+                          <Color blue="6d" green="7b" red="8c" type="rgb"/>
                         </Property>
                         <Property name="text" type="java.lang.String" value="Địa chỉ"/>
                       </Properties>
@@ -1250,7 +1107,7 @@
                     <Component class="javax.swing.JButton" name="btnEditAddress">
                       <Properties>
                         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                          <Color blue="4a" green="60" red="c0" type="rgb"/>
+                          <Color blue="33" green="4a" red="7a" type="rgb"/>
                         </Property>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="Raleway Medium" size="14" style="0"/>
@@ -1321,7 +1178,7 @@
                     <Component class="javax.swing.JButton" name="btnCancelAddress">
                       <Properties>
                         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                          <Color blue="4a" green="60" red="c0" type="rgb"/>
+                          <Color blue="33" green="4a" red="7a" type="rgb"/>
                         </Property>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="Raleway Medium" size="14" style="0"/>
@@ -1340,7 +1197,7 @@
                     <Component class="javax.swing.JButton" name="btnSaveAddress">
                       <Properties>
                         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                          <Color blue="5c" green="7f" red="6b" type="rgb"/>
+                          <Color blue="33" green="4a" red="7a" type="rgb"/>
                         </Property>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="Raleway Medium" size="14" style="0"/>

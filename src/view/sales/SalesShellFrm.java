@@ -46,7 +46,7 @@ public class SalesShellFrm extends javax.swing.JFrame {
         pnlContent.repaint();
 
         setActiveNav(page.navKey());
-        setTitle("Bookshop Management - " + page.title());
+        setTitle("Vintage Books - " + page.title());
     }
 
     /** Mở trang ứng với mục sidebar "key" (instore, invoices, orders, customers, books, lowstock). */
@@ -118,25 +118,23 @@ public class SalesShellFrm extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        pnlSidebar.setBackground(new java.awt.Color(79, 93, 66));
+        pnlSidebar.setBackground(new java.awt.Color(241, 232, 220));
         pnlSidebar.setPreferredSize(new java.awt.Dimension(240, 0));
 
-        lblBrand.setFont(new java.awt.Font("Raleway Medium", 1, 16)); // NOI18N
-        lblBrand.setForeground(new java.awt.Color(255, 255, 255));
-        lblBrand.setIcon(new view.shared.FlatIcon(view.shared.FlatIcon.Kind.RECEIPT, java.awt.Color.WHITE, 20));
-        lblBrand.setText("Bookshop Bán hàng");
+        lblBrand.setFont(new java.awt.Font("Cormorant Garamond", 1, 32)); // NOI18N
+        lblBrand.setForeground(new java.awt.Color(122, 74, 51));
+        lblBrand.setText("Vintage Books");
         lblBrand.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 18, 0, 12));
-        lblBrand.setIconTextGap(10);
 
-        pnlBrandDivider.setBackground(new java.awt.Color(92, 110, 79));
+        pnlBrandDivider.setBackground(new java.awt.Color(227, 216, 202));
         pnlBrandDivider.setLayout(new java.awt.BorderLayout());
 
         lblSectionSales.setFont(new java.awt.Font("Raleway Medium", 1, 11)); // NOI18N
-        lblSectionSales.setForeground(new java.awt.Color(221, 226, 211));
+        lblSectionSales.setForeground(new java.awt.Color(140, 123, 109));
         lblSectionSales.setText("BÁN HÀNG");
         lblSectionSales.setBorder(javax.swing.BorderFactory.createEmptyBorder(14, 18, 6, 12));
 
-        btnNavInStore.setBackground(new java.awt.Color(79, 93, 66));
+        btnNavInStore.setBackground(new java.awt.Color(241, 232, 220));
         btnNavInStore.setFont(new java.awt.Font("Raleway Medium", 0, 15)); // NOI18N
         btnNavInStore.setForeground(new java.awt.Color(255, 255, 255));
         btnNavInStore.setIcon(new view.shared.FlatIcon(view.shared.FlatIcon.Kind.RECEIPT, java.awt.Color.WHITE, 16));
@@ -151,9 +149,9 @@ public class SalesShellFrm extends javax.swing.JFrame {
             }
         });
 
-        btnNavInvoices.setBackground(new java.awt.Color(79, 93, 66));
+        btnNavInvoices.setBackground(new java.awt.Color(241, 232, 220));
         btnNavInvoices.setFont(new java.awt.Font("Raleway Medium", 0, 15)); // NOI18N
-        btnNavInvoices.setForeground(new java.awt.Color(221, 226, 211));
+        btnNavInvoices.setForeground(new java.awt.Color(140, 123, 109));
         btnNavInvoices.setIcon(new view.shared.FlatIcon(view.shared.FlatIcon.Kind.MONEY, view.shared.AppTheme.SIDEBAR_TEXT_MUTED, 16));
         btnNavInvoices.setText("Hóa đơn đã lập");
         btnNavInvoices.setBorderPainted(false);
@@ -166,9 +164,9 @@ public class SalesShellFrm extends javax.swing.JFrame {
             }
         });
 
-        btnNavOrders.setBackground(new java.awt.Color(79, 93, 66));
+        btnNavOrders.setBackground(new java.awt.Color(241, 232, 220));
         btnNavOrders.setFont(new java.awt.Font("Raleway Medium", 0, 15)); // NOI18N
-        btnNavOrders.setForeground(new java.awt.Color(221, 226, 211));
+        btnNavOrders.setForeground(new java.awt.Color(140, 123, 109));
         btnNavOrders.setIcon(new view.shared.FlatIcon(view.shared.FlatIcon.Kind.CHART, view.shared.AppTheme.SIDEBAR_TEXT_MUTED, 16));
         btnNavOrders.setText("Đơn hàng online");
         btnNavOrders.setBorderPainted(false);
@@ -181,17 +179,17 @@ public class SalesShellFrm extends javax.swing.JFrame {
             }
         });
 
-        pnlSep1.setBackground(new java.awt.Color(92, 110, 79));
+        pnlSep1.setBackground(new java.awt.Color(227, 216, 202));
         pnlSep1.setLayout(new java.awt.BorderLayout());
 
         lblSectionLookup.setFont(new java.awt.Font("Raleway Medium", 1, 11)); // NOI18N
-        lblSectionLookup.setForeground(new java.awt.Color(221, 226, 211));
+        lblSectionLookup.setForeground(new java.awt.Color(140, 123, 109));
         lblSectionLookup.setText("TRA CỨU");
         lblSectionLookup.setBorder(javax.swing.BorderFactory.createEmptyBorder(14, 18, 6, 12));
 
-        btnNavCustomers.setBackground(new java.awt.Color(79, 93, 66));
+        btnNavCustomers.setBackground(new java.awt.Color(241, 232, 220));
         btnNavCustomers.setFont(new java.awt.Font("Raleway Medium", 0, 15)); // NOI18N
-        btnNavCustomers.setForeground(new java.awt.Color(221, 226, 211));
+        btnNavCustomers.setForeground(new java.awt.Color(140, 123, 109));
         btnNavCustomers.setIcon(new view.shared.FlatIcon(view.shared.FlatIcon.Kind.USER, view.shared.AppTheme.SIDEBAR_TEXT_MUTED, 16));
         btnNavCustomers.setText("Tra cứu khách hàng");
         btnNavCustomers.setBorderPainted(false);
@@ -204,9 +202,9 @@ public class SalesShellFrm extends javax.swing.JFrame {
             }
         });
 
-        btnNavBooks.setBackground(new java.awt.Color(79, 93, 66));
+        btnNavBooks.setBackground(new java.awt.Color(241, 232, 220));
         btnNavBooks.setFont(new java.awt.Font("Raleway Medium", 0, 15)); // NOI18N
-        btnNavBooks.setForeground(new java.awt.Color(221, 226, 211));
+        btnNavBooks.setForeground(new java.awt.Color(140, 123, 109));
         btnNavBooks.setIcon(new view.shared.FlatIcon(view.shared.FlatIcon.Kind.BOOK, view.shared.AppTheme.SIDEBAR_TEXT_MUTED, 16));
         btnNavBooks.setText("Tra cứu sách");
         btnNavBooks.setBorderPainted(false);
@@ -219,9 +217,9 @@ public class SalesShellFrm extends javax.swing.JFrame {
             }
         });
 
-        btnNavLowStock.setBackground(new java.awt.Color(79, 93, 66));
+        btnNavLowStock.setBackground(new java.awt.Color(241, 232, 220));
         btnNavLowStock.setFont(new java.awt.Font("Raleway Medium", 0, 15)); // NOI18N
-        btnNavLowStock.setForeground(new java.awt.Color(221, 226, 211));
+        btnNavLowStock.setForeground(new java.awt.Color(140, 123, 109));
         btnNavLowStock.setIcon(new view.shared.FlatIcon(view.shared.FlatIcon.Kind.TAG, view.shared.AppTheme.SIDEBAR_TEXT_MUTED, 16));
         btnNavLowStock.setText("Cảnh báo tồn kho thấp");
         btnNavLowStock.setBorderPainted(false);
@@ -234,12 +232,12 @@ public class SalesShellFrm extends javax.swing.JFrame {
             }
         });
 
-        pnlSep2.setBackground(new java.awt.Color(92, 110, 79));
+        pnlSep2.setBackground(new java.awt.Color(227, 216, 202));
         pnlSep2.setLayout(new java.awt.BorderLayout());
 
-        btnChangePassword.setBackground(new java.awt.Color(79, 93, 66));
+        btnChangePassword.setBackground(new java.awt.Color(241, 232, 220));
         btnChangePassword.setFont(new java.awt.Font("Raleway Medium", 0, 15)); // NOI18N
-        btnChangePassword.setForeground(new java.awt.Color(221, 226, 211));
+        btnChangePassword.setForeground(new java.awt.Color(140, 123, 109));
         btnChangePassword.setIcon(new view.shared.FlatIcon(view.shared.FlatIcon.Kind.USER, view.shared.AppTheme.SIDEBAR_TEXT_MUTED, 16));
         btnChangePassword.setText("Đổi mật khẩu");
         btnChangePassword.setBorderPainted(false);
@@ -252,9 +250,9 @@ public class SalesShellFrm extends javax.swing.JFrame {
             }
         });
 
-        btnLogout.setBackground(new java.awt.Color(79, 93, 66));
+        btnLogout.setBackground(new java.awt.Color(241, 232, 220));
         btnLogout.setFont(new java.awt.Font("Raleway Medium", 0, 15)); // NOI18N
-        btnLogout.setForeground(new java.awt.Color(221, 226, 211));
+        btnLogout.setForeground(new java.awt.Color(140, 123, 109));
         btnLogout.setIcon(new view.shared.FlatIcon(view.shared.FlatIcon.Kind.LOGOUT, view.shared.AppTheme.SIDEBAR_TEXT_MUTED, 16));
         btnLogout.setText("Đăng xuất");
         btnLogout.setBorderPainted(false);
@@ -310,10 +308,10 @@ public class SalesShellFrm extends javax.swing.JFrame {
 
         getContentPane().add(pnlSidebar, java.awt.BorderLayout.WEST);
 
-        pnlRight.setBackground(new java.awt.Color(243, 238, 221));
+        pnlRight.setBackground(new java.awt.Color(255, 255, 255));
         pnlRight.setLayout(new java.awt.BorderLayout());
 
-        pnlTopbar.setBackground(new java.awt.Color(243, 238, 221));
+        pnlTopbar.setBackground(new java.awt.Color(255, 255, 255));
         pnlTopbar.setPreferredSize(new java.awt.Dimension(0, 56));
         pnlTopbar.setLayout(new java.awt.BorderLayout());
 
@@ -323,14 +321,14 @@ public class SalesShellFrm extends javax.swing.JFrame {
         lblUser.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 18));
         pnlTopbar.add(lblUser, java.awt.BorderLayout.EAST);
 
-        pnlTopLine.setBackground(new java.awt.Color(201, 194, 174));
+        pnlTopLine.setBackground(new java.awt.Color(220, 207, 191));
         pnlTopLine.setPreferredSize(new java.awt.Dimension(0, 1));
         pnlTopLine.setLayout(new java.awt.BorderLayout());
         pnlTopbar.add(pnlTopLine, java.awt.BorderLayout.SOUTH);
 
         pnlRight.add(pnlTopbar, java.awt.BorderLayout.NORTH);
 
-        pnlContent.setBackground(new java.awt.Color(243, 238, 221));
+        pnlContent.setBackground(new java.awt.Color(255, 255, 255));
         pnlContent.setLayout(new java.awt.BorderLayout());
         pnlRight.add(pnlContent, java.awt.BorderLayout.CENTER);
 

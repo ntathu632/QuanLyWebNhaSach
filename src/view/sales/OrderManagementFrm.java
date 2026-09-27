@@ -92,10 +92,10 @@ public class OrderManagementFrm extends javax.swing.JPanel implements SalesPage 
         scrOrders = new javax.swing.JScrollPane();
         tblOrders = new javax.swing.JTable();
 
-        setBackground(new java.awt.Color(243, 238, 221));
+        setBackground(new java.awt.Color(255, 255, 255));
         setLayout(new java.awt.BorderLayout());
 
-        pnlContent.setBackground(new java.awt.Color(243, 238, 221));
+        pnlContent.setBackground(new java.awt.Color(255, 255, 255));
 
         lblTitle.setFont(new java.awt.Font("Cormorant Garamond", 1, 30)); // NOI18N
         lblTitle.setText("Đơn hàng online");
@@ -110,12 +110,12 @@ public class OrderManagementFrm extends javax.swing.JPanel implements SalesPage 
         });
 
         pnlCard.setBackground(new java.awt.Color(255, 255, 255));
-        pnlCard.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(216, 211, 196), 1, true));
+        pnlCard.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(234, 223, 209), 1, true));
 
         lblCardTitle.setFont(new java.awt.Font("Raleway Medium", 0, 15)); // NOI18N
         lblCardTitle.setText("Danh sách đơn hàng online");
 
-        btnView.setBackground(new java.awt.Color(192, 96, 74));
+        btnView.setBackground(new java.awt.Color(122, 74, 51));
         btnView.setFont(new java.awt.Font("Raleway Medium", 0, 14)); // NOI18N
         btnView.setForeground(new java.awt.Color(255, 255, 255));
         btnView.setText("Xem chi tiết");
@@ -127,7 +127,7 @@ public class OrderManagementFrm extends javax.swing.JPanel implements SalesPage 
             }
         });
 
-        btnUpdateStatus.setBackground(new java.awt.Color(107, 127, 92));
+        btnUpdateStatus.setBackground(new java.awt.Color(122, 74, 51));
         btnUpdateStatus.setFont(new java.awt.Font("Raleway Medium", 0, 14)); // NOI18N
         btnUpdateStatus.setForeground(new java.awt.Color(255, 255, 255));
         btnUpdateStatus.setText("Cập nhật trạng thái");
@@ -155,7 +155,7 @@ public class OrderManagementFrm extends javax.swing.JPanel implements SalesPage 
                 return canEdit [columnIndex];
             }
         });
-        tblOrders.setGridColor(new java.awt.Color(216, 211, 196));
+        tblOrders.setGridColor(new java.awt.Color(234, 223, 209));
         tblOrders.setRowHeight(30);
         tblOrders.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         tblOrders.getTableHeader().setReorderingAllowed(false);

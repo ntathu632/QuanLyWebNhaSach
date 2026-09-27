@@ -131,7 +131,7 @@ public class SearchBookForEditPage extends javax.swing.JPanel implements AdminPa
         heading.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 4, 0));
         header.add(heading);
         hint.setFont(hint.getFont().deriveFont(12f));
-        hint.setForeground(new java.awt.Color(138, 131, 116));
+        hint.setForeground(new java.awt.Color(140, 123, 109));
         hint.setText("Nhấp đúp vào 1 dòng trong bảng kết quả để mở màn hình sửa sách đó.");
         hint.setAlignmentX(0.0F);
         hint.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 16, 0));

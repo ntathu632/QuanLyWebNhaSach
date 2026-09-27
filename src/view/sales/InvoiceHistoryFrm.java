@@ -94,10 +94,10 @@ public class InvoiceHistoryFrm extends javax.swing.JPanel implements SalesPage {
         scrInvoices = new javax.swing.JScrollPane();
         tblInvoices = new javax.swing.JTable();
 
-        setBackground(new java.awt.Color(243, 238, 221));
+        setBackground(new java.awt.Color(255, 255, 255));
         setLayout(new java.awt.BorderLayout());
 
-        pnlContent.setBackground(new java.awt.Color(243, 238, 221));
+        pnlContent.setBackground(new java.awt.Color(255, 255, 255));
 
         lblTitle.setFont(new java.awt.Font("Cormorant Garamond", 1, 30)); // NOI18N
         lblTitle.setText("Hóa đơn đã lập");
@@ -112,12 +112,12 @@ public class InvoiceHistoryFrm extends javax.swing.JPanel implements SalesPage {
         });
 
         pnlCard.setBackground(new java.awt.Color(255, 255, 255));
-        pnlCard.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(216, 211, 196), 1, true));
+        pnlCard.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(234, 223, 209), 1, true));
 
         lblCardTitle.setFont(new java.awt.Font("Raleway Medium", 0, 15)); // NOI18N
         lblCardTitle.setText("Danh sách hóa đơn tại quầy");
 
-        btnView.setBackground(new java.awt.Color(192, 96, 74));
+        btnView.setBackground(new java.awt.Color(122, 74, 51));
         btnView.setFont(new java.awt.Font("Raleway Medium", 0, 14)); // NOI18N
         btnView.setForeground(new java.awt.Color(255, 255, 255));
         btnView.setText("Xem chi tiết");
@@ -129,7 +129,7 @@ public class InvoiceHistoryFrm extends javax.swing.JPanel implements SalesPage {
             }
         });
 
-        btnCancelInvoice.setBackground(new java.awt.Color(192, 96, 74));
+        btnCancelInvoice.setBackground(new java.awt.Color(122, 74, 51));
         btnCancelInvoice.setFont(new java.awt.Font("Raleway Medium", 0, 14)); // NOI18N
         btnCancelInvoice.setForeground(new java.awt.Color(255, 255, 255));
         btnCancelInvoice.setText("Hủy hóa đơn");
@@ -157,7 +157,7 @@ public class InvoiceHistoryFrm extends javax.swing.JPanel implements SalesPage {
                 return canEdit [columnIndex];
             }
         });
-        tblInvoices.setGridColor(new java.awt.Color(216, 211, 196));
+        tblInvoices.setGridColor(new java.awt.Color(234, 223, 209));
         tblInvoices.setRowHeight(30);
         tblInvoices.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         tblInvoices.getTableHeader().setReorderingAllowed(false);

@@ -1,7 +1,7 @@
 /*
  * Theme dùng chung cho toàn bộ ứng dụng, theo đúng phong cách trong
- * "UI Design Mockup.png" (nền kem, header/nút chính xanh olive, nút phụ
- * cam đất). Gọi AppTheme.install() một lần duy nhất ở đầu mỗi main(),
+ * tông "Vintage Books" của Trang chủ khách hàng (nền trắng, thanh bên và
+ * title bar màu kem, mọi nút bấm cùng màu nâu gỗ). Gọi AppTheme.install() một lần duy nhất ở đầu mỗi main(),
  * trước khi tạo bất kỳ component Swing nào.
  */
 package view.shared;
@@ -23,37 +23,43 @@ import javax.swing.table.TableColumn;
 
 public final class AppTheme {
 
-    public static final Color BACKGROUND = new Color(0xF3, 0xEE, 0xDD);
-    public static final Color HEADER = new Color(0x4F, 0x5D, 0x42);
-    public static final Color PRIMARY = new Color(0x6B, 0x7F, 0x5C);
-    public static final Color PRIMARY_HOVER = new Color(0x5C, 0x6E, 0x4F);
-    public static final Color PRIMARY_PRESSED = new Color(0x4F, 0x5D, 0x42);
-    public static final Color SECONDARY = new Color(0xC0, 0x60, 0x4A);
-    public static final Color SECONDARY_HOVER = new Color(0xAD, 0x53, 0x3F);
-    public static final Color SECONDARY_PRESSED = new Color(0x9A, 0x47, 0x35);
-    public static final Color TABLE_HEADER = new Color(0xDC, 0xE3, 0xD0);
-    public static final Color TABLE_GRID = new Color(0xD8, 0xD3, 0xC4);
-    public static final Color ACCENT_TEXT = new Color(0xC0, 0x39, 0x2B);
-    public static final Color TEXT = new Color(0x3A, 0x33, 0x28);
-    public static final Color INPUT_BORDER = new Color(0xC9, 0xC2, 0xAE);
-    public static final Color SIDEBAR_TEXT_MUTED = new Color(0xDD, 0xE2, 0xD3);
+    // Tông "Vintage Books" dùng chung toàn app (giống Trang chủ khách hàng):
+    // nội dung nền trắng, thanh bên/title bar màu kem, màu nhấn nâu gỗ.
+    public static final Color BACKGROUND = Color.WHITE;
+    /** Màu thương hiệu (nâu đậm) — cho logo/tên app, KHÔNG dùng làm nền có chữ trắng nhạt. */
+    public static final Color HEADER = new Color(0x7A, 0x4A, 0x33);
+    public static final Color SIDEBAR_BG = new Color(0xF1, 0xE8, 0xDC);
+    public static final Color NAV_HOVER = new Color(0xE8, 0xDC, 0xCD);
+    public static final Color LINE = new Color(0xE3, 0xD8, 0xCA);
+    public static final Color PRIMARY = new Color(0x7A, 0x4A, 0x33);
+    public static final Color PRIMARY_HOVER = new Color(0x69, 0x3E, 0x2A);
+    public static final Color PRIMARY_PRESSED = new Color(0x58, 0x33, 0x22);
+    public static final Color SECONDARY = new Color(0x7A, 0x4A, 0x33);
+    public static final Color SECONDARY_HOVER = new Color(0x69, 0x3E, 0x2A);
+    public static final Color SECONDARY_PRESSED = new Color(0x58, 0x33, 0x22);
+    public static final Color TABLE_HEADER = new Color(0xF1, 0xE8, 0xDC);
+    public static final Color TABLE_GRID = new Color(0xEA, 0xDF, 0xD1);
+    public static final Color ACCENT_TEXT = new Color(0x8A, 0x57, 0x3B);
+    public static final Color TEXT = new Color(0x3B, 0x2A, 0x20);
+    public static final Color MUTED_TEXT = new Color(0x8C, 0x7B, 0x6D);
+    public static final Color INPUT_BORDER = new Color(0xDC, 0xCF, 0xBF);
+    /** Chữ/icon mục thanh bên chưa chọn (thanh bên nền kem nên là màu chữ đậm). */
+    public static final Color SIDEBAR_TEXT_MUTED = new Color(0x3B, 0x2A, 0x20);
     public static final int SIDEBAR_WIDTH = 240;
     public static final int TOPBAR_HEIGHT = 56;
 
-    // Bảng màu RIÊNG cho biểu đồ — cố tình KHÔNG dùng lại PRIMARY/SECONDARY/
-    // HEADER (màu nút, sidebar...) để nội dung không lặp đúng 1 màu nhìn đơn
-    // điệu; tông tươi/sáng/rực hơn hẳn bảng màu trầm ấm của UI. Có 1 màu xanh
-    // dương (CHART_SKY) nhưng là xanh da trời sáng, khác hẳn xanh olive của
-    // PRIMARY/HEADER và khác luôn xanh dương đậm dùng ở bản trước.
-    public static final Color CHART_PINK = new Color(0xFF, 0x4F, 0xA3);
-    public static final Color CHART_ORANGE = new Color(0xFF, 0xA0, 0x33);
-    public static final Color CHART_GOLD = new Color(0xFF, 0xC8, 0x00);
-    public static final Color CHART_SKY = new Color(0x29, 0xB6, 0xF6);
-    public static final Color CHART_PURPLE = new Color(0xAB, 0x47, 0xBC);
-    public static final Color CHART_RED = new Color(0xFF, 0x5C, 0x5C);
+    // Bảng màu RIÊNG cho biểu đồ và bìa sách vẽ tay — các tông đất trầm (hồng
+    // phấn, cam đất, xanh xám, vàng đồng, tím khói, nâu đỏ) để hợp tông vintage
+    // nhưng vẫn đủ khác nhau giữa các cột/lát biểu đồ.
+    public static final Color CHART_PINK = new Color(0xB5, 0x83, 0x8D);
+    public static final Color CHART_ORANGE = new Color(0xC9, 0x8B, 0x5B);
+    public static final Color CHART_GOLD = new Color(0xC9, 0xA1, 0x5A);
+    public static final Color CHART_SKY = new Color(0x6B, 0x8F, 0xA3);
+    public static final Color CHART_PURPLE = new Color(0x8C, 0x6A, 0x8D);
+    public static final Color CHART_RED = new Color(0xA0, 0x66, 0x4A);
     public static final Color[] CHART_PALETTE = {CHART_PINK, CHART_ORANGE, CHART_SKY, CHART_GOLD, CHART_PURPLE, CHART_RED};
-    public static final Color CHART_GRID = new Color(0xE3, 0xDD, 0xC9);
-    public static final Color CHART_MUTED_TEXT = new Color(0x8A, 0x83, 0x74);
+    public static final Color CHART_GRID = new Color(0xEA, 0xDF, 0xD1);
+    public static final Color CHART_MUTED_TEXT = new Color(0x8C, 0x7B, 0x6D);
 
     // Typography: Cormorant Garamond lo phần cảm xúc/thẩm mỹ (logo, tiêu đề
     // lớn, heading, tiêu đề section — Bold; chữ cần nhấn mạnh — Medium
@@ -111,26 +117,27 @@ public final class AppTheme {
         // màu nền chung (Panel.background), ghi đè TitlePane.background — phải tắt
         // trước thì mới đặt được màu title bar riêng khác màu nền form.
         UIManager.put("TitlePane.unifiedBackground", false);
-        UIManager.put("TitlePane.background", HEADER);
-        UIManager.put("TitlePane.foreground", Color.WHITE);
-        UIManager.put("TitlePane.inactiveBackground", HEADER);
-        UIManager.put("TitlePane.inactiveForeground", new Color(0xE8, 0xE8, 0xE0));
-        UIManager.put("TitlePane.buttonHoverBackground", PRIMARY_HOVER);
-        UIManager.put("TitlePane.buttonPressedBackground", PRIMARY_PRESSED);
+        UIManager.put("TitlePane.background", SIDEBAR_BG);
+        UIManager.put("TitlePane.foreground", TEXT);
+        UIManager.put("TitlePane.inactiveBackground", SIDEBAR_BG);
+        UIManager.put("TitlePane.inactiveForeground", MUTED_TEXT);
+        UIManager.put("TitlePane.buttonHoverBackground", NAV_HOVER);
+        UIManager.put("TitlePane.buttonPressedBackground", TABLE_GRID);
 
         UIManager.put("Panel.background", BACKGROUND);
         UIManager.put("OptionPane.background", BACKGROUND);
         UIManager.put("RootPane.background", BACKGROUND);
 
         UIManager.put("Component.borderColor", INPUT_BORDER);
-        UIManager.put("Component.focusColor", PRIMARY);
+        UIManager.put("Component.focusColor", ACCENT_TEXT);
+        UIManager.put("Component.focusedBorderColor", ACCENT_TEXT);
         UIManager.put("Component.arc", 8);
         UIManager.put("Button.arc", 10);
         UIManager.put("TextComponent.arc", 6);
 
         UIManager.put("Table.background", Color.WHITE);
         UIManager.put("Table.gridColor", TABLE_GRID);
-        UIManager.put("Table.selectionBackground", new Color(0xE3, 0xE9, 0xD9));
+        UIManager.put("Table.selectionBackground", new Color(0xF2, 0xE7, 0xDB));
         UIManager.put("Table.selectionForeground", TEXT);
         UIManager.put("TableHeader.background", TABLE_HEADER);
         UIManager.put("TableHeader.foreground", TEXT);
@@ -140,11 +147,14 @@ public final class AppTheme {
         UIManager.put("PasswordField.background", Color.WHITE);
         UIManager.put("TextArea.background", Color.WHITE);
         UIManager.put("ComboBox.background", Color.WHITE);
-        UIManager.put("ComboBox.selectionBackground", new Color(0xCF, 0xE0, 0xF2));
+        UIManager.put("ComboBox.selectionBackground", new Color(0xF2, 0xE7, 0xDB));
+        UIManager.put("ComboBox.selectionForeground", TEXT);
+        UIManager.put("List.selectionBackground", new Color(0xF2, 0xE7, 0xDB));
+        UIManager.put("List.selectionForeground", TEXT);
     }
 
     /**
-     * Áp style nút chính (xanh olive) — dùng cho hành động xác nhận: Login, Save,
+     * Áp style nút chính (nâu gỗ) — dùng cho hành động xác nhận: Login, Save,
      * Confirm, Pay... Đặt cả 2 bộ key ("background..." và "default.background...")
      * vì nếu nút này là default button của JRootPane (bấm Enter), FlatLaf sẽ tô
      * bằng bộ key "default.*" riêng, bỏ qua "background" thường.
@@ -165,7 +175,7 @@ public final class AppTheme {
                 + " borderWidth: 0");
     }
 
-    /** Áp style nút phụ/hủy (cam đất) — dùng cho: Reset, Remove, Cancel, Back... */
+    /** Áp style nút phụ/hủy (Reset, Remove, Cancel, Back...) — cùng màu nâu gỗ với nút chính cho đồng nhất. */
     public static void secondary(JButton btn) {
         btn.putClientProperty("FlatLaf.style",
                 "background: #" + hex(SECONDARY) + "; foreground: #FFFFFF;"
@@ -202,30 +212,30 @@ public final class AppTheme {
     }
 
     /**
-     * Style 1 mục điều hướng trong sidebar (nền tối liền với sidebar, chữ trắng,
-     * bo tròn 0, căn trái, sáng lên khi hover) — dùng cho các trang có khung kiểu
-     * "SB Admin 2" (sidebar trái + topbar + nội dung): AdminShellFrm.
+     * Style mục điều hướng ĐANG CHỌN trong thanh bên (nền nâu, chữ trắng, căn
+     * trái) — dùng cho các khung có thanh bên: AdminShellFrm, SalesShellFrm,
+     * InventoryShellFrm (giống thanh bên khu Khách hàng).
      */
     public static void sidebarNav(JButton btn) {
         btn.setHorizontalAlignment(SwingConstants.LEFT);
         btn.setFocusPainted(false);
         btn.putClientProperty("FlatLaf.style",
-                "background: #" + hex(HEADER) + "; foreground: #FFFFFF;"
+                "background: #" + hex(PRIMARY) + "; foreground: #FFFFFF;"
                 + " hoverBackground: #" + hex(PRIMARY_HOVER) + ";"
                 + " pressedBackground: #" + hex(PRIMARY_PRESSED) + ";"
-                + " focusedBackground: #" + hex(HEADER) + ";"
+                + " focusedBackground: #" + hex(PRIMARY) + ";"
                 + " borderWidth: 0; arc: 0; margin: 10,18,10,12; font: +1");
     }
 
-    /** Như {@link #sidebarNav}, nhưng chữ mờ hơn — dùng cho mục chưa hiện thực (bấm vẫn báo thông báo). */
+    /** Mục thanh bên CHƯA chọn: nền kem liền với thanh bên, chữ nâu đậm, sẫm nhẹ khi hover. */
     public static void sidebarNavMuted(JButton btn) {
         btn.setHorizontalAlignment(SwingConstants.LEFT);
         btn.setFocusPainted(false);
         btn.putClientProperty("FlatLaf.style",
-                "background: #" + hex(HEADER) + "; foreground: #" + hex(SIDEBAR_TEXT_MUTED) + ";"
-                + " hoverBackground: #" + hex(PRIMARY_HOVER) + ";"
-                + " pressedBackground: #" + hex(PRIMARY_PRESSED) + ";"
-                + " focusedBackground: #" + hex(HEADER) + ";"
+                "background: #" + hex(SIDEBAR_BG) + "; foreground: #" + hex(SIDEBAR_TEXT_MUTED) + ";"
+                + " hoverBackground: #" + hex(NAV_HOVER) + ";"
+                + " pressedBackground: #" + hex(TABLE_GRID) + ";"
+                + " focusedBackground: #" + hex(SIDEBAR_BG) + ";"
                 + " borderWidth: 0; arc: 0; margin: 10,18,10,12; font: +1");
     }
 

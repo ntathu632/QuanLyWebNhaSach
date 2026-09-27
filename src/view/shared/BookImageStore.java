@@ -1,6 +1,6 @@
 /*
  * Nơi lưu ảnh bìa sách thật trên đĩa, dùng chung giữa Admin (ghi — khi Thêm/
- * Sửa sách) và Customer (đọc — BookCoverPanel). Trước đây cột Book.image chỉ
+ * Sửa sách) và phía đọc (BookCard bên Customer, BookCoverPanel bên Sales). Trước đây cột Book.image chỉ
  * là 1 chuỗi text vô tác dụng (không có file thật đi kèm); giờ lưu file thật
  * vào thư mục images/books/ (tương đối theo thư mục làm việc của app) với
  * tên = ISBN, để không phụ thuộc bookID (chưa có lúc Thêm sách) và không

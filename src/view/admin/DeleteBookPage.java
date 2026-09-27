@@ -142,7 +142,7 @@ public class DeleteBookPage extends javax.swing.JPanel implements AdminPage {
         heading.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 4, 0));
         header.add(heading);
         hint.setFont(hint.getFont().deriveFont(12f));
-        hint.setForeground(new java.awt.Color(138, 131, 116));
+        hint.setForeground(new java.awt.Color(140, 123, 109));
         hint.setText("Chọn 1 sách trong bảng rồi bấm \"Xóa sách đã chọn\". Sách đang có dữ liệu liên quan (danh mục, tác giả, tồn kho, giỏ hàng, đơn hàng) sẽ không xóa được.");
         hint.setAlignmentX(0.0F);
         hint.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 16, 0));

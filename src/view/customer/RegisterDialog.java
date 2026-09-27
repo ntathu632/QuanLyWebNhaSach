@@ -108,11 +108,11 @@ public class RegisterDialog extends javax.swing.JDialog implements ActionListene
         lblBackToLogin = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Bookshop Management - Đăng Ký");
+        setTitle("Vintage Books - Đăng Ký");
         setResizable(false);
 
         lblAppName.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lblAppName.setText("Bookshop Management");
+        lblAppName.setText("Vintage Books");
 
         lblSubtitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lblSubtitle.setText("Tạo tài khoản khách hàng mới");

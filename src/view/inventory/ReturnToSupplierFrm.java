@@ -88,16 +88,16 @@ public class ReturnToSupplierFrm extends javax.swing.JPanel implements Inventory
         scrBooks = new javax.swing.JScrollPane();
         tblBooks = new javax.swing.JTable();
 
-        setBackground(new java.awt.Color(243, 238, 221));
+        setBackground(new java.awt.Color(255, 255, 255));
         setLayout(new java.awt.BorderLayout());
 
-        pnlContent.setBackground(new java.awt.Color(243, 238, 221));
+        pnlContent.setBackground(new java.awt.Color(255, 255, 255));
 
         lblTitle.setFont(new java.awt.Font("Cormorant Garamond", 1, 30)); // NOI18N
         lblTitle.setText("Xuất trả nhà cung cấp");
 
         lblHint.setFont(new java.awt.Font("Raleway Medium", 0, 12)); // NOI18N
-        lblHint.setForeground(new java.awt.Color(138, 131, 116));
+        lblHint.setForeground(new java.awt.Color(140, 123, 109));
         lblHint.setText("Chọn 1 sách còn tồn kho (ví dụ sách lỗi, ế hàng) để xuất trả lại nhà cung cấp.");
 
         txtKeyword.addActionListener(new java.awt.event.ActionListener() {
@@ -106,7 +106,7 @@ public class ReturnToSupplierFrm extends javax.swing.JPanel implements Inventory
             }
         });
 
-        btnSearch.setBackground(new java.awt.Color(107, 127, 92));
+        btnSearch.setBackground(new java.awt.Color(122, 74, 51));
         btnSearch.setFont(new java.awt.Font("Raleway Medium", 0, 14)); // NOI18N
         btnSearch.setForeground(new java.awt.Color(255, 255, 255));
         btnSearch.setText("Tìm kiếm");
@@ -119,12 +119,12 @@ public class ReturnToSupplierFrm extends javax.swing.JPanel implements Inventory
         });
 
         pnlCard.setBackground(new java.awt.Color(255, 255, 255));
-        pnlCard.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(216, 211, 196), 1, true));
+        pnlCard.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(234, 223, 209), 1, true));
 
         lblCardTitle.setFont(new java.awt.Font("Raleway Medium", 0, 15)); // NOI18N
         lblCardTitle.setText("Kết quả");
 
-        btnReturn.setBackground(new java.awt.Color(192, 96, 74));
+        btnReturn.setBackground(new java.awt.Color(122, 74, 51));
         btnReturn.setFont(new java.awt.Font("Raleway Medium", 0, 14)); // NOI18N
         btnReturn.setForeground(new java.awt.Color(255, 255, 255));
         btnReturn.setText("Xuất trả");
@@ -152,7 +152,7 @@ public class ReturnToSupplierFrm extends javax.swing.JPanel implements Inventory
                 return canEdit [columnIndex];
             }
         });
-        tblBooks.setGridColor(new java.awt.Color(216, 211, 196));
+        tblBooks.setGridColor(new java.awt.Color(234, 223, 209));
         tblBooks.setRowHeight(30);
         tblBooks.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         tblBooks.getTableHeader().setReorderingAllowed(false);

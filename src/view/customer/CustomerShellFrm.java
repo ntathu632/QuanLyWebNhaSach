@@ -1,32 +1,35 @@
 /*
- * Khung Khách hàng DUY NHẤT (1 JFrame sống suốt phiên làm việc) — navbar trên
- * cùng cố định, chỉ phần nội dung bên dưới (pnlContent) được thay khi điều
- * hướng (navigateTo), giống AdminShellFrm bên Admin. Giữ luôn trạng thái đăng
- * nhập của khách (customer = null là khách vãng lai).
+ * Khung Khách hàng DUY NHẤT (1 JFrame sống suốt phiên làm việc) — thanh bên
+ * trái (logo, điều hướng, danh mục sách) + thanh trên (tìm kiếm, giỏ hàng,
+ * tài khoản) cố định, chỉ phần nội dung (pnlContent) được thay khi điều hướng
+ * (navigateTo), giống AdminShellFrm bên Admin. Giữ luôn trạng thái đăng nhập
+ * của khách (customer = null là khách vãng lai). Màu theo VintageTheme.
  */
 package view.customer;
 
+import com.formdev.flatlaf.FlatClientProperties;
+import dao.CategoryDAO;
 import dao.ShoppingCartDAO;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import javax.swing.JButton;
+import model.Category;
 import model.Customer;
 import view.shared.AppTheme;
 import view.shared.ChangePasswordDialog;
+import view.shared.FlatIcon;
 
 public class CustomerShellFrm extends javax.swing.JFrame {
-
-    private static final Color NAV_ACTIVE_BG = new Color(92, 110, 79);
-    private static final Color NAV_BG = new Color(79, 93, 66);
-    private static final Color NAV_MUTED_FG = new Color(221, 226, 211);
 
     /** null = khách vãng lai. */
     private Customer customer;
 
     private CustomerPage currentPage;
 
-    /** Mục navbar có thể tô sáng: khóa điều hướng và nút tương ứng (cùng thứ tự). */
-    private final String[] navKeys = {"home", "search", "orders"};
+    /** Mục thanh bên có thể tô sáng: khóa điều hướng, nút và icon tương ứng (cùng thứ tự). */
+    private final String[] navKeys = {"home", "orders", "cart"};
+    private final FlatIcon.Kind[] navIcons = {FlatIcon.Kind.HOME, FlatIcon.Kind.RECEIPT, FlatIcon.Kind.CART};
     private final JButton[] navButtons;
 
     /**
@@ -35,8 +38,9 @@ public class CustomerShellFrm extends javax.swing.JFrame {
     public CustomerShellFrm(Customer customer) {
         this.customer = customer;
         initComponents();
-        navButtons = new JButton[]{btnHome, btnSearchNav, btnOrders};
-        txtSearch.putClientProperty("JTextField.placeholderText", "Tìm sách theo tên, ISBN...");
+        navButtons = new JButton[]{btnNavHome, btnNavOrders, btnNavCart};
+        styleComponents();
+        loadSidebarCategories();
         showLoginState();
         setSize(1100, 700);
         setLocationRelativeTo(null);
@@ -60,7 +64,7 @@ public class CustomerShellFrm extends javax.swing.JFrame {
         return customer;
     }
 
-    /** Thay nội dung trang hiện tại bằng "page", tô sáng đúng mục navbar — không mở cửa sổ mới. */
+    /** Thay nội dung trang hiện tại bằng "page", tô sáng đúng mục thanh bên — không mở cửa sổ mới. */
     public void navigateTo(CustomerPage page) {
         currentPage = page;
         pnlContent.removeAll();
@@ -69,7 +73,7 @@ public class CustomerShellFrm extends javax.swing.JFrame {
         pnlContent.repaint();
 
         setActiveNav(page.navKey());
-        setTitle("Bookshop - " + page.title());
+        setTitle("Vintage Books - " + page.title());
     }
 
     /**
@@ -89,7 +93,7 @@ public class CustomerShellFrm extends javax.swing.JFrame {
         return c;
     }
 
-    /** Đăng xuất: về khách vãng lai và mở Trang chủ (dùng cho navbar và trang Tài khoản). */
+    /** Đăng xuất: về khách vãng lai và mở Trang chủ (dùng cho thanh trên và trang Tài khoản). */
     public void logout() {
         customer = null;
         showLoginState();
@@ -108,14 +112,14 @@ public class CustomerShellFrm extends javax.swing.JFrame {
         openSearch(txtSearch.getText().trim());
     }
 
-    /** Mở trang ứng với mục navbar "key" (home, orders, cart, account). */
+    /** Mở trang ứng với mục điều hướng "key" (home, orders, cart, account). */
     void go(String key) {
         switch (key) {
             case "home" -> navigateTo(new CustomerHomeFrm(customer));
             case "orders" -> navigateTo(new OrderHistoryFrm(customer));
             case "cart" -> navigateTo(new ShoppingCartFrm(customer));
             case "account" -> navigateTo(new AccountFrm(customer));
-            default -> throw new IllegalArgumentException("Mục navbar không tồn tại: " + key);
+            default -> throw new IllegalArgumentException("Mục điều hướng không tồn tại: " + key);
         }
     }
 
@@ -124,36 +128,79 @@ public class CustomerShellFrm extends javax.swing.JFrame {
         navigateTo(new SearchBookForPurchaseFrm(customer, keyword, null, null));
     }
 
-    /** Mục navbar của trang đang mở nền sáng hơn + chữ trắng, các mục còn lại chữ mờ. */
-    private void setActiveNav(String key) {
-        for (int i = 0; i < navButtons.length; i++) {
-            boolean active = navKeys[i].equals(key);
-            navButtons[i].setBackground(active ? NAV_ACTIVE_BG : NAV_BG);
-            navButtons[i].setForeground(active ? Color.WHITE : NAV_MUTED_FG);
+    /** Mở trang Tìm kiếm sách lọc sẵn theo 1 danh mục. */
+    void openCategory(Category category) {
+        navigateTo(new SearchBookForPurchaseFrm(customer, "", category.getCategoryID(), category.getCategoryName()));
+    }
+
+    /** Màu/icon không đặt được trong Design (FlatLaf style, icon đổi màu theo trạng thái). */
+    private void styleComponents() {
+        getRootPane().putClientProperty(FlatClientProperties.TITLE_BAR_BACKGROUND, VintageTheme.SIDEBAR_BG);
+        getRootPane().putClientProperty(FlatClientProperties.TITLE_BAR_FOREGROUND, VintageTheme.TEXT);
+
+        txtSearch.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Tìm sách theo tên, ISBN...");
+        txtSearch.putClientProperty(FlatClientProperties.TEXT_FIELD_LEADING_ICON,
+                new FlatIcon(FlatIcon.Kind.SEARCH, VintageTheme.TEXT, 16));
+        txtSearch.putClientProperty("FlatLaf.style", "arc: 10; background: #FFFFFF"
+                + "; borderColor: #" + VintageTheme.hex(VintageTheme.CARD_BORDER) + "; margin: 4,10,4,10");
+        VintageTheme.brownButton(btnSearch);
+
+        VintageTheme.flatButton(btnCart);
+        VintageTheme.outlineButton(btnLogin);
+        VintageTheme.brownButton(btnRegister);
+        VintageTheme.flatButton(btnUserMenu);
+    }
+
+    /** Danh mục sách ở thanh bên lấy từ CSDL — bấm vào thì mở trang Tìm sách lọc theo danh mục đó. */
+    private void loadSidebarCategories() {
+        for (Category category : new CategoryDAO().searchCategory("")) {
+            JButton btn = new JButton(category.getCategoryName());
+            btn.setIcon(new FlatIcon(VintageTheme.categoryIcon(category.getCategoryName()), VintageTheme.TEXT, 18));
+            btn.setIconTextGap(14);
+            VintageTheme.sidebarNav(btn, false);
+            // Cao tối đa = cao thật của nút: nếu nhỏ hơn thì BoxLayout không co được
+            // (min = preferred) và đẩy mục cuối ra ngoài khung.
+            btn.setMaximumSize(new Dimension(Integer.MAX_VALUE, btn.getPreferredSize().height));
+            btn.addActionListener(e -> openCategory(category));
+            pnlSidebarCategories.add(btn);
         }
     }
 
-    /** Cập nhật navbar theo trạng thái đăng nhập + số lượng trong giỏ (trang gọi lại sau khi đổi giỏ). */
+    /** Mục thanh bên của trang đang mở nền nâu chữ trắng, các mục còn lại nền trong suốt. */
+    private void setActiveNav(String key) {
+        for (int i = 0; i < navButtons.length; i++) {
+            boolean active = navKeys[i].equals(key);
+            VintageTheme.sidebarNav(navButtons[i], active);
+            navButtons[i].setIcon(new FlatIcon(navIcons[i], active ? Color.WHITE : VintageTheme.TEXT, 20));
+        }
+    }
+
+    /**
+     * Cập nhật thanh trên theo trạng thái đăng nhập + số lượng trong giỏ (trang
+     * gọi lại sau khi đổi giỏ): khách vãng lai thấy Đăng nhập/Đăng ký, đã đăng
+     * nhập thì thấy nút tên khách (bấm mở menu tài khoản); số sách trong giỏ
+     * hiện ngay trên nút Giỏ hàng.
+     */
     public void showLoginState() {
         boolean guest = customer == null;
         btnLogin.setVisible(guest);
         btnRegister.setVisible(guest);
-        lblUser.setVisible(!guest);
-        btnAccount.setVisible(!guest);
-        btnChangePassword.setVisible(!guest);
-        btnLogout.setVisible(!guest);
+        btnUserMenu.setVisible(!guest);
 
-        if (guest) {
-            lblCartBadge.setVisible(false);
-        } else {
-            String name = customer.getFullName() != null ? customer.getFullName() : "khách hàng";
-            lblUser.setText("Xin chào, " + name);
-            int count = new ShoppingCartDAO().countItemsIfCartExists(customer);
-            lblCartBadge.setText(String.valueOf(count));
-            lblCartBadge.setVisible(count > 0);
+        int count = 0;
+        if (!guest) {
+            btnUserMenu.setText(customer.getFullName() != null ? customer.getFullName() : "Tài khoản");
+            count = new ShoppingCartDAO().countItemsIfCartExists(customer);
         }
+        btnCart.setText(count > 0 ? "Giỏ hàng (" + count + ")" : "Giỏ hàng");
         pnlNavRight.revalidate();
         pnlNavRight.repaint();
+    }
+
+    private void openCart() {
+        if (ensureLoggedIn()) {
+            go("cart");
+        }
     }
 
     /**
@@ -165,86 +212,161 @@ public class CustomerShellFrm extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        pnlNavbar = new javax.swing.JPanel();
-        pnlNavLeft = new javax.swing.JPanel();
+        popUserMenu = new javax.swing.JPopupMenu();
+        mniAccount = new javax.swing.JMenuItem();
+        mniOrders = new javax.swing.JMenuItem();
+        mniChangePassword = new javax.swing.JMenuItem();
+        sepUserMenu = new javax.swing.JPopupMenu.Separator();
+        mniLogout = new javax.swing.JMenuItem();
+        pnlSidebar = new javax.swing.JPanel();
         lblBrand = new javax.swing.JLabel();
-        btnHome = new javax.swing.JButton();
-        btnSearchNav = new javax.swing.JButton();
-        btnOrders = new javax.swing.JButton();
-        pnlNavSearch = new javax.swing.JPanel();
+        btnNavHome = new javax.swing.JButton();
+        btnNavOrders = new javax.swing.JButton();
+        btnNavCart = new javax.swing.JButton();
+        pnlSidebarLine = new javax.swing.JPanel();
+        sepSidebar = new javax.swing.JSeparator();
+        lblCategoryHeader = new javax.swing.JLabel();
+        pnlSidebarCategories = new javax.swing.JPanel();
+        pnlMain = new javax.swing.JPanel();
+        pnlTopbar = new javax.swing.JPanel();
+        pnlSearchWrap = new javax.swing.JPanel();
+        pnlSearch = new javax.swing.JPanel();
         txtSearch = new javax.swing.JTextField();
         btnSearch = new javax.swing.JButton();
         pnlNavRight = new javax.swing.JPanel();
         btnCart = new javax.swing.JButton();
-        lblCartBadge = new javax.swing.JLabel();
         btnLogin = new javax.swing.JButton();
         btnRegister = new javax.swing.JButton();
-        lblUser = new javax.swing.JLabel();
-        btnAccount = new javax.swing.JButton();
-        btnChangePassword = new javax.swing.JButton();
-        btnLogout = new javax.swing.JButton();
+        btnUserMenu = new javax.swing.JButton();
         pnlContent = new javax.swing.JPanel();
+
+        mniAccount.setIcon(new view.shared.FlatIcon(view.shared.FlatIcon.Kind.USER, new java.awt.Color(122, 74, 51), 16));
+        mniAccount.setText("Tài khoản của tôi");
+        mniAccount.setIconTextGap(12);
+        mniAccount.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mniAccountActionPerformed(evt);
+            }
+        });
+        popUserMenu.add(mniAccount);
+
+        mniOrders.setIcon(new view.shared.FlatIcon(view.shared.FlatIcon.Kind.RECEIPT, new java.awt.Color(122, 74, 51), 16));
+        mniOrders.setText("Đơn hàng của tôi");
+        mniOrders.setIconTextGap(12);
+        mniOrders.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mniOrdersActionPerformed(evt);
+            }
+        });
+        popUserMenu.add(mniOrders);
+
+        mniChangePassword.setIcon(new view.shared.FlatIcon(view.shared.FlatIcon.Kind.LOCK, new java.awt.Color(122, 74, 51), 16));
+        mniChangePassword.setText("Đổi mật khẩu");
+        mniChangePassword.setIconTextGap(12);
+        mniChangePassword.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mniChangePasswordActionPerformed(evt);
+            }
+        });
+        popUserMenu.add(mniChangePassword);
+        popUserMenu.add(sepUserMenu);
+
+        mniLogout.setIcon(new view.shared.FlatIcon(view.shared.FlatIcon.Kind.LOGOUT, new java.awt.Color(122, 74, 51), 16));
+        mniLogout.setText("Đăng xuất");
+        mniLogout.setIconTextGap(12);
+        mniLogout.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mniLogoutActionPerformed(evt);
+            }
+        });
+        popUserMenu.add(mniLogout);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        pnlNavbar.setBackground(new java.awt.Color(79, 93, 66));
-        pnlNavbar.setPreferredSize(new java.awt.Dimension(0, 68));
-        pnlNavbar.setLayout(new java.awt.BorderLayout());
+        pnlSidebar.setBackground(new java.awt.Color(241, 232, 220));
+        pnlSidebar.setBorder(javax.swing.BorderFactory.createEmptyBorder(26, 18, 18, 18));
+        pnlSidebar.setPreferredSize(new java.awt.Dimension(264, 0));
+        pnlSidebar.setLayout(new javax.swing.BoxLayout(pnlSidebar, javax.swing.BoxLayout.Y_AXIS));
 
-        pnlNavLeft.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 18, 0, 0));
-        pnlNavLeft.setOpaque(false);
-        pnlNavLeft.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 6, 16));
-
-        lblBrand.setFont(new java.awt.Font("Cormorant Garamond", 1, 26)); // NOI18N
-        lblBrand.setForeground(new java.awt.Color(255, 255, 255));
-        lblBrand.setIcon(new view.shared.FlatIcon(view.shared.FlatIcon.Kind.BOOK, java.awt.Color.WHITE, 22));
-        lblBrand.setText("Bookshop");
-        lblBrand.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 24));
-        lblBrand.setIconTextGap(10);
-        pnlNavLeft.add(lblBrand);
-
-        btnHome.setBackground(new java.awt.Color(92, 110, 79));
-        btnHome.setFont(new java.awt.Font("Raleway Medium", 0, 14)); // NOI18N
-        btnHome.setForeground(new java.awt.Color(255, 255, 255));
-        btnHome.setText("Trang chủ");
-        btnHome.setBorderPainted(false);
-        btnHome.setFocusPainted(false);
-        btnHome.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnHomeActionPerformed(evt);
+        lblBrand.setFont(new java.awt.Font("Cormorant Garamond", 1, 32)); // NOI18N
+        lblBrand.setForeground(new java.awt.Color(122, 74, 51));
+        lblBrand.setText("Vintage Books");
+        lblBrand.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 10, 28, 0));
+        lblBrand.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        lblBrand.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblBrandMouseClicked(evt);
             }
         });
-        pnlNavLeft.add(btnHome);
+        pnlSidebar.add(lblBrand);
 
-        btnSearchNav.setBackground(new java.awt.Color(79, 93, 66));
-        btnSearchNav.setForeground(new java.awt.Color(221, 226, 211));
-        btnSearchNav.setText("Tìm sách");
-        btnSearchNav.setBorderPainted(false);
-        btnSearchNav.setFocusPainted(false);
-        btnSearchNav.addActionListener(new java.awt.event.ActionListener() {
+        btnNavHome.setText("Trang chủ");
+        btnNavHome.setIconTextGap(14);
+        btnNavHome.setMaximumSize(new java.awt.Dimension(32767, 46));
+        btnNavHome.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSearchNavActionPerformed(evt);
+                btnNavHomeActionPerformed(evt);
             }
         });
-        pnlNavLeft.add(btnSearchNav);
+        pnlSidebar.add(btnNavHome);
 
-        btnOrders.setBackground(new java.awt.Color(79, 93, 66));
-        btnOrders.setForeground(new java.awt.Color(221, 226, 211));
-        btnOrders.setText("Đơn hàng của tôi");
-        btnOrders.setBorderPainted(false);
-        btnOrders.setFocusPainted(false);
-        btnOrders.addActionListener(new java.awt.event.ActionListener() {
+        btnNavOrders.setText("Đơn hàng của tôi");
+        btnNavOrders.setIconTextGap(14);
+        btnNavOrders.setMaximumSize(new java.awt.Dimension(32767, 46));
+        btnNavOrders.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnOrdersActionPerformed(evt);
+                btnNavOrdersActionPerformed(evt);
             }
         });
-        pnlNavLeft.add(btnOrders);
+        pnlSidebar.add(btnNavOrders);
 
-        pnlNavbar.add(pnlNavLeft, java.awt.BorderLayout.WEST);
+        btnNavCart.setText("Giỏ hàng");
+        btnNavCart.setIconTextGap(14);
+        btnNavCart.setMaximumSize(new java.awt.Dimension(32767, 46));
+        btnNavCart.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNavCartActionPerformed(evt);
+            }
+        });
+        pnlSidebar.add(btnNavCart);
 
-        pnlNavSearch.setBorder(javax.swing.BorderFactory.createEmptyBorder(16, 24, 16, 24));
-        pnlNavSearch.setOpaque(false);
-        pnlNavSearch.setLayout(new java.awt.BorderLayout(6, 0));
+        pnlSidebarLine.setBorder(javax.swing.BorderFactory.createEmptyBorder(18, 12, 14, 12));
+        pnlSidebarLine.setOpaque(false);
+        pnlSidebarLine.setAlignmentX(0.0F);
+        pnlSidebarLine.setMaximumSize(new java.awt.Dimension(32767, 34));
+        pnlSidebarLine.setPreferredSize(new java.awt.Dimension(0, 34));
+        pnlSidebarLine.setLayout(new java.awt.BorderLayout());
+
+        sepSidebar.setForeground(new java.awt.Color(227, 216, 202));
+        pnlSidebarLine.add(sepSidebar, java.awt.BorderLayout.CENTER);
+
+        pnlSidebar.add(pnlSidebarLine);
+
+        lblCategoryHeader.setForeground(new java.awt.Color(140, 123, 109));
+        lblCategoryHeader.setText("Danh mục sách");
+        lblCategoryHeader.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 12, 10, 0));
+        pnlSidebar.add(lblCategoryHeader);
+
+        pnlSidebarCategories.setOpaque(false);
+        pnlSidebarCategories.setAlignmentX(0.0F);
+        pnlSidebarCategories.setLayout(new javax.swing.BoxLayout(pnlSidebarCategories, javax.swing.BoxLayout.Y_AXIS));
+        pnlSidebar.add(pnlSidebarCategories);
+
+        getContentPane().add(pnlSidebar, java.awt.BorderLayout.WEST);
+
+        pnlMain.setBackground(new java.awt.Color(247, 242, 234));
+        pnlMain.setLayout(new java.awt.BorderLayout());
+
+        pnlTopbar.setBorder(javax.swing.BorderFactory.createEmptyBorder(18, 28, 14, 24));
+        pnlTopbar.setOpaque(false);
+        pnlTopbar.setLayout(new java.awt.BorderLayout());
+
+        pnlSearchWrap.setOpaque(false);
+        pnlSearchWrap.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 0, 0));
+
+        pnlSearch.setOpaque(false);
+        pnlSearch.setPreferredSize(new java.awt.Dimension(560, 44));
+        pnlSearch.setLayout(new java.awt.BorderLayout());
 
         txtSearch.setToolTipText("Tìm sách theo tên, ISBN...");
         txtSearch.addActionListener(new java.awt.event.ActionListener() {
@@ -252,33 +374,29 @@ public class CustomerShellFrm extends javax.swing.JFrame {
                 txtSearchActionPerformed(evt);
             }
         });
-        pnlNavSearch.add(txtSearch, java.awt.BorderLayout.CENTER);
+        pnlSearch.add(txtSearch, java.awt.BorderLayout.CENTER);
 
-        btnSearch.setBackground(new java.awt.Color(192, 96, 74));
-        btnSearch.setIcon(new view.shared.FlatIcon(view.shared.FlatIcon.Kind.SEARCH, java.awt.Color.WHITE, 15));
+        btnSearch.setIcon(new view.shared.FlatIcon(view.shared.FlatIcon.Kind.SEARCH, java.awt.Color.WHITE, 18));
         btnSearch.setToolTipText("Tìm kiếm");
-        btnSearch.setBorderPainted(false);
-        btnSearch.setFocusPainted(false);
+        btnSearch.setPreferredSize(new java.awt.Dimension(56, 44));
         btnSearch.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSearchActionPerformed(evt);
             }
         });
-        pnlNavSearch.add(btnSearch, java.awt.BorderLayout.EAST);
+        pnlSearch.add(btnSearch, java.awt.BorderLayout.EAST);
 
-        pnlNavbar.add(pnlNavSearch, java.awt.BorderLayout.CENTER);
+        pnlSearchWrap.add(pnlSearch);
 
-        pnlNavRight.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 18));
+        pnlTopbar.add(pnlSearchWrap, java.awt.BorderLayout.CENTER);
+
         pnlNavRight.setOpaque(false);
-        pnlNavRight.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 8, 16));
+        pnlNavRight.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 10, 0));
 
-        btnCart.setBackground(new java.awt.Color(79, 93, 66));
-        btnCart.setForeground(new java.awt.Color(255, 255, 255));
-        btnCart.setIcon(new view.shared.FlatIcon(view.shared.FlatIcon.Kind.RECEIPT, java.awt.Color.WHITE, 16));
+        btnCart.setIcon(new view.shared.FlatIcon(view.shared.FlatIcon.Kind.CART, new java.awt.Color(59, 42, 32), 20));
         btnCart.setText("Giỏ hàng");
-        btnCart.setBorderPainted(false);
-        btnCart.setFocusPainted(false);
-        btnCart.setIconTextGap(8);
+        btnCart.setIconTextGap(10);
+        btnCart.setPreferredSize(new java.awt.Dimension(156, 44));
         btnCart.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCartActionPerformed(evt);
@@ -286,20 +404,8 @@ public class CustomerShellFrm extends javax.swing.JFrame {
         });
         pnlNavRight.add(btnCart);
 
-        lblCartBadge.setBackground(new java.awt.Color(192, 96, 74));
-        lblCartBadge.setFont(new java.awt.Font("Raleway Medium", 0, 11)); // NOI18N
-        lblCartBadge.setForeground(new java.awt.Color(255, 255, 255));
-        lblCartBadge.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lblCartBadge.setText("0");
-        lblCartBadge.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 6, 1, 6));
-        lblCartBadge.setOpaque(true);
-        pnlNavRight.add(lblCartBadge);
-
-        btnLogin.setFont(new java.awt.Font("Raleway Medium", 0, 14)); // NOI18N
-        btnLogin.setForeground(new java.awt.Color(79, 93, 66));
         btnLogin.setText("Đăng nhập");
-        btnLogin.setBorderPainted(false);
-        btnLogin.setFocusPainted(false);
+        btnLogin.setPreferredSize(new java.awt.Dimension(124, 44));
         btnLogin.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnLoginActionPerformed(evt);
@@ -307,12 +413,8 @@ public class CustomerShellFrm extends javax.swing.JFrame {
         });
         pnlNavRight.add(btnLogin);
 
-        btnRegister.setBackground(new java.awt.Color(192, 96, 74));
-        btnRegister.setFont(new java.awt.Font("Raleway Medium", 0, 14)); // NOI18N
-        btnRegister.setForeground(new java.awt.Color(255, 255, 255));
         btnRegister.setText("Đăng ký");
-        btnRegister.setBorderPainted(false);
-        btnRegister.setFocusPainted(false);
+        btnRegister.setPreferredSize(new java.awt.Dimension(124, 44));
         btnRegister.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnRegisterActionPerformed(evt);
@@ -320,127 +422,119 @@ public class CustomerShellFrm extends javax.swing.JFrame {
         });
         pnlNavRight.add(btnRegister);
 
-        lblUser.setForeground(new java.awt.Color(255, 255, 255));
-        lblUser.setText("Xin chào, khách hàng");
-        lblUser.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 12, 0, 8));
-        pnlNavRight.add(lblUser);
-
-        btnAccount.setBackground(new java.awt.Color(79, 93, 66));
-        btnAccount.setIcon(new view.shared.FlatIcon(view.shared.FlatIcon.Kind.PEN, java.awt.Color.WHITE, 16));
-        btnAccount.setToolTipText("Tài khoản của tôi");
-        btnAccount.setBorderPainted(false);
-        btnAccount.setFocusPainted(false);
-        btnAccount.addActionListener(new java.awt.event.ActionListener() {
+        btnUserMenu.setIcon(new view.shared.FlatIcon(view.shared.FlatIcon.Kind.CIRCLE_USER, new java.awt.Color(122, 74, 51), 22));
+        btnUserMenu.setText("Tài khoản");
+        btnUserMenu.setToolTipText("Tài khoản của tôi");
+        btnUserMenu.setIconTextGap(10);
+        btnUserMenu.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAccountActionPerformed(evt);
+                btnUserMenuActionPerformed(evt);
             }
         });
-        pnlNavRight.add(btnAccount);
+        pnlNavRight.add(btnUserMenu);
 
-        btnChangePassword.setBackground(new java.awt.Color(79, 93, 66));
-        btnChangePassword.setIcon(new view.shared.FlatIcon(view.shared.FlatIcon.Kind.USER, java.awt.Color.WHITE, 16));
-        btnChangePassword.setToolTipText("Đổi mật khẩu");
-        btnChangePassword.setBorderPainted(false);
-        btnChangePassword.setFocusPainted(false);
-        btnChangePassword.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnChangePasswordActionPerformed(evt);
-            }
-        });
-        pnlNavRight.add(btnChangePassword);
+        pnlTopbar.add(pnlNavRight, java.awt.BorderLayout.EAST);
 
-        btnLogout.setBackground(new java.awt.Color(79, 93, 66));
-        btnLogout.setIcon(new view.shared.FlatIcon(view.shared.FlatIcon.Kind.LOGOUT, java.awt.Color.WHITE, 16));
-        btnLogout.setToolTipText("Đăng xuất");
-        btnLogout.setBorderPainted(false);
-        btnLogout.setFocusPainted(false);
-        btnLogout.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnLogoutActionPerformed(evt);
-            }
-        });
-        pnlNavRight.add(btnLogout);
+        pnlMain.add(pnlTopbar, java.awt.BorderLayout.NORTH);
 
-        pnlNavbar.add(pnlNavRight, java.awt.BorderLayout.EAST);
-
-        getContentPane().add(pnlNavbar, java.awt.BorderLayout.NORTH);
-
-        pnlContent.setBackground(new java.awt.Color(243, 238, 221));
+        pnlContent.setBackground(new java.awt.Color(247, 242, 234));
         pnlContent.setLayout(new java.awt.BorderLayout());
-        getContentPane().add(pnlContent, java.awt.BorderLayout.CENTER);
+        pnlMain.add(pnlContent, java.awt.BorderLayout.CENTER);
+
+        getContentPane().add(pnlMain, java.awt.BorderLayout.CENTER);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnAccountActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAccountActionPerformed
-        if (ensureLoggedIn()) {
-            go("account");
-        }
-    }//GEN-LAST:event_btnAccountActionPerformed
-
-    private void btnCartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCartActionPerformed
-        if (ensureLoggedIn()) {
-            go("cart");
-        }
-    }//GEN-LAST:event_btnCartActionPerformed
-
-    private void btnChangePasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChangePasswordActionPerformed
-        ChangePasswordDialog.show(this, customer != null ? customer.getUsername() : null);
-    }//GEN-LAST:event_btnChangePasswordActionPerformed
-
-    private void btnHomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHomeActionPerformed
+    private void lblBrandMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblBrandMouseClicked
         go("home");
-    }//GEN-LAST:event_btnHomeActionPerformed
+    }//GEN-LAST:event_lblBrandMouseClicked
 
-    private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
-        login(false);
-    }//GEN-LAST:event_btnLoginActionPerformed
+    private void btnNavHomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNavHomeActionPerformed
+        go("home");
+    }//GEN-LAST:event_btnNavHomeActionPerformed
 
-    private void btnLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogoutActionPerformed
-        logout();
-    }//GEN-LAST:event_btnLogoutActionPerformed
-
-    private void btnOrdersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOrdersActionPerformed
+    private void btnNavOrdersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNavOrdersActionPerformed
         if (ensureLoggedIn()) {
             go("orders");
         }
-    }//GEN-LAST:event_btnOrdersActionPerformed
+    }//GEN-LAST:event_btnNavOrdersActionPerformed
 
-    private void btnRegisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegisterActionPerformed
-        login(true);
-    }//GEN-LAST:event_btnRegisterActionPerformed
-
-    private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
-        searchFromNavbar();
-    }//GEN-LAST:event_btnSearchActionPerformed
-
-    private void btnSearchNavActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchNavActionPerformed
-        openSearch("");
-    }//GEN-LAST:event_btnSearchNavActionPerformed
+    private void btnNavCartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNavCartActionPerformed
+        openCart();
+    }//GEN-LAST:event_btnNavCartActionPerformed
 
     private void txtSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSearchActionPerformed
         searchFromNavbar();
     }//GEN-LAST:event_txtSearchActionPerformed
 
+    private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
+        searchFromNavbar();
+    }//GEN-LAST:event_btnSearchActionPerformed
+
+    private void btnCartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCartActionPerformed
+        openCart();
+    }//GEN-LAST:event_btnCartActionPerformed
+
+    private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
+        login(false);
+    }//GEN-LAST:event_btnLoginActionPerformed
+
+    private void btnRegisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegisterActionPerformed
+        login(true);
+    }//GEN-LAST:event_btnRegisterActionPerformed
+
+    private void btnUserMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUserMenuActionPerformed
+        popUserMenu.show(btnUserMenu, 0, btnUserMenu.getHeight());
+    }//GEN-LAST:event_btnUserMenuActionPerformed
+
+    private void mniAccountActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniAccountActionPerformed
+        if (ensureLoggedIn()) {
+            go("account");
+        }
+    }//GEN-LAST:event_mniAccountActionPerformed
+
+    private void mniOrdersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniOrdersActionPerformed
+        if (ensureLoggedIn()) {
+            go("orders");
+        }
+    }//GEN-LAST:event_mniOrdersActionPerformed
+
+    private void mniChangePasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniChangePasswordActionPerformed
+        ChangePasswordDialog.show(this, customer != null ? customer.getUsername() : null);
+    }//GEN-LAST:event_mniChangePasswordActionPerformed
+
+    private void mniLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniLogoutActionPerformed
+        logout();
+    }//GEN-LAST:event_mniLogoutActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnAccount;
     private javax.swing.JButton btnCart;
-    private javax.swing.JButton btnChangePassword;
-    private javax.swing.JButton btnHome;
     private javax.swing.JButton btnLogin;
-    private javax.swing.JButton btnLogout;
-    private javax.swing.JButton btnOrders;
+    private javax.swing.JButton btnNavCart;
+    private javax.swing.JButton btnNavHome;
+    private javax.swing.JButton btnNavOrders;
     private javax.swing.JButton btnRegister;
     private javax.swing.JButton btnSearch;
-    private javax.swing.JButton btnSearchNav;
+    private javax.swing.JButton btnUserMenu;
     private javax.swing.JLabel lblBrand;
-    private javax.swing.JLabel lblCartBadge;
-    private javax.swing.JLabel lblUser;
+    private javax.swing.JLabel lblCategoryHeader;
+    private javax.swing.JMenuItem mniAccount;
+    private javax.swing.JMenuItem mniChangePassword;
+    private javax.swing.JMenuItem mniLogout;
+    private javax.swing.JMenuItem mniOrders;
     private javax.swing.JPanel pnlContent;
-    private javax.swing.JPanel pnlNavLeft;
+    private javax.swing.JPanel pnlMain;
     private javax.swing.JPanel pnlNavRight;
-    private javax.swing.JPanel pnlNavSearch;
-    private javax.swing.JPanel pnlNavbar;
+    private javax.swing.JPanel pnlSearch;
+    private javax.swing.JPanel pnlSearchWrap;
+    private javax.swing.JPanel pnlSidebar;
+    private javax.swing.JPanel pnlSidebarCategories;
+    private javax.swing.JPanel pnlSidebarLine;
+    private javax.swing.JPanel pnlTopbar;
+    private javax.swing.JPopupMenu popUserMenu;
+    private javax.swing.JPopupMenu.Separator sepUserMenu;
+    private javax.swing.JSeparator sepSidebar;
     private javax.swing.JTextField txtSearch;
     // End of variables declaration//GEN-END:variables
 }

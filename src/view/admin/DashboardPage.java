@@ -147,7 +147,7 @@ public class DashboardPage extends javax.swing.JPanel implements AdminPage {
         statCard1.add(statValue1);
         statCard1.add(filler2);
         statCaption1.setFont(statCaption1.getFont().deriveFont(12f));
-        statCaption1.setForeground(new java.awt.Color(138, 131, 116));
+        statCaption1.setForeground(new java.awt.Color(140, 123, 109));
         statCaption1.setText("Tổng số sách");
         statCaption1.setAlignmentX(0.0F);
         statCard1.add(statCaption1);
@@ -167,7 +167,7 @@ public class DashboardPage extends javax.swing.JPanel implements AdminPage {
         statCard2.add(statValue2);
         statCard2.add(filler4);
         statCaption2.setFont(statCaption2.getFont().deriveFont(12f));
-        statCaption2.setForeground(new java.awt.Color(138, 131, 116));
+        statCaption2.setForeground(new java.awt.Color(140, 123, 109));
         statCaption2.setText("Tổng đơn hàng");
         statCaption2.setAlignmentX(0.0F);
         statCard2.add(statCaption2);
@@ -187,7 +187,7 @@ public class DashboardPage extends javax.swing.JPanel implements AdminPage {
         statCard3.add(statValue3);
         statCard3.add(filler6);
         statCaption3.setFont(statCaption3.getFont().deriveFont(12f));
-        statCaption3.setForeground(new java.awt.Color(138, 131, 116));
+        statCaption3.setForeground(new java.awt.Color(140, 123, 109));
         statCaption3.setText("Tổng khách hàng");
         statCaption3.setAlignmentX(0.0F);
         statCard3.add(statCaption3);
@@ -207,7 +207,7 @@ public class DashboardPage extends javax.swing.JPanel implements AdminPage {
         statCard4.add(statValue4);
         statCard4.add(filler8);
         statCaption4.setFont(statCaption4.getFont().deriveFont(12f));
-        statCaption4.setForeground(new java.awt.Color(138, 131, 116));
+        statCaption4.setForeground(new java.awt.Color(140, 123, 109));
         statCaption4.setText("Doanh thu đã thu");
         statCaption4.setAlignmentX(0.0F);
         statCard4.add(statCaption4);

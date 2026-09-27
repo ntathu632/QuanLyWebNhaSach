@@ -386,7 +386,7 @@
                                       <Connection code="revenueStatCaption1.getFont().deriveFont(12f)" type="code"/>
                                     </Property>
                                     <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                                      <Color blue="74" green="83" red="8a" type="rgb"/>
+                                      <Color blue="6d" green="7b" red="8c" type="rgb"/>
                                     </Property>
                                     <Property name="text" type="java.lang.String" value="T&#x1ed5;ng &#x111;&#x1a1;n h&#xe0;ng &#x111;&#xe3; thanh to&#xe1;n"/>
                                     <Property name="alignmentX" type="float" value="0.0"/>
@@ -442,7 +442,7 @@
                                       <Connection code="revenueStatCaption2.getFont().deriveFont(12f)" type="code"/>
                                     </Property>
                                     <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                                      <Color blue="74" green="83" red="8a" type="rgb"/>
+                                      <Color blue="6d" green="7b" red="8c" type="rgb"/>
                                     </Property>
                                     <Property name="text" type="java.lang.String" value="T&#x1ed5;ng doanh thu"/>
                                     <Property name="alignmentX" type="float" value="0.0"/>
@@ -862,7 +862,7 @@
                   <Connection code="note.getFont().deriveFont(11f)" type="code"/>
                 </Property>
                 <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                  <Color blue="74" green="83" red="8a" type="rgb"/>
+                  <Color blue="6d" green="7b" red="8c" type="rgb"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="L&#x1b0;u &#xfd;: &#x111;&#x1a1;n &#x111;&#x1eb7;t h&#xe0;ng qua &#x1ee9;ng d&#x1ee5;ng hi&#x1ec7;n ch&#x1b0;a t&#x1ef1; t&#x1ea1;o h&#xf3;a &#x111;&#x1a1;n (Invoice) g&#x1eaf;n nh&#xe2;n vi&#xea;n x&#x1eed; l&#xfd; &#x2014; b&#x1ea3;ng tr&#xea;n ch&#x1ec9; ph&#x1ea3;n &#xe1;nh d&#x1eef; li&#x1ec7;u h&#xf3;a &#x111;&#x1a1;n &#x111;&#xe3; c&#xf3; s&#x1eb5;n."/>
                 <Property name="alignmentX" type="float" value="0.0"/>

@@ -226,7 +226,7 @@ public class ManageAccountPage extends javax.swing.JPanel implements AdminPage {
         header.add(heading);
 
         hint.setFont(hint.getFont().deriveFont(12f));
-        hint.setForeground(new java.awt.Color(138, 131, 116));
+        hint.setForeground(new java.awt.Color(140, 123, 109));
         hint.setText("Chọn 1 tài khoản rồi bấm \"Sửa\" để đổi vai trò (phân quyền) hoặc khóa/mở khóa tài khoản.");
         hint.setAlignmentX(0.0F);
         hint.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 16, 0));

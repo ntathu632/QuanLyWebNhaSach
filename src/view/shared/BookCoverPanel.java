@@ -6,8 +6,7 @@
  * ổn định, khác nhau) + icon sách lớn ở giữa, giống cách app đã dùng
  * FlatIcon/biểu đồ tự vẽ ở phần Admin.
  */
-package view.customer;
-import view.shared.*;
+package view.shared;
 
 import java.awt.Color;
 import java.awt.Graphics;

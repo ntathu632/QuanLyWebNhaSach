@@ -112,11 +112,11 @@ public class LoginDialog extends javax.swing.JDialog implements ActionListener {
         lblGoRegister = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Bookshop Management - Đăng Nhập");
+        setTitle("Vintage Books - Đăng Nhập");
         setResizable(false);
 
         lblAppName.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lblAppName.setText("Bookshop Management");
+        lblAppName.setText("Vintage Books");
 
         lblSubtitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lblSubtitle.setText("Đăng nhập để tiếp tục");

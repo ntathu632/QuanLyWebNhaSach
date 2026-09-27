@@ -216,6 +216,25 @@ public class BookDAO extends DAO {
         return result;
     }
 
+    // Tên tác giả của 1 sách, nối bằng dấu phẩy — hiển thị trên thẻ sách ở
+    // Trang chủ. Sách chưa gán tác giả thì trả về chuỗi rỗng.
+    public String getAuthorNames(int bookID) {
+        List<String> names = new ArrayList<>();
+        try {
+            PreparedStatement ps = con.prepareStatement(
+                    "SELECT a.authorName FROM BookAuthor ba JOIN Author a ON ba.authorID = a.authorID "
+                    + "WHERE ba.bookID = ? ORDER BY a.authorName");
+            ps.setInt(1, bookID);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                names.add(rs.getString("authorName"));
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return String.join(", ", names);
+    }
+
     // FR-ADM-01 (Delete Book): Book.bookID được nhiều bảng khác tham chiếu
     // (BookCategory, BookAuthor, Inventory, CartItem, OrderDetail) và các khóa
     // ngoại này KHÔNG có ON DELETE CASCADE (khác Category/Author — xem AS-02),

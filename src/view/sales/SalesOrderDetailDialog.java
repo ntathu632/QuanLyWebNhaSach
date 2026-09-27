@@ -23,7 +23,7 @@ import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.border.EmptyBorder;
 import model.OrderDetail;
-import view.customer.BookCoverPanel;
+import view.shared.BookCoverPanel;
 import view.shared.AppTheme;
 
 /**
@@ -32,7 +32,7 @@ import view.shared.AppTheme;
  */
 public class SalesOrderDetailDialog extends javax.swing.JDialog {
 
-    private static final Color MUTED = new Color(0x8A, 0x83, 0x74);
+    private static final Color MUTED = new Color(0x8C, 0x7B, 0x6D);
 
     /**
      * @param info 4 cặp {nhãn, giá trị}, xếp thành lưới 2 cột x 2 hàng theo
@@ -106,31 +106,31 @@ public class SalesOrderDetailDialog extends javax.swing.JDialog {
         setTitle("Chi tiết đơn hàng");
 
         pnlInfo.setBackground(new java.awt.Color(247, 244, 236));
-        pnlInfo.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(201, 194, 174)));
+        pnlInfo.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(220, 207, 191)));
 
         lblInfo1Caption.setFont(new java.awt.Font("Raleway Medium", 0, 11)); // NOI18N
-        lblInfo1Caption.setForeground(new java.awt.Color(138, 131, 116));
+        lblInfo1Caption.setForeground(new java.awt.Color(140, 123, 109));
         lblInfo1Caption.setText("Khách hàng:");
 
         lblInfo1Value.setFont(new java.awt.Font("Raleway Medium", 1, 13)); // NOI18N
         lblInfo1Value.setText("...");
 
         lblInfo2Caption.setFont(new java.awt.Font("Raleway Medium", 0, 11)); // NOI18N
-        lblInfo2Caption.setForeground(new java.awt.Color(138, 131, 116));
+        lblInfo2Caption.setForeground(new java.awt.Color(140, 123, 109));
         lblInfo2Caption.setText("Điện thoại:");
 
         lblInfo2Value.setFont(new java.awt.Font("Raleway Medium", 1, 13)); // NOI18N
         lblInfo2Value.setText("...");
 
         lblInfo3Caption.setFont(new java.awt.Font("Raleway Medium", 0, 11)); // NOI18N
-        lblInfo3Caption.setForeground(new java.awt.Color(138, 131, 116));
+        lblInfo3Caption.setForeground(new java.awt.Color(140, 123, 109));
         lblInfo3Caption.setText("Email:");
 
         lblInfo3Value.setFont(new java.awt.Font("Raleway Medium", 1, 13)); // NOI18N
         lblInfo3Value.setText("...");
 
         lblInfo4Caption.setFont(new java.awt.Font("Raleway Medium", 0, 11)); // NOI18N
-        lblInfo4Caption.setForeground(new java.awt.Color(138, 131, 116));
+        lblInfo4Caption.setForeground(new java.awt.Color(140, 123, 109));
         lblInfo4Caption.setText("Địa chỉ giao hàng:");
 
         lblInfo4Value.setFont(new java.awt.Font("Raleway Medium", 1, 13)); // NOI18N
@@ -180,14 +180,14 @@ public class SalesOrderDetailDialog extends javax.swing.JDialog {
         lblItemsTitle.setFont(new java.awt.Font("Raleway Medium", 1, 14)); // NOI18N
         lblItemsTitle.setText("Sách đã đặt");
 
-        scrItems.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(201, 194, 174)));
+        scrItems.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(220, 207, 191)));
 
         pnlItems.setBackground(new java.awt.Color(255, 255, 255));
         pnlItems.setLayout(new javax.swing.BoxLayout(pnlItems, javax.swing.BoxLayout.Y_AXIS));
         scrItems.setViewportView(pnlItems);
 
         lblTotal.setFont(new java.awt.Font("Raleway Medium", 1, 15)); // NOI18N
-        lblTotal.setForeground(new java.awt.Color(192, 57, 43));
+        lblTotal.setForeground(new java.awt.Color(138, 87, 59));
         lblTotal.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         lblTotal.setText("Tổng cộng: 0₫");
 

@@ -45,7 +45,7 @@ public class InventoryShellFrm extends javax.swing.JFrame {
         pnlContent.repaint();
 
         setActiveNav(page.navKey());
-        setTitle("Bookshop Management - " + page.title());
+        setTitle("Vintage Books - " + page.title());
     }
 
     /** Mở trang ứng với mục sidebar "key" (lowstock, import, return, checking, history, books). */
@@ -117,25 +117,23 @@ public class InventoryShellFrm extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        pnlSidebar.setBackground(new java.awt.Color(79, 93, 66));
+        pnlSidebar.setBackground(new java.awt.Color(241, 232, 220));
         pnlSidebar.setPreferredSize(new java.awt.Dimension(240, 0));
 
-        lblBrand.setFont(new java.awt.Font("Raleway Medium", 1, 17)); // NOI18N
-        lblBrand.setForeground(new java.awt.Color(255, 255, 255));
-        lblBrand.setIcon(new view.shared.FlatIcon(view.shared.FlatIcon.Kind.BUILDING, java.awt.Color.WHITE, 20));
-        lblBrand.setText("Bookshop Kho");
+        lblBrand.setFont(new java.awt.Font("Cormorant Garamond", 1, 32)); // NOI18N
+        lblBrand.setForeground(new java.awt.Color(122, 74, 51));
+        lblBrand.setText("Vintage Books");
         lblBrand.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 18, 0, 12));
-        lblBrand.setIconTextGap(10);
 
-        pnlBrandDivider.setBackground(new java.awt.Color(92, 110, 79));
+        pnlBrandDivider.setBackground(new java.awt.Color(227, 216, 202));
         pnlBrandDivider.setLayout(new java.awt.BorderLayout());
 
         lblSectionStock.setFont(new java.awt.Font("Raleway Medium", 1, 11)); // NOI18N
-        lblSectionStock.setForeground(new java.awt.Color(221, 226, 211));
+        lblSectionStock.setForeground(new java.awt.Color(140, 123, 109));
         lblSectionStock.setText("KHO SÁCH");
         lblSectionStock.setBorder(javax.swing.BorderFactory.createEmptyBorder(14, 18, 6, 12));
 
-        btnNavLowStock.setBackground(new java.awt.Color(79, 93, 66));
+        btnNavLowStock.setBackground(new java.awt.Color(241, 232, 220));
         btnNavLowStock.setFont(new java.awt.Font("Raleway Medium", 0, 15)); // NOI18N
         btnNavLowStock.setForeground(new java.awt.Color(255, 255, 255));
         btnNavLowStock.setIcon(new view.shared.FlatIcon(view.shared.FlatIcon.Kind.CHART, java.awt.Color.WHITE, 16));
@@ -150,9 +148,9 @@ public class InventoryShellFrm extends javax.swing.JFrame {
             }
         });
 
-        btnNavImport.setBackground(new java.awt.Color(79, 93, 66));
+        btnNavImport.setBackground(new java.awt.Color(241, 232, 220));
         btnNavImport.setFont(new java.awt.Font("Raleway Medium", 0, 15)); // NOI18N
-        btnNavImport.setForeground(new java.awt.Color(221, 226, 211));
+        btnNavImport.setForeground(new java.awt.Color(140, 123, 109));
         btnNavImport.setIcon(new view.shared.FlatIcon(view.shared.FlatIcon.Kind.PLUS, view.shared.AppTheme.SIDEBAR_TEXT_MUTED, 16));
         btnNavImport.setText("Nhập sách");
         btnNavImport.setBorderPainted(false);
@@ -165,9 +163,9 @@ public class InventoryShellFrm extends javax.swing.JFrame {
             }
         });
 
-        btnNavReturn.setBackground(new java.awt.Color(79, 93, 66));
+        btnNavReturn.setBackground(new java.awt.Color(241, 232, 220));
         btnNavReturn.setFont(new java.awt.Font("Raleway Medium", 0, 15)); // NOI18N
-        btnNavReturn.setForeground(new java.awt.Color(221, 226, 211));
+        btnNavReturn.setForeground(new java.awt.Color(140, 123, 109));
         btnNavReturn.setIcon(new view.shared.FlatIcon(view.shared.FlatIcon.Kind.TRASH, view.shared.AppTheme.SIDEBAR_TEXT_MUTED, 16));
         btnNavReturn.setText("Xuất trả NCC");
         btnNavReturn.setBorderPainted(false);
@@ -180,9 +178,9 @@ public class InventoryShellFrm extends javax.swing.JFrame {
             }
         });
 
-        btnNavChecking.setBackground(new java.awt.Color(79, 93, 66));
+        btnNavChecking.setBackground(new java.awt.Color(241, 232, 220));
         btnNavChecking.setFont(new java.awt.Font("Raleway Medium", 0, 15)); // NOI18N
-        btnNavChecking.setForeground(new java.awt.Color(221, 226, 211));
+        btnNavChecking.setForeground(new java.awt.Color(140, 123, 109));
         btnNavChecking.setIcon(new view.shared.FlatIcon(view.shared.FlatIcon.Kind.BOOK, view.shared.AppTheme.SIDEBAR_TEXT_MUTED, 16));
         btnNavChecking.setText("Kiểm kê kho");
         btnNavChecking.setBorderPainted(false);
@@ -195,9 +193,9 @@ public class InventoryShellFrm extends javax.swing.JFrame {
             }
         });
 
-        btnNavHistory.setBackground(new java.awt.Color(79, 93, 66));
+        btnNavHistory.setBackground(new java.awt.Color(241, 232, 220));
         btnNavHistory.setFont(new java.awt.Font("Raleway Medium", 0, 15)); // NOI18N
-        btnNavHistory.setForeground(new java.awt.Color(221, 226, 211));
+        btnNavHistory.setForeground(new java.awt.Color(140, 123, 109));
         btnNavHistory.setIcon(new view.shared.FlatIcon(view.shared.FlatIcon.Kind.RECEIPT, view.shared.AppTheme.SIDEBAR_TEXT_MUTED, 16));
         btnNavHistory.setText("Lịch sử nhập/trả");
         btnNavHistory.setBorderPainted(false);
@@ -210,17 +208,17 @@ public class InventoryShellFrm extends javax.swing.JFrame {
             }
         });
 
-        pnlSep1.setBackground(new java.awt.Color(92, 110, 79));
+        pnlSep1.setBackground(new java.awt.Color(227, 216, 202));
         pnlSep1.setLayout(new java.awt.BorderLayout());
 
         lblSectionLookup.setFont(new java.awt.Font("Raleway Medium", 1, 11)); // NOI18N
-        lblSectionLookup.setForeground(new java.awt.Color(221, 226, 211));
+        lblSectionLookup.setForeground(new java.awt.Color(140, 123, 109));
         lblSectionLookup.setText("TRA CỨU");
         lblSectionLookup.setBorder(javax.swing.BorderFactory.createEmptyBorder(14, 18, 6, 12));
 
-        btnNavBooks.setBackground(new java.awt.Color(79, 93, 66));
+        btnNavBooks.setBackground(new java.awt.Color(241, 232, 220));
         btnNavBooks.setFont(new java.awt.Font("Raleway Medium", 0, 15)); // NOI18N
-        btnNavBooks.setForeground(new java.awt.Color(221, 226, 211));
+        btnNavBooks.setForeground(new java.awt.Color(140, 123, 109));
         btnNavBooks.setIcon(new view.shared.FlatIcon(view.shared.FlatIcon.Kind.SEARCH, view.shared.AppTheme.SIDEBAR_TEXT_MUTED, 16));
         btnNavBooks.setText("Tra cứu sách");
         btnNavBooks.setBorderPainted(false);
@@ -233,12 +231,12 @@ public class InventoryShellFrm extends javax.swing.JFrame {
             }
         });
 
-        pnlSep2.setBackground(new java.awt.Color(92, 110, 79));
+        pnlSep2.setBackground(new java.awt.Color(227, 216, 202));
         pnlSep2.setLayout(new java.awt.BorderLayout());
 
-        btnChangePassword.setBackground(new java.awt.Color(79, 93, 66));
+        btnChangePassword.setBackground(new java.awt.Color(241, 232, 220));
         btnChangePassword.setFont(new java.awt.Font("Raleway Medium", 0, 15)); // NOI18N
-        btnChangePassword.setForeground(new java.awt.Color(221, 226, 211));
+        btnChangePassword.setForeground(new java.awt.Color(140, 123, 109));
         btnChangePassword.setIcon(new view.shared.FlatIcon(view.shared.FlatIcon.Kind.USER, view.shared.AppTheme.SIDEBAR_TEXT_MUTED, 16));
         btnChangePassword.setText("Đổi mật khẩu");
         btnChangePassword.setBorderPainted(false);
@@ -251,9 +249,9 @@ public class InventoryShellFrm extends javax.swing.JFrame {
             }
         });
 
-        btnLogout.setBackground(new java.awt.Color(79, 93, 66));
+        btnLogout.setBackground(new java.awt.Color(241, 232, 220));
         btnLogout.setFont(new java.awt.Font("Raleway Medium", 0, 15)); // NOI18N
-        btnLogout.setForeground(new java.awt.Color(221, 226, 211));
+        btnLogout.setForeground(new java.awt.Color(140, 123, 109));
         btnLogout.setIcon(new view.shared.FlatIcon(view.shared.FlatIcon.Kind.LOGOUT, view.shared.AppTheme.SIDEBAR_TEXT_MUTED, 16));
         btnLogout.setText("Đăng xuất");
         btnLogout.setBorderPainted(false);
@@ -309,10 +307,10 @@ public class InventoryShellFrm extends javax.swing.JFrame {
 
         getContentPane().add(pnlSidebar, java.awt.BorderLayout.WEST);
 
-        pnlRight.setBackground(new java.awt.Color(243, 238, 221));
+        pnlRight.setBackground(new java.awt.Color(255, 255, 255));
         pnlRight.setLayout(new java.awt.BorderLayout());
 
-        pnlTopbar.setBackground(new java.awt.Color(243, 238, 221));
+        pnlTopbar.setBackground(new java.awt.Color(255, 255, 255));
         pnlTopbar.setPreferredSize(new java.awt.Dimension(0, 56));
         pnlTopbar.setLayout(new java.awt.BorderLayout());
 
@@ -322,14 +320,14 @@ public class InventoryShellFrm extends javax.swing.JFrame {
         lblUser.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 18));
         pnlTopbar.add(lblUser, java.awt.BorderLayout.EAST);
 
-        pnlTopLine.setBackground(new java.awt.Color(201, 194, 174));
+        pnlTopLine.setBackground(new java.awt.Color(220, 207, 191));
         pnlTopLine.setPreferredSize(new java.awt.Dimension(0, 1));
         pnlTopLine.setLayout(new java.awt.BorderLayout());
         pnlTopbar.add(pnlTopLine, java.awt.BorderLayout.SOUTH);
 
         pnlRight.add(pnlTopbar, java.awt.BorderLayout.NORTH);
 
-        pnlContent.setBackground(new java.awt.Color(243, 238, 221));
+        pnlContent.setBackground(new java.awt.Color(255, 255, 255));
         pnlContent.setLayout(new java.awt.BorderLayout());
         pnlRight.add(pnlContent, java.awt.BorderLayout.CENTER);
 

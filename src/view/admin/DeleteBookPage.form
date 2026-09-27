@@ -66,7 +66,7 @@
               <Connection code="hint.getFont().deriveFont(12f)" type="code"/>
             </Property>
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="74" green="83" red="8a" type="rgb"/>
+              <Color blue="6d" green="7b" red="8c" type="rgb"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Ch&#x1ecd;n 1 s&#xe1;ch trong b&#x1ea3;ng r&#x1ed3;i b&#x1ea5;m &quot;X&#xf3;a s&#xe1;ch &#x111;&#xe3; ch&#x1ecd;n&quot;. S&#xe1;ch &#x111;ang c&#xf3; d&#x1eef; li&#x1ec7;u li&#xea;n quan (danh m&#x1ee5;c, t&#xe1;c gi&#x1ea3;, t&#x1ed3;n kho, gi&#x1ecf; h&#xe0;ng, &#x111;&#x1a1;n h&#xe0;ng) s&#x1ebd; kh&#xf4;ng x&#xf3;a &#x111;&#x1b0;&#x1ee3;c."/>
             <Property name="alignmentX" type="float" value="0.0"/>

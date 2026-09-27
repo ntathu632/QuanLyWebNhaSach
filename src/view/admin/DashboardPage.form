@@ -160,7 +160,7 @@
                           <Connection code="statCaption1.getFont().deriveFont(12f)" type="code"/>
                         </Property>
                         <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                          <Color blue="74" green="83" red="8a" type="rgb"/>
+                          <Color blue="6d" green="7b" red="8c" type="rgb"/>
                         </Property>
                         <Property name="text" type="java.lang.String" value="T&#x1ed5;ng s&#x1ed1; s&#xe1;ch"/>
                         <Property name="alignmentX" type="float" value="0.0"/>
@@ -240,7 +240,7 @@
                           <Connection code="statCaption2.getFont().deriveFont(12f)" type="code"/>
                         </Property>
                         <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                          <Color blue="74" green="83" red="8a" type="rgb"/>
+                          <Color blue="6d" green="7b" red="8c" type="rgb"/>
                         </Property>
                         <Property name="text" type="java.lang.String" value="T&#x1ed5;ng &#x111;&#x1a1;n h&#xe0;ng"/>
                         <Property name="alignmentX" type="float" value="0.0"/>
@@ -320,7 +320,7 @@
                           <Connection code="statCaption3.getFont().deriveFont(12f)" type="code"/>
                         </Property>
                         <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                          <Color blue="74" green="83" red="8a" type="rgb"/>
+                          <Color blue="6d" green="7b" red="8c" type="rgb"/>
                         </Property>
                         <Property name="text" type="java.lang.String" value="T&#x1ed5;ng kh&#xe1;ch h&#xe0;ng"/>
                         <Property name="alignmentX" type="float" value="0.0"/>
@@ -400,7 +400,7 @@
                           <Connection code="statCaption4.getFont().deriveFont(12f)" type="code"/>
                         </Property>
                         <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                          <Color blue="74" green="83" red="8a" type="rgb"/>
+                          <Color blue="6d" green="7b" red="8c" type="rgb"/>
                         </Property>
                         <Property name="text" type="java.lang.String" value="Doanh thu &#x111;&#xe3; thu"/>
                         <Property name="alignmentX" type="float" value="0.0"/>

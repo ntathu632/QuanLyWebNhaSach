@@ -8,6 +8,7 @@
  */
 package view.customer;
 
+import view.customer.component.BookCard;
 import dao.BookDAO;
 import dao.ShoppingCartDAO;
 import model.Book;
@@ -88,10 +89,10 @@ public class SearchBookForPurchaseFrm extends javax.swing.JPanel implements Cust
         pnlResultsWrap = new javax.swing.JPanel();
         pnlResults = new javax.swing.JPanel();
 
-        setBackground(new java.awt.Color(243, 238, 221));
+        setBackground(new java.awt.Color(255, 255, 255));
         setLayout(new java.awt.BorderLayout());
 
-        pnlContent.setBackground(new java.awt.Color(243, 238, 221));
+        pnlContent.setBackground(new java.awt.Color(255, 255, 255));
 
         lblTitle.setFont(new java.awt.Font("Cormorant Garamond", 1, 30)); // NOI18N
         lblTitle.setText("Tìm kiếm sách");
@@ -103,7 +104,7 @@ public class SearchBookForPurchaseFrm extends javax.swing.JPanel implements Cust
             }
         });
 
-        btnFind.setBackground(new java.awt.Color(107, 127, 92));
+        btnFind.setBackground(new java.awt.Color(122, 74, 51));
         btnFind.setFont(new java.awt.Font("Raleway Medium", 0, 14)); // NOI18N
         btnFind.setForeground(new java.awt.Color(255, 255, 255));
         btnFind.setText("Tìm kiếm");
@@ -116,16 +117,16 @@ public class SearchBookForPurchaseFrm extends javax.swing.JPanel implements Cust
         });
 
         lblCategoryBadge.setFont(new java.awt.Font("Raleway Medium", 0, 12)); // NOI18N
-        lblCategoryBadge.setForeground(new java.awt.Color(92, 110, 79));
+        lblCategoryBadge.setForeground(new java.awt.Color(138, 87, 59));
         lblCategoryBadge.setText("Danh mục: ...");
 
         lblResultCount.setFont(new java.awt.Font("Raleway Medium", 0, 12)); // NOI18N
-        lblResultCount.setForeground(new java.awt.Color(138, 131, 116));
+        lblResultCount.setForeground(new java.awt.Color(140, 123, 109));
         lblResultCount.setText("Tìm thấy 0 cuốn sách");
 
         scrResults.setBorder(null);
 
-        pnlResultsWrap.setBackground(new java.awt.Color(243, 238, 221));
+        pnlResultsWrap.setBackground(new java.awt.Color(255, 255, 255));
         pnlResultsWrap.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 20, 0));
         pnlResultsWrap.setLayout(new java.awt.BorderLayout());
 

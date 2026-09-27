@@ -111,7 +111,7 @@ public class MockPaymentGatewayFrm extends javax.swing.JPanel implements Custome
         btnConfirm = new javax.swing.JButton();
         btnCancel = new javax.swing.JButton();
 
-        setBackground(new java.awt.Color(243, 238, 221));
+        setBackground(new java.awt.Color(255, 255, 255));
         setLayout(new java.awt.BorderLayout());
 
         pnlGateway.setBackground(new java.awt.Color(234, 234, 234));
@@ -138,14 +138,14 @@ public class MockPaymentGatewayFrm extends javax.swing.JPanel implements Custome
         pnlCenter.setOpaque(false);
 
         pnlCard.setBackground(new java.awt.Color(255, 255, 255));
-        pnlCard.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(201, 194, 174)));
+        pnlCard.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(220, 207, 191)));
 
         lblMerchant.setFont(new java.awt.Font("Raleway Medium", 0, 15)); // NOI18N
         lblMerchant.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lblMerchant.setText("Thanh toán cho Bookshop Management");
+        lblMerchant.setText("Thanh toán cho Vintage Books");
 
         lblOrderId.setFont(new java.awt.Font("Raleway Medium", 0, 13)); // NOI18N
-        lblOrderId.setForeground(new java.awt.Color(138, 131, 116));
+        lblOrderId.setForeground(new java.awt.Color(140, 123, 109));
         lblOrderId.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lblOrderId.setText("Mã đơn hàng: #0");
 
@@ -156,7 +156,7 @@ public class MockPaymentGatewayFrm extends javax.swing.JPanel implements Custome
         lblScanHint.setText("Mở app VNPay và quét mã để thanh toán");
 
         lblAmountCaption.setFont(new java.awt.Font("Raleway Medium", 0, 12)); // NOI18N
-        lblAmountCaption.setForeground(new java.awt.Color(138, 131, 116));
+        lblAmountCaption.setForeground(new java.awt.Color(140, 123, 109));
         lblAmountCaption.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lblAmountCaption.setText("Số tiền thanh toán");
 
@@ -177,7 +177,7 @@ public class MockPaymentGatewayFrm extends javax.swing.JPanel implements Custome
             }
         });
 
-        btnCancel.setBackground(new java.awt.Color(192, 96, 74));
+        btnCancel.setBackground(new java.awt.Color(122, 74, 51));
         btnCancel.setFont(new java.awt.Font("Raleway Medium", 0, 14)); // NOI18N
         btnCancel.setForeground(new java.awt.Color(255, 255, 255));
         btnCancel.setText("Hủy giao dịch, quay lại");

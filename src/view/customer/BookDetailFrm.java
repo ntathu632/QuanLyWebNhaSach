@@ -7,6 +7,7 @@
  */
 package view.customer;
 
+import view.customer.component.BookCard;
 import dao.ReviewDAO;
 import dao.ShoppingCartDAO;
 import java.awt.Color;
@@ -117,16 +118,16 @@ public class BookDetailFrm extends javax.swing.JPanel implements CustomerPage {
         txtComment = new javax.swing.JTextArea();
         btnSubmitReview = new javax.swing.JButton();
 
-        setBackground(new java.awt.Color(243, 238, 221));
+        setBackground(new java.awt.Color(255, 255, 255));
         setLayout(new java.awt.BorderLayout());
 
         scrPage.setBorder(null);
         scrPage.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
-        pnlPage.setBackground(new java.awt.Color(243, 238, 221));
+        pnlPage.setBackground(new java.awt.Color(255, 255, 255));
 
         pnlMain.setBackground(new java.awt.Color(255, 255, 255));
-        pnlMain.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(216, 211, 196), 1, true));
+        pnlMain.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(234, 223, 209), 1, true));
 
         lblCover.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 
@@ -134,14 +135,14 @@ public class BookDetailFrm extends javax.swing.JPanel implements CustomerPage {
         lblBookTitle.setText("Tên sách");
 
         lblIsbn.setFont(new java.awt.Font("Raleway Medium", 0, 12)); // NOI18N
-        lblIsbn.setForeground(new java.awt.Color(138, 131, 116));
+        lblIsbn.setForeground(new java.awt.Color(140, 123, 109));
         lblIsbn.setText("ISBN: ...");
 
         lblRating.setFont(new java.awt.Font("Raleway Medium", 0, 16)); // NOI18N
         lblRating.setText("Chưa có đánh giá");
 
         lblPrice.setFont(new java.awt.Font("Raleway Medium", 0, 26)); // NOI18N
-        lblPrice.setForeground(new java.awt.Color(192, 57, 43));
+        lblPrice.setForeground(new java.awt.Color(138, 87, 59));
         lblPrice.setText("0₫");
 
         lblDescHeading.setFont(new java.awt.Font("Raleway Medium", 0, 15)); // NOI18N
@@ -160,7 +161,7 @@ public class BookDetailFrm extends javax.swing.JPanel implements CustomerPage {
 
         txtQuantity.setText("1");
 
-        btnAddToCart.setBackground(new java.awt.Color(107, 127, 92));
+        btnAddToCart.setBackground(new java.awt.Color(122, 74, 51));
         btnAddToCart.setFont(new java.awt.Font("Raleway Medium", 0, 14)); // NOI18N
         btnAddToCart.setForeground(new java.awt.Color(255, 255, 255));
         btnAddToCart.setText("Thêm vào giỏ hàng");
@@ -172,7 +173,7 @@ public class BookDetailFrm extends javax.swing.JPanel implements CustomerPage {
             }
         });
 
-        btnViewCart.setBackground(new java.awt.Color(192, 96, 74));
+        btnViewCart.setBackground(new java.awt.Color(122, 74, 51));
         btnViewCart.setFont(new java.awt.Font("Raleway Medium", 0, 14)); // NOI18N
         btnViewCart.setForeground(new java.awt.Color(255, 255, 255));
         btnViewCart.setText("Xem giỏ hàng");
@@ -239,7 +240,7 @@ public class BookDetailFrm extends javax.swing.JPanel implements CustomerPage {
         );
 
         pnlReviews.setBackground(new java.awt.Color(255, 255, 255));
-        pnlReviews.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(216, 211, 196), 1, true));
+        pnlReviews.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(234, 223, 209), 1, true));
 
         lblReviewHeading.setFont(new java.awt.Font("Cormorant Garamond", 1, 24)); // NOI18N
         lblReviewHeading.setText("Đánh giá sách");
@@ -251,7 +252,7 @@ public class BookDetailFrm extends javax.swing.JPanel implements CustomerPage {
         pnlReviewList.setLayout(new javax.swing.BoxLayout(pnlReviewList, javax.swing.BoxLayout.Y_AXIS));
 
         lblReviewNote.setFont(new java.awt.Font("Raleway Medium", 0, 12)); // NOI18N
-        lblReviewNote.setForeground(new java.awt.Color(138, 131, 116));
+        lblReviewNote.setForeground(new java.awt.Color(140, 123, 109));
         lblReviewNote.setText("Đăng nhập để đánh giá cuốn sách này.");
 
         pnlReviewForm.setOpaque(false);
@@ -266,7 +267,7 @@ public class BookDetailFrm extends javax.swing.JPanel implements CustomerPage {
         txtComment.setWrapStyleWord(true);
         scrComment.setViewportView(txtComment);
 
-        btnSubmitReview.setBackground(new java.awt.Color(107, 127, 92));
+        btnSubmitReview.setBackground(new java.awt.Color(122, 74, 51));
         btnSubmitReview.setFont(new java.awt.Font("Raleway Medium", 0, 14)); // NOI18N
         btnSubmitReview.setForeground(new java.awt.Color(255, 255, 255));
         btnSubmitReview.setText("Gửi đánh giá");

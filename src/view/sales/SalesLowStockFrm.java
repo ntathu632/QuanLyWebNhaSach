@@ -88,16 +88,16 @@ public class SalesLowStockFrm extends javax.swing.JPanel implements SalesPage {
         scrStock = new javax.swing.JScrollPane();
         tblStock = new javax.swing.JTable();
 
-        setBackground(new java.awt.Color(243, 238, 221));
+        setBackground(new java.awt.Color(255, 255, 255));
         setLayout(new java.awt.BorderLayout());
 
-        pnlContent.setBackground(new java.awt.Color(243, 238, 221));
+        pnlContent.setBackground(new java.awt.Color(255, 255, 255));
 
         lblTitle.setFont(new java.awt.Font("Cormorant Garamond", 1, 30)); // NOI18N
         lblTitle.setText("Sách sắp hết hàng (dưới 10 quyển)");
 
         pnlCard.setBackground(new java.awt.Color(255, 255, 255));
-        pnlCard.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(216, 211, 196), 1, true));
+        pnlCard.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(234, 223, 209), 1, true));
 
         lblCardTitle.setFont(new java.awt.Font("Raleway Medium", 0, 15)); // NOI18N
         lblCardTitle.setText("Sách cần lưu ý khi tư vấn/bán hàng");
@@ -118,7 +118,7 @@ public class SalesLowStockFrm extends javax.swing.JPanel implements SalesPage {
                 return canEdit [columnIndex];
             }
         });
-        tblStock.setGridColor(new java.awt.Color(216, 211, 196));
+        tblStock.setGridColor(new java.awt.Color(234, 223, 209));
         tblStock.setRowHeight(28);
         tblStock.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         tblStock.getTableHeader().setReorderingAllowed(false);

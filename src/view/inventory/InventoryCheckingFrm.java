@@ -77,25 +77,25 @@ public class InventoryCheckingFrm extends javax.swing.JPanel implements Inventor
         scrInventory = new javax.swing.JScrollPane();
         tblInventory = new javax.swing.JTable();
 
-        setBackground(new java.awt.Color(243, 238, 221));
+        setBackground(new java.awt.Color(255, 255, 255));
         setLayout(new java.awt.BorderLayout());
 
-        pnlContent.setBackground(new java.awt.Color(243, 238, 221));
+        pnlContent.setBackground(new java.awt.Color(255, 255, 255));
 
         lblTitle.setFont(new java.awt.Font("Cormorant Garamond", 1, 30)); // NOI18N
         lblTitle.setText("Kiểm kê kho");
 
         lblHint.setFont(new java.awt.Font("Raleway Medium", 0, 12)); // NOI18N
-        lblHint.setForeground(new java.awt.Color(138, 131, 116));
+        lblHint.setForeground(new java.awt.Color(140, 123, 109));
         lblHint.setText("Chọn 1 sách, nhập số lượng đếm được thực tế — hệ thống chỉ điều chỉnh khi có chênh lệch.");
 
         pnlCard.setBackground(new java.awt.Color(255, 255, 255));
-        pnlCard.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(216, 211, 196), 1, true));
+        pnlCard.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(234, 223, 209), 1, true));
 
         lblCardTitle.setFont(new java.awt.Font("Raleway Medium", 0, 15)); // NOI18N
         lblCardTitle.setText("Toàn bộ sách trong kho");
 
-        btnCheck.setBackground(new java.awt.Color(192, 96, 74));
+        btnCheck.setBackground(new java.awt.Color(122, 74, 51));
         btnCheck.setFont(new java.awt.Font("Raleway Medium", 0, 14)); // NOI18N
         btnCheck.setForeground(new java.awt.Color(255, 255, 255));
         btnCheck.setText("Kiểm kê");
@@ -123,7 +123,7 @@ public class InventoryCheckingFrm extends javax.swing.JPanel implements Inventor
                 return canEdit [columnIndex];
             }
         });
-        tblInventory.setGridColor(new java.awt.Color(216, 211, 196));
+        tblInventory.setGridColor(new java.awt.Color(234, 223, 209));
         tblInventory.setRowHeight(28);
         tblInventory.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         tblInventory.getTableHeader().setReorderingAllowed(false);

@@ -1,27 +1,44 @@
 /*
- * Trang chủ Khách hàng (JFrame Form) — cửa sổ mở đầu tiên khi chạy app.
- * customer == null nghĩa là khách vãng lai: vẫn xem/tìm sách được, navbar
- * hiện nút Đăng nhập/Đăng ký; vào giỏ hàng/đơn hàng/tài khoản thì bật hộp
- * thoại đăng nhập. Giao diện tĩnh (navbar, banner, 3 thẻ tính năng, tiêu đề
- * các mục) thiết kế trong Design; phần lấy từ DB (danh mục, sách bán chạy,
- * khám phá sách) đổ vào các panel trống bằng code trong constructor.
+ * Trang chủ Khách hàng (JFrame Form) — trang mở đầu tiên khi chạy app.
+ * customer == null nghĩa là khách vãng lai: vẫn xem/tìm sách được; thêm vào
+ * giỏ hàng thì bật hộp thoại đăng nhập. Phần tĩnh (banner, tiêu đề các mục,
+ * đường kẻ, link "Xem tất cả") thiết kế trong Design; phần lấy từ DB (ô danh
+ * mục, thẻ sách bán chạy, khám phá sách) đổ vào các panel trống bằng code.
+ * Banner để trống cho tới khi có file images/banner/home-banner.png.
  */
 package view.customer;
 
+import view.customer.component.BookCard;
 import dao.BookDAO;
 import dao.CategoryDAO;
 import dao.DAO;
+import dao.ReviewDAO;
 import dao.ShoppingCartDAO;
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Image;
+import java.io.File;
+import java.util.Locale;
+import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 import model.Book;
+import model.CartItem;
 import model.Category;
 import model.Customer;
+import model.ShoppingCart;
 import view.shared.AppTheme;
-import view.shared.ChangePasswordDialog;
+import view.shared.BookImageStore;
 import view.shared.FlatIcon;
 
 /**
@@ -30,12 +47,19 @@ import view.shared.FlatIcon;
  */
 public class CustomerHomeFrm extends javax.swing.JPanel implements CustomerPage {
 
-    private CustomerShellFrm shell;
+    private static final int CATEGORY_SLOTS = 8;
+    private static final int COVER_W = 92;
+    private static final int COVER_H = 124;
+    private static final Locale VI = Locale.forLanguageTag("vi-VN");
 
-    private static final Color MUTED = new Color(0x8A, 0x83, 0x74);
+    private CustomerShellFrm shell;
 
     /** null = khách vãng lai (chưa đăng nhập). */
     private Customer customer;
+
+    /** Dùng chung cho mọi thẻ sách để không mở 1 kết nối CSDL cho mỗi thẻ. */
+    private final BookDAO bookDAO = new BookDAO();
+    private final ReviewDAO reviewDAO = new ReviewDAO();
 
     /**
      * Creates new form CustomerHomeFrm
@@ -90,224 +114,77 @@ public class CustomerHomeFrm extends javax.swing.JPanel implements CustomerPage 
 
         scrBody = new javax.swing.JScrollPane();
         pnlBody = new javax.swing.JPanel();
-        pnlHero = new javax.swing.JPanel();
-        lblHeroTitle = new javax.swing.JLabel();
-        lblHeroSubtitle = new javax.swing.JLabel();
-        btnHeroSearch = new javax.swing.JButton();
-        pnlFeatures = new javax.swing.JPanel();
-        pnlFeature1 = new javax.swing.JPanel();
-        lblFeatureIcon1 = new javax.swing.JLabel();
-        lblFeatureTitle1 = new javax.swing.JLabel();
-        lblFeatureDesc1 = new javax.swing.JLabel();
-        pnlFeature2 = new javax.swing.JPanel();
-        lblFeatureIcon2 = new javax.swing.JLabel();
-        lblFeatureTitle2 = new javax.swing.JLabel();
-        lblFeatureDesc2 = new javax.swing.JLabel();
-        pnlFeature3 = new javax.swing.JPanel();
-        lblFeatureIcon3 = new javax.swing.JLabel();
-        lblFeatureTitle3 = new javax.swing.JLabel();
-        lblFeatureDesc3 = new javax.swing.JLabel();
+        pnlBanner = new view.customer.component.BannerPanel();
         lblCategoryTitle = new javax.swing.JLabel();
+        sepCategory = new javax.swing.JSeparator();
+        lblCategoryAll = new javax.swing.JLabel();
         pnlCategories = new javax.swing.JPanel();
         lblBestSellerTitle = new javax.swing.JLabel();
+        sepBestSeller = new javax.swing.JSeparator();
+        lblBestSellerAll = new javax.swing.JLabel();
         pnlBestSellers = new javax.swing.JPanel();
         lblFeaturedTitle = new javax.swing.JLabel();
+        sepFeatured = new javax.swing.JSeparator();
         lblViewAll = new javax.swing.JLabel();
         pnlFeatured = new javax.swing.JPanel();
 
-        setBackground(new java.awt.Color(243, 238, 221));
+        setBackground(new java.awt.Color(255, 255, 255));
         setLayout(new java.awt.BorderLayout());
 
         scrBody.setBorder(null);
 
-        pnlBody.setBackground(new java.awt.Color(243, 238, 221));
+        pnlBody.setBackground(new java.awt.Color(255, 255, 255));
 
-        pnlHero.setBackground(new java.awt.Color(192, 96, 74));
+        lblCategoryTitle.setFont(new java.awt.Font("Cormorant Garamond", 1, 30)); // NOI18N
+        lblCategoryTitle.setForeground(new java.awt.Color(59, 42, 32));
+        lblCategoryTitle.setText("Danh mục sách");
 
-        lblHeroTitle.setFont(new java.awt.Font("Cormorant Garamond", 1, 40)); // NOI18N
-        lblHeroTitle.setForeground(new java.awt.Color(255, 255, 255));
-        lblHeroTitle.setText("Khám phá thế giới sách");
+        sepCategory.setForeground(new java.awt.Color(227, 216, 202));
 
-        lblHeroSubtitle.setFont(new java.awt.Font("Cormorant Garamond Medium Italic", 0, 20)); // NOI18N
-        lblHeroSubtitle.setForeground(new java.awt.Color(255, 255, 255));
-        lblHeroSubtitle.setText("Tìm và đặt mua những cuốn sách bạn yêu thích chỉ trong vài bước.");
-
-        btnHeroSearch.setFont(new java.awt.Font("Raleway Medium", 0, 14)); // NOI18N
-        btnHeroSearch.setForeground(new java.awt.Color(79, 93, 66));
-        btnHeroSearch.setText("Tìm sách ngay");
-        btnHeroSearch.setBorderPainted(false);
-        btnHeroSearch.setFocusPainted(false);
-        btnHeroSearch.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnHeroSearchActionPerformed(evt);
+        lblCategoryAll.setForeground(new java.awt.Color(138, 87, 59));
+        lblCategoryAll.setIcon(new view.shared.FlatIcon(view.shared.FlatIcon.Kind.ARROW_RIGHT, new java.awt.Color(138, 87, 59), 14));
+        lblCategoryAll.setText("Xem tất cả");
+        lblCategoryAll.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
+        lblCategoryAll.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        lblCategoryAll.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblCategoryAllMouseClicked(evt);
             }
         });
 
-        javax.swing.GroupLayout pnlHeroLayout = new javax.swing.GroupLayout(pnlHero);
-        pnlHero.setLayout(pnlHeroLayout);
-        pnlHeroLayout.setHorizontalGroup(
-            pnlHeroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlHeroLayout.createSequentialGroup()
-                .addGap(44, 44, 44)
-                .addGroup(pnlHeroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblHeroTitle)
-                    .addComponent(lblHeroSubtitle)
-                    .addComponent(btnHeroSearch))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        pnlHeroLayout.setVerticalGroup(
-            pnlHeroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlHeroLayout.createSequentialGroup()
-                .addGap(0, 52, Short.MAX_VALUE)
-                .addComponent(lblHeroTitle)
-                .addGap(10, 10, 10)
-                .addComponent(lblHeroSubtitle)
-                .addGap(22, 22, 22)
-                .addComponent(btnHeroSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 52, Short.MAX_VALUE))
-        );
-
-        pnlFeatures.setOpaque(false);
-        pnlFeatures.setLayout(new java.awt.GridLayout(1, 3, 18, 0));
-
-        pnlFeature1.setBackground(new java.awt.Color(255, 255, 255));
-        pnlFeature1.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(216, 211, 196), 1, true));
-
-        lblFeatureIcon1.setIcon(new view.shared.FlatIcon(view.shared.FlatIcon.Kind.BOOK, view.shared.AppTheme.CHART_SKY, 26));
-
-        lblFeatureTitle1.setFont(new java.awt.Font("Raleway Medium", 0, 14)); // NOI18N
-        lblFeatureTitle1.setText("Kho sách đa dạng");
-
-        lblFeatureDesc1.setFont(new java.awt.Font("Raleway Medium", 0, 12)); // NOI18N
-        lblFeatureDesc1.setForeground(new java.awt.Color(138, 131, 116));
-        lblFeatureDesc1.setText("Nhiều thể loại, cập nhật liên tục");
-
-        javax.swing.GroupLayout pnlFeature1Layout = new javax.swing.GroupLayout(pnlFeature1);
-        pnlFeature1.setLayout(pnlFeature1Layout);
-        pnlFeature1Layout.setHorizontalGroup(
-            pnlFeature1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlFeature1Layout.createSequentialGroup()
-                .addGap(16, 16, 16)
-                .addComponent(lblFeatureIcon1)
-                .addGap(14, 14, 14)
-                .addGroup(pnlFeature1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblFeatureTitle1)
-                    .addComponent(lblFeatureDesc1))
-                .addGap(16, 223, Short.MAX_VALUE))
-        );
-        pnlFeature1Layout.setVerticalGroup(
-            pnlFeature1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlFeature1Layout.createSequentialGroup()
-                .addGap(0, 25, Short.MAX_VALUE)
-                .addGroup(pnlFeature1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblFeatureIcon1)
-                    .addGroup(pnlFeature1Layout.createSequentialGroup()
-                        .addComponent(lblFeatureTitle1)
-                        .addGap(2, 2, 2)
-                        .addComponent(lblFeatureDesc1)))
-                .addGap(0, 25, Short.MAX_VALUE))
-        );
-
-        pnlFeatures.add(pnlFeature1);
-
-        pnlFeature2.setBackground(new java.awt.Color(255, 255, 255));
-        pnlFeature2.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(216, 211, 196), 1, true));
-
-        lblFeatureIcon2.setIcon(new view.shared.FlatIcon(view.shared.FlatIcon.Kind.RECEIPT, view.shared.AppTheme.CHART_GOLD, 26));
-
-        lblFeatureTitle2.setFont(new java.awt.Font("Raleway Medium", 0, 14)); // NOI18N
-        lblFeatureTitle2.setText("Đặt hàng nhanh chóng");
-
-        lblFeatureDesc2.setFont(new java.awt.Font("Raleway Medium", 0, 12)); // NOI18N
-        lblFeatureDesc2.setForeground(new java.awt.Color(138, 131, 116));
-        lblFeatureDesc2.setText("Từ giỏ hàng đến xác nhận chỉ vài bước");
-
-        javax.swing.GroupLayout pnlFeature2Layout = new javax.swing.GroupLayout(pnlFeature2);
-        pnlFeature2.setLayout(pnlFeature2Layout);
-        pnlFeature2Layout.setHorizontalGroup(
-            pnlFeature2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlFeature2Layout.createSequentialGroup()
-                .addGap(16, 16, 16)
-                .addComponent(lblFeatureIcon2)
-                .addGap(14, 14, 14)
-                .addGroup(pnlFeature2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblFeatureTitle2)
-                    .addComponent(lblFeatureDesc2))
-                .addGap(16, 187, Short.MAX_VALUE))
-        );
-        pnlFeature2Layout.setVerticalGroup(
-            pnlFeature2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlFeature2Layout.createSequentialGroup()
-                .addGap(0, 25, Short.MAX_VALUE)
-                .addGroup(pnlFeature2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblFeatureIcon2)
-                    .addGroup(pnlFeature2Layout.createSequentialGroup()
-                        .addComponent(lblFeatureTitle2)
-                        .addGap(2, 2, 2)
-                        .addComponent(lblFeatureDesc2)))
-                .addGap(0, 25, Short.MAX_VALUE))
-        );
-
-        pnlFeatures.add(pnlFeature2);
-
-        pnlFeature3.setBackground(new java.awt.Color(255, 255, 255));
-        pnlFeature3.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(216, 211, 196), 1, true));
-
-        lblFeatureIcon3.setIcon(new view.shared.FlatIcon(view.shared.FlatIcon.Kind.MONEY, view.shared.AppTheme.CHART_PURPLE, 26));
-
-        lblFeatureTitle3.setFont(new java.awt.Font("Raleway Medium", 0, 14)); // NOI18N
-        lblFeatureTitle3.setText("Thanh toán an toàn");
-
-        lblFeatureDesc3.setFont(new java.awt.Font("Raleway Medium", 0, 12)); // NOI18N
-        lblFeatureDesc3.setForeground(new java.awt.Color(138, 131, 116));
-        lblFeatureDesc3.setText("Nhiều phương thức thanh toán");
-
-        javax.swing.GroupLayout pnlFeature3Layout = new javax.swing.GroupLayout(pnlFeature3);
-        pnlFeature3.setLayout(pnlFeature3Layout);
-        pnlFeature3Layout.setHorizontalGroup(
-            pnlFeature3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlFeature3Layout.createSequentialGroup()
-                .addGap(16, 16, 16)
-                .addComponent(lblFeatureIcon3)
-                .addGap(14, 14, 14)
-                .addGroup(pnlFeature3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblFeatureTitle3)
-                    .addComponent(lblFeatureDesc3))
-                .addGap(16, 227, Short.MAX_VALUE))
-        );
-        pnlFeature3Layout.setVerticalGroup(
-            pnlFeature3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlFeature3Layout.createSequentialGroup()
-                .addGap(0, 25, Short.MAX_VALUE)
-                .addGroup(pnlFeature3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblFeatureIcon3)
-                    .addGroup(pnlFeature3Layout.createSequentialGroup()
-                        .addComponent(lblFeatureTitle3)
-                        .addGap(2, 2, 2)
-                        .addComponent(lblFeatureDesc3)))
-                .addGap(0, 25, Short.MAX_VALUE))
-        );
-
-        pnlFeatures.add(pnlFeature3);
-
-        lblCategoryTitle.setFont(new java.awt.Font("Cormorant Garamond", 1, 28)); // NOI18N
-        lblCategoryTitle.setText("Danh mục sách");
-
         pnlCategories.setOpaque(false);
-        pnlCategories.setLayout(new java.awt.GridLayout(0, 4, 16, 16));
+        pnlCategories.setLayout(new java.awt.GridLayout(1, 8, 12, 0));
 
-        lblBestSellerTitle.setFont(new java.awt.Font("Cormorant Garamond", 1, 28)); // NOI18N
+        lblBestSellerTitle.setFont(new java.awt.Font("Cormorant Garamond", 1, 30)); // NOI18N
+        lblBestSellerTitle.setForeground(new java.awt.Color(59, 42, 32));
         lblBestSellerTitle.setText("Sách bán chạy");
 
-        pnlBestSellers.setOpaque(false);
-        pnlBestSellers.setLayout(new java.awt.GridLayout(1, 4, 18, 0));
+        sepBestSeller.setForeground(new java.awt.Color(227, 216, 202));
 
-        lblFeaturedTitle.setFont(new java.awt.Font("Cormorant Garamond", 1, 28)); // NOI18N
+        lblBestSellerAll.setForeground(new java.awt.Color(138, 87, 59));
+        lblBestSellerAll.setIcon(new view.shared.FlatIcon(view.shared.FlatIcon.Kind.ARROW_RIGHT, new java.awt.Color(138, 87, 59), 14));
+        lblBestSellerAll.setText("Xem tất cả");
+        lblBestSellerAll.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
+        lblBestSellerAll.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        lblBestSellerAll.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblBestSellerAllMouseClicked(evt);
+            }
+        });
+
+        pnlBestSellers.setOpaque(false);
+        pnlBestSellers.setLayout(new java.awt.GridLayout(1, 4, 16, 0));
+
+        lblFeaturedTitle.setFont(new java.awt.Font("Cormorant Garamond", 1, 30)); // NOI18N
+        lblFeaturedTitle.setForeground(new java.awt.Color(59, 42, 32));
         lblFeaturedTitle.setText("Khám phá sách");
 
-        lblViewAll.setForeground(new java.awt.Color(92, 110, 79));
-        lblViewAll.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        lblViewAll.setText("<html><u>Xem tất cả sách →</u></html>");
+        sepFeatured.setForeground(new java.awt.Color(227, 216, 202));
+
+        lblViewAll.setForeground(new java.awt.Color(138, 87, 59));
+        lblViewAll.setIcon(new view.shared.FlatIcon(view.shared.FlatIcon.Kind.ARROW_RIGHT, new java.awt.Color(138, 87, 59), 14));
+        lblViewAll.setText("Xem tất cả");
+        lblViewAll.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
         lblViewAll.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         lblViewAll.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -316,7 +193,7 @@ public class CustomerHomeFrm extends javax.swing.JPanel implements CustomerPage 
         });
 
         pnlFeatured.setOpaque(false);
-        pnlFeatured.setLayout(new java.awt.GridLayout(2, 4, 18, 18));
+        pnlFeatured.setLayout(new java.awt.GridLayout(1, 4, 16, 0));
 
         javax.swing.GroupLayout pnlBodyLayout = new javax.swing.GroupLayout(pnlBody);
         pnlBody.setLayout(pnlBodyLayout);
@@ -325,41 +202,69 @@ public class CustomerHomeFrm extends javax.swing.JPanel implements CustomerPage 
             .addGroup(pnlBodyLayout.createSequentialGroup()
                 .addGap(28, 28, 28)
                 .addGroup(pnlBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(pnlHero, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(pnlFeatures, javax.swing.GroupLayout.DEFAULT_SIZE, 1316, Short.MAX_VALUE)
-                    .addComponent(lblCategoryTitle)
-                    .addComponent(pnlCategories, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lblBestSellerTitle)
-                    .addComponent(pnlBestSellers, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(pnlBanner, 0, 0, Short.MAX_VALUE)
+                    .addGroup(pnlBodyLayout.createSequentialGroup()
+                        .addComponent(lblCategoryTitle)
+                        .addGap(18, 18, 18)
+                        .addComponent(sepCategory, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(18, 18, 18)
+                        .addComponent(lblCategoryAll))
+                    .addComponent(pnlCategories, 0, 0, Short.MAX_VALUE)
+                    .addGroup(pnlBodyLayout.createSequentialGroup()
+                        .addComponent(lblBestSellerTitle)
+                        .addGap(18, 18, 18)
+                        .addComponent(sepBestSeller, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(18, 18, 18)
+                        .addComponent(lblBestSellerAll))
+                    .addComponent(pnlBestSellers, 0, 0, Short.MAX_VALUE)
                     .addGroup(pnlBodyLayout.createSequentialGroup()
                         .addComponent(lblFeaturedTitle)
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(lblViewAll, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(pnlFeatured, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(28, 28, 28))
+                        .addGap(18, 18, 18)
+                        .addComponent(sepFeatured, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(18, 18, 18)
+                        .addComponent(lblViewAll))
+                    .addComponent(pnlFeatured, 0, 0, Short.MAX_VALUE))
+                .addGap(24, 24, 24))
         );
         pnlBodyLayout.setVerticalGroup(
             pnlBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlBodyLayout.createSequentialGroup()
-                .addGap(28, 28, 28)
-                .addComponent(pnlHero, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(4, 4, 4)
+                .addComponent(pnlBanner, javax.swing.GroupLayout.PREFERRED_SIZE, 360, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(26, 26, 26)
-                .addComponent(pnlFeatures, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(lblCategoryTitle)
+                .addGroup(pnlBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblCategoryTitle)
+                    .addGroup(pnlBodyLayout.createSequentialGroup()
+                        .addGap(20, 20, 20)
+                        .addComponent(sepCategory, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(pnlBodyLayout.createSequentialGroup()
+                        .addGap(11, 11, 11)
+                        .addComponent(lblCategoryAll)))
                 .addGap(14, 14, 14)
-                .addComponent(pnlCategories, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(34, 34, 34)
-                .addComponent(lblBestSellerTitle)
-                .addGap(14, 14, 14)
-                .addComponent(pnlBestSellers, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(pnlCategories, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(30, 30, 30)
-                .addGroup(pnlBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblFeaturedTitle)
-                    .addComponent(lblViewAll, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(pnlBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblBestSellerTitle)
+                    .addGroup(pnlBodyLayout.createSequentialGroup()
+                        .addGap(20, 20, 20)
+                        .addComponent(sepBestSeller, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(pnlBodyLayout.createSequentialGroup()
+                        .addGap(11, 11, 11)
+                        .addComponent(lblBestSellerAll)))
                 .addGap(14, 14, 14)
-                .addComponent(pnlFeatured, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(28, 192, Short.MAX_VALUE))
+                .addComponent(pnlBestSellers, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(30, 30, 30)
+                .addGroup(pnlBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblFeaturedTitle)
+                    .addGroup(pnlBodyLayout.createSequentialGroup()
+                        .addGap(20, 20, 20)
+                        .addComponent(sepFeatured, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(pnlBodyLayout.createSequentialGroup()
+                        .addGap(11, 11, 11)
+                        .addComponent(lblViewAll)))
+                .addGap(14, 14, 14)
+                .addComponent(pnlFeatured, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(28, 28, Short.MAX_VALUE))
         );
 
         scrBody.setViewportView(pnlBody);
@@ -367,45 +272,55 @@ public class CustomerHomeFrm extends javax.swing.JPanel implements CustomerPage 
         add(scrBody, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
+    private void lblCategoryAllMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblCategoryAllMouseClicked
+        shell.openSearch("");
+    }//GEN-LAST:event_lblCategoryAllMouseClicked
 
-    private void btnHeroSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHeroSearchActionPerformed
-        openSearch("", null, null);
-    }//GEN-LAST:event_btnHeroSearchActionPerformed
+    private void lblBestSellerAllMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblBestSellerAllMouseClicked
+        shell.openSearch("");
+    }//GEN-LAST:event_lblBestSellerAllMouseClicked
 
     private void lblViewAllMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblViewAllMouseClicked
-        openSearch("", null, null);
+        shell.openSearch("");
     }//GEN-LAST:event_lblViewAllMouseClicked
 
-    private void openSearch(String keyword, Integer categoryId, String categoryName) {
-        shell.navigateTo(new SearchBookForPurchaseFrm(customer, keyword, categoryId, categoryName));
-    }
-
+    /** Tối đa 8 ô danh mục (icon tròn + tên), bấm vào mở trang Tìm sách lọc theo danh mục. */
     private void loadCategories() {
-        for (Category category : new CategoryDAO().searchCategory("")) {
-            JPanel card = BookCard.whiteCard();
-            card.setLayout(new java.awt.BorderLayout(12, 0));
-            card.setPreferredSize(new Dimension(0, 60));
-            card.add(new JLabel(new FlatIcon(FlatIcon.Kind.TAG, AppTheme.CHART_SKY, 22)), java.awt.BorderLayout.WEST);
+        Category[] categories = new CategoryDAO().searchCategory("");
+        int count = Math.min(categories.length, CATEGORY_SLOTS);
+        for (int i = 0; i < count; i++) {
+            Category category = categories[i];
+            JPanel tile = VintageTheme.card(14, 12);
+            tile.setLayout(new BorderLayout(0, 10));
 
-            JLabel name = new JLabel(category.getCategoryName());
+            JLabel icon = new JLabel(VintageTheme.circled(VintageTheme.categoryIcon(category.getCategoryName()), 54, 26));
+            icon.setHorizontalAlignment(SwingConstants.CENTER);
+            tile.add(icon, BorderLayout.NORTH);
+
+            // Icon ghim trên cùng, tên canh lên trên: tên dài xuống 2 dòng cũng không làm lệch icon.
+            JLabel name = new JLabel("<html><center>" + BookCard.escape(category.getCategoryName()) + "</center></html>",
+                    SwingConstants.CENTER);
+            name.setVerticalAlignment(SwingConstants.TOP);
             name.setFont(name.getFont().deriveFont(Font.PLAIN, 13f));
-            card.add(name, java.awt.BorderLayout.CENTER);
+            name.setForeground(VintageTheme.TEXT);
+            tile.add(name, BorderLayout.CENTER);
 
-            BookCard.onClick(card, () -> openSearch("", category.getCategoryID(), category.getCategoryName()));
-            pnlCategories.add(card);
+            BookCard.onClick(tile, () -> shell.openCategory(category));
+            pnlCategories.add(tile);
         }
+        fillEmpty(pnlCategories, count, CATEGORY_SLOTS);
     }
 
     // Sách bán chạy thật (BookDAO.bestSellers(), tính theo tổng số lượng
     // trong OrderDetail của mọi đơn) — khác "Khám phá sách" bên dưới vốn chỉ
     // lấy N sách đầu tiên trong kho, không dựa trên doanh số thật.
     private void loadBestSellers() {
-        Book[] books = new BookDAO().bestSellers(4);
+        Book[] books = bookDAO.bestSellers(4);
         if (books.length == 0) {
-            pnlBestSellers.setLayout(new java.awt.BorderLayout());
+            pnlBestSellers.setLayout(new BorderLayout());
             JLabel empty = new JLabel("Chưa có đơn hàng nào để xếp hạng sách bán chạy.");
             empty.setFont(empty.getFont().deriveFont(12f));
-            empty.setForeground(MUTED);
+            empty.setForeground(VintageTheme.MUTED);
             pnlBestSellers.add(empty);
             return;
         }
@@ -413,20 +328,139 @@ public class CustomerHomeFrm extends javax.swing.JPanel implements CustomerPage 
     }
 
     private void loadFeaturedBooks() {
-        fillBookGrid(pnlFeatured, new BookDAO().searchBook(""), 8);
+        fillBookGrid(pnlFeatured, bookDAO.searchBook(""), 4);
     }
 
     /** Đổ tối đa "slots" thẻ sách vào lưới, ô thừa để trống cho các thẻ không bị kéo giãn. */
     private void fillBookGrid(JPanel grid, Book[] books, int slots) {
         int count = Math.min(books.length, slots);
         for (int i = 0; i < count; i++) {
-            Book book = books[i];
-            grid.add(BookCard.build(book, () -> shell.navigateTo(new BookDetailFrm(customer, book))));
+            grid.add(bookCard(books[i]));
         }
-        for (int i = count; i < slots; i++) {
+        fillEmpty(grid, count, slots);
+    }
+
+    private static void fillEmpty(JPanel grid, int from, int slots) {
+        for (int i = from; i < slots; i++) {
             JPanel filler = new JPanel();
             filler.setOpaque(false);
             grid.add(filler);
+        }
+    }
+
+    /**
+     * Thẻ sách nằm ngang: bìa bên trái (để trống nếu chưa có ảnh), bên phải là
+     * tên, tác giả, giá, điểm đánh giá và nút thêm vào giỏ. Bấm vào thẻ mở
+     * trang chi tiết sách.
+     */
+    private JPanel bookCard(Book book) {
+        JPanel card = VintageTheme.card(14, 12);
+        card.setLayout(new BorderLayout(14, 0));
+        BookCard.onClick(card, () -> shell.navigateTo(new BookDetailFrm(customer, book)));
+
+        card.add(cover(book), BorderLayout.WEST);
+
+        JPanel info = new JPanel();
+        info.setOpaque(false);
+        info.setLayout(new BoxLayout(info, BoxLayout.Y_AXIS));
+
+        JLabel title = new JLabel("<html>" + BookCard.escape(book.getTitle()) + "</html>");
+        title.setFont(title.getFont().deriveFont(Font.PLAIN, 14f));
+        title.setForeground(VintageTheme.TEXT);
+        title.setAlignmentX(JComponent.LEFT_ALIGNMENT);
+        info.add(title);
+        info.add(Box.createVerticalStrut(4));
+
+        String authors = bookDAO.getAuthorNames(book.getBookID());
+        JLabel author = new JLabel(authors.isEmpty() ? " " : authors);
+        author.setFont(author.getFont().deriveFont(Font.PLAIN, 12.5f));
+        author.setForeground(VintageTheme.MUTED);
+        author.setAlignmentX(JComponent.LEFT_ALIGNMENT);
+        info.add(author);
+        info.add(Box.createVerticalStrut(10));
+
+        JLabel price = new JLabel(String.format(VI, "%,.0f đ", book.getPrice()));
+        price.setFont(price.getFont().deriveFont(Font.PLAIN, 15f));
+        price.setForeground(VintageTheme.TEXT);
+        price.setAlignmentX(JComponent.LEFT_ALIGNMENT);
+        info.add(price);
+        info.add(Box.createVerticalGlue());
+
+        JPanel bottom = new JPanel(new BorderLayout());
+        bottom.setOpaque(false);
+        bottom.setAlignmentX(JComponent.LEFT_ALIGNMENT);
+        bottom.add(rating(book), BorderLayout.WEST);
+
+        JButton addToCart = new JButton(new FlatIcon(FlatIcon.Kind.CART, Color.WHITE, 18));
+        addToCart.setToolTipText("Thêm vào giỏ hàng");
+        addToCart.setPreferredSize(new Dimension(42, 38));
+        VintageTheme.brownButton(addToCart);
+        addToCart.addActionListener(e -> addToCart(book));
+        bottom.add(addToCart, BorderLayout.EAST);
+        bottom.setMaximumSize(new Dimension(Integer.MAX_VALUE, 38));
+        info.add(bottom);
+
+        card.add(info, BorderLayout.CENTER);
+        return card;
+    }
+
+    /** Bìa sách: ảnh thật nếu có file trong images/books/, không thì khung trống màu kem. */
+    private static JLabel cover(Book book) {
+        JLabel cover = new JLabel();
+        cover.setPreferredSize(new Dimension(COVER_W, COVER_H));
+        cover.setHorizontalAlignment(SwingConstants.CENTER);
+        cover.setOpaque(true);
+        cover.setBackground(VintageTheme.PLACEHOLDER);
+        try {
+            File file = BookImageStore.resolve(book.getImage());
+            if (file != null && file.isFile()) {
+                Image img = ImageIO.read(file);
+                if (img != null) {
+                    // Thu nhỏ vừa khung nhưng giữ đúng tỉ lệ ảnh (không kéo méo bìa).
+                    double scale = Math.min((double) COVER_W / img.getWidth(null), (double) COVER_H / img.getHeight(null));
+                    int w = Math.max(1, (int) Math.round(img.getWidth(null) * scale));
+                    int h = Math.max(1, (int) Math.round(img.getHeight(null) * scale));
+                    cover.setIcon(new ImageIcon(img.getScaledInstance(w, h, Image.SCALE_SMOOTH)));
+                }
+            }
+        } catch (Exception ex) {
+            // Ảnh hỏng/không đọc được -> giữ khung trống.
+        }
+        return cover;
+    }
+
+    /** "★ 4.8 (320)" theo đánh giá thật trong bảng Review; chưa có thì ghi "Chưa có đánh giá". */
+    private JLabel rating(Book book) {
+        int count = reviewDAO.getReviewsForBook(book.getBookID()).size();
+        JLabel lbl = new JLabel();
+        lbl.setFont(lbl.getFont().deriveFont(Font.PLAIN, 12.5f));
+        lbl.setForeground(VintageTheme.MUTED);
+        if (count == 0) {
+            lbl.setText("Chưa có đánh giá");
+        } else {
+            lbl.setIcon(new FlatIcon(FlatIcon.Kind.STAR, VintageTheme.STAR, 14));
+            lbl.setIconTextGap(5);
+            lbl.setText(String.format(VI, "%.1f (%d)", reviewDAO.averageRating(book.getBookID()), count));
+        }
+        lbl.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 6));
+        return lbl;
+    }
+
+    /** Thêm 1 cuốn vào giỏ ngay từ Trang chủ (chưa đăng nhập thì bật hộp thoại đăng nhập trước). */
+    private void addToCart(Book book) {
+        if (!shell.ensureLoggedIn()) {
+            return;
+        }
+        customer = shell.getCustomer();
+        CartItem item = new CartItem(1, book.getPrice(), book.getPrice(), book);
+        ShoppingCartDAO shoppingCartDAO = new ShoppingCartDAO();
+        ShoppingCart cart = shoppingCartDAO.getOrCreateCart(customer);
+        item.setCartID(cart.getCartID());
+        if (shoppingCartDAO.addCartItem(item)) {
+            shell.showLoginState();
+            JOptionPane.showMessageDialog(this, "Đã thêm \"" + book.getTitle() + "\" vào giỏ hàng!");
+        } else {
+            JOptionPane.showMessageDialog(this, "Thêm vào giỏ hàng thất bại! Vui lòng thử lại.");
         }
     }
 
@@ -443,31 +477,20 @@ public class CustomerHomeFrm extends javax.swing.JPanel implements CustomerPage 
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnHeroSearch;
+    private javax.swing.JLabel lblBestSellerAll;
     private javax.swing.JLabel lblBestSellerTitle;
+    private javax.swing.JLabel lblCategoryAll;
     private javax.swing.JLabel lblCategoryTitle;
-    private javax.swing.JLabel lblFeatureDesc1;
-    private javax.swing.JLabel lblFeatureDesc2;
-    private javax.swing.JLabel lblFeatureDesc3;
-    private javax.swing.JLabel lblFeatureIcon1;
-    private javax.swing.JLabel lblFeatureIcon2;
-    private javax.swing.JLabel lblFeatureIcon3;
-    private javax.swing.JLabel lblFeatureTitle1;
-    private javax.swing.JLabel lblFeatureTitle2;
-    private javax.swing.JLabel lblFeatureTitle3;
     private javax.swing.JLabel lblFeaturedTitle;
-    private javax.swing.JLabel lblHeroSubtitle;
-    private javax.swing.JLabel lblHeroTitle;
     private javax.swing.JLabel lblViewAll;
     private javax.swing.JPanel pnlBestSellers;
     private javax.swing.JPanel pnlBody;
     private javax.swing.JPanel pnlCategories;
-    private javax.swing.JPanel pnlFeature1;
-    private javax.swing.JPanel pnlFeature2;
-    private javax.swing.JPanel pnlFeature3;
     private javax.swing.JPanel pnlFeatured;
-    private javax.swing.JPanel pnlFeatures;
-    private javax.swing.JPanel pnlHero;
+    private view.customer.component.BannerPanel pnlBanner;
     private javax.swing.JScrollPane scrBody;
+    private javax.swing.JSeparator sepBestSeller;
+    private javax.swing.JSeparator sepCategory;
+    private javax.swing.JSeparator sepFeatured;
     // End of variables declaration//GEN-END:variables
 }

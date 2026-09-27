@@ -6,7 +6,7 @@
  * trắng, viền mảnh bo góc — giống các thẻ tĩnh làm trong Design; cả thẻ bắt
  * được click (không chỉ riêng nút) như thẻ sản phẩm trên các trang bán sách.
  */
-package view.customer;
+package view.customer.component;
 import view.shared.*;
 
 import java.awt.Color;
@@ -29,12 +29,12 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import model.Book;
 
-final class BookCard {
+public final class BookCard {
 
     private BookCard() {
     }
 
-    static JPanel build(Book book, Runnable onViewDetail) {
+    public static JPanel build(Book book, Runnable onViewDetail) {
         JPanel card = whiteCard();
         card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
         onClick(card, onViewDetail);
@@ -69,7 +69,7 @@ final class BookCard {
     }
 
     /** Khung thẻ phẳng: nền trắng, viền mảnh bo góc — giống các thẻ tĩnh làm trong Design. */
-    static JPanel whiteCard() {
+    public static JPanel whiteCard() {
         JPanel card = new JPanel();
         card.setBackground(Color.WHITE);
         card.setBorder(BorderFactory.createCompoundBorder(
@@ -79,7 +79,7 @@ final class BookCard {
     }
 
     /** Cho cả khung (không chỉ nút bên trong) bắt được click, đổi con trỏ thành bàn tay. */
-    static void onClick(JComponent comp, Runnable action) {
+    public static void onClick(JComponent comp, Runnable action) {
         comp.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         comp.addMouseListener(new MouseAdapter() {
             @Override
@@ -102,7 +102,7 @@ final class BookCard {
      * BookDetailFrm): ảnh thật co theo chiều cao "height", không có ảnh thì
      * ô màu phẳng + icon sách cỡ "iconSize".
      */
-    static void showCover(JLabel cover, Book book, int height, int iconSize) {
+    public static void showCover(JLabel cover, Book book, int height, int iconSize) {
         try {
             File file = BookImageStore.resolve(book.getImage());
             if (file != null && file.isFile()) {
@@ -121,7 +121,7 @@ final class BookCard {
         cover.setIcon(new FlatIcon(FlatIcon.Kind.BOOK, Color.WHITE, iconSize));
     }
 
-    static String escape(String s) {
+    public static String escape(String s) {
         return s == null ? "" : s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
     }
 }

@@ -103,7 +103,7 @@
                           <Connection code="infoLabel1.getFont().deriveFont(12f)" type="code"/>
                         </Property>
                         <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                          <Color blue="74" green="83" red="8a" type="rgb"/>
+                          <Color blue="6d" green="7b" red="8c" type="rgb"/>
                         </Property>
                         <Property name="text" type="java.lang.String" value="Username"/>
                         <Property name="alignmentX" type="float" value="0.0"/>
@@ -154,7 +154,7 @@
                           <Connection code="infoLabel2.getFont().deriveFont(12f)" type="code"/>
                         </Property>
                         <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                          <Color blue="74" green="83" red="8a" type="rgb"/>
+                          <Color blue="6d" green="7b" red="8c" type="rgb"/>
                         </Property>
                         <Property name="text" type="java.lang.String" value="H&#x1ecd; t&#xea;n"/>
                         <Property name="alignmentX" type="float" value="0.0"/>
@@ -205,7 +205,7 @@
                           <Connection code="infoLabel3.getFont().deriveFont(12f)" type="code"/>
                         </Property>
                         <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                          <Color blue="74" green="83" red="8a" type="rgb"/>
+                          <Color blue="6d" green="7b" red="8c" type="rgb"/>
                         </Property>
                         <Property name="text" type="java.lang.String" value="Tr&#x1ea1;ng th&#xe1;i t&#xe0;i kho&#x1ea3;n"/>
                         <Property name="alignmentX" type="float" value="0.0"/>
@@ -256,7 +256,7 @@
                           <Connection code="infoLabel4.getFont().deriveFont(12f)" type="code"/>
                         </Property>
                         <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                          <Color blue="74" green="83" red="8a" type="rgb"/>
+                          <Color blue="6d" green="7b" red="8c" type="rgb"/>
                         </Property>
                         <Property name="text" type="java.lang.String" value="Email"/>
                         <Property name="alignmentX" type="float" value="0.0"/>
@@ -307,7 +307,7 @@
                           <Connection code="infoLabel5.getFont().deriveFont(12f)" type="code"/>
                         </Property>
                         <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                          <Color blue="74" green="83" red="8a" type="rgb"/>
+                          <Color blue="6d" green="7b" red="8c" type="rgb"/>
                         </Property>
                         <Property name="text" type="java.lang.String" value="S&#x1ed1; &#x111;i&#x1ec7;n tho&#x1ea1;i"/>
                         <Property name="alignmentX" type="float" value="0.0"/>
@@ -358,7 +358,7 @@
                           <Connection code="infoLabel6.getFont().deriveFont(12f)" type="code"/>
                         </Property>
                         <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                          <Color blue="74" green="83" red="8a" type="rgb"/>
+                          <Color blue="6d" green="7b" red="8c" type="rgb"/>
                         </Property>
                         <Property name="text" type="java.lang.String" value="&#x110;&#x1ecb;a ch&#x1ec9;"/>
                         <Property name="alignmentX" type="float" value="0.0"/>
@@ -505,7 +505,7 @@
                           <Connection code="statCaption1.getFont().deriveFont(12f)" type="code"/>
                         </Property>
                         <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                          <Color blue="74" green="83" red="8a" type="rgb"/>
+                          <Color blue="6d" green="7b" red="8c" type="rgb"/>
                         </Property>
                         <Property name="text" type="java.lang.String" value="T&#x1ed5;ng s&#x1ed1; &#x111;&#x1a1;n h&#xe0;ng"/>
                         <Property name="alignmentX" type="float" value="0.0"/>
@@ -585,7 +585,7 @@
                           <Connection code="statCaption2.getFont().deriveFont(12f)" type="code"/>
                         </Property>
                         <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                          <Color blue="74" green="83" red="8a" type="rgb"/>
+                          <Color blue="6d" green="7b" red="8c" type="rgb"/>
                         </Property>
                         <Property name="text" type="java.lang.String" value="T&#x1ed5;ng chi ti&#xea;u (&#x111;&#x1a1;n &#x111;&#xe3; thanh to&#xe1;n)"/>
                         <Property name="alignmentX" type="float" value="0.0"/>
@@ -665,7 +665,7 @@
                           <Connection code="statCaption3.getFont().deriveFont(12f)" type="code"/>
                         </Property>
                         <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                          <Color blue="74" green="83" red="8a" type="rgb"/>
+                          <Color blue="6d" green="7b" red="8c" type="rgb"/>
                         </Property>
                         <Property name="text" type="java.lang.String" value="S&#x1ed1; &#x111;&#xe1;nh gi&#xe1; &#x111;&#xe3; vi&#x1ebf;t"/>
                         <Property name="alignmentX" type="float" value="0.0"/>
@@ -781,7 +781,7 @@
                 <Component class="javax.swing.JLabel" name="orderEmpty">
                   <Properties>
                     <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                      <Color blue="74" green="83" red="8a" type="rgb"/>
+                      <Color blue="6d" green="7b" red="8c" type="rgb"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="Kh&#xe1;ch h&#xe0;ng ch&#x1b0;a c&#xf3; &#x111;&#x1a1;n h&#xe0;ng n&#xe0;o."/>
                   </Properties>
@@ -889,7 +889,7 @@
                 <Component class="javax.swing.JLabel" name="reviewEmpty">
                   <Properties>
                     <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                      <Color blue="74" green="83" red="8a" type="rgb"/>
+                      <Color blue="6d" green="7b" red="8c" type="rgb"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="Kh&#xe1;ch h&#xe0;ng ch&#x1b0;a vi&#x1ebf;t &#x111;&#xe1;nh gi&#xe1; n&#xe0;o."/>
                   </Properties>

@@ -73,10 +73,10 @@ public class SearchCustomerFrm extends javax.swing.JPanel implements SalesPage {
         scrCustomers = new javax.swing.JScrollPane();
         tblCustomers = new javax.swing.JTable();
 
-        setBackground(new java.awt.Color(243, 238, 221));
+        setBackground(new java.awt.Color(255, 255, 255));
         setLayout(new java.awt.BorderLayout());
 
-        pnlContent.setBackground(new java.awt.Color(243, 238, 221));
+        pnlContent.setBackground(new java.awt.Color(255, 255, 255));
 
         lblTitle.setFont(new java.awt.Font("Cormorant Garamond", 1, 30)); // NOI18N
         lblTitle.setText("Tra cứu khách hàng");
@@ -87,7 +87,7 @@ public class SearchCustomerFrm extends javax.swing.JPanel implements SalesPage {
             }
         });
 
-        btnSearch.setBackground(new java.awt.Color(107, 127, 92));
+        btnSearch.setBackground(new java.awt.Color(122, 74, 51));
         btnSearch.setFont(new java.awt.Font("Raleway Medium", 0, 14)); // NOI18N
         btnSearch.setForeground(new java.awt.Color(255, 255, 255));
         btnSearch.setText("Tìm kiếm");
@@ -100,7 +100,7 @@ public class SearchCustomerFrm extends javax.swing.JPanel implements SalesPage {
         });
 
         pnlCard.setBackground(new java.awt.Color(255, 255, 255));
-        pnlCard.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(216, 211, 196), 1, true));
+        pnlCard.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(234, 223, 209), 1, true));
 
         lblCardTitle.setFont(new java.awt.Font("Raleway Medium", 0, 15)); // NOI18N
         lblCardTitle.setText("Kết quả");
@@ -121,7 +121,7 @@ public class SearchCustomerFrm extends javax.swing.JPanel implements SalesPage {
                 return canEdit [columnIndex];
             }
         });
-        tblCustomers.setGridColor(new java.awt.Color(216, 211, 196));
+        tblCustomers.setGridColor(new java.awt.Color(234, 223, 209));
         tblCustomers.setRowHeight(28);
         tblCustomers.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         tblCustomers.getTableHeader().setReorderingAllowed(false);

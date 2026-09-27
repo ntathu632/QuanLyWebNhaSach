@@ -113,21 +113,21 @@ public class OrderHistoryFrm extends javax.swing.JPanel implements CustomerPage 
         scrOrders = new javax.swing.JScrollPane();
         tblOrders = new javax.swing.JTable();
 
-        setBackground(new java.awt.Color(243, 238, 221));
+        setBackground(new java.awt.Color(255, 255, 255));
         setLayout(new java.awt.BorderLayout());
 
-        pnlContent.setBackground(new java.awt.Color(243, 238, 221));
+        pnlContent.setBackground(new java.awt.Color(255, 255, 255));
 
         lblTitle.setFont(new java.awt.Font("Cormorant Garamond", 1, 30)); // NOI18N
         lblTitle.setText("Đơn hàng của tôi");
 
         pnlCard.setBackground(new java.awt.Color(255, 255, 255));
-        pnlCard.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(216, 211, 196), 1, true));
+        pnlCard.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(234, 223, 209), 1, true));
 
         lblTableTitle.setFont(new java.awt.Font("Raleway Medium", 0, 15)); // NOI18N
         lblTableTitle.setText("Lịch sử đơn hàng");
 
-        btnDetail.setBackground(new java.awt.Color(107, 127, 92));
+        btnDetail.setBackground(new java.awt.Color(122, 74, 51));
         btnDetail.setFont(new java.awt.Font("Raleway Medium", 0, 14)); // NOI18N
         btnDetail.setForeground(new java.awt.Color(255, 255, 255));
         btnDetail.setText("Xem chi tiết");
@@ -139,7 +139,7 @@ public class OrderHistoryFrm extends javax.swing.JPanel implements CustomerPage 
             }
         });
 
-        btnCancelOrder.setBackground(new java.awt.Color(192, 96, 74));
+        btnCancelOrder.setBackground(new java.awt.Color(122, 74, 51));
         btnCancelOrder.setFont(new java.awt.Font("Raleway Medium", 0, 14)); // NOI18N
         btnCancelOrder.setForeground(new java.awt.Color(255, 255, 255));
         btnCancelOrder.setText("Hủy đơn");
@@ -167,7 +167,7 @@ public class OrderHistoryFrm extends javax.swing.JPanel implements CustomerPage 
                 return canEdit [columnIndex];
             }
         });
-        tblOrders.setGridColor(new java.awt.Color(216, 211, 196));
+        tblOrders.setGridColor(new java.awt.Color(234, 223, 209));
         tblOrders.setRowHeight(30);
         tblOrders.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         tblOrders.getTableHeader().setReorderingAllowed(false);

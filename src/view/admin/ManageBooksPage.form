@@ -160,7 +160,7 @@
                           <Connection code="statCaption1.getFont().deriveFont(12f)" type="code"/>
                         </Property>
                         <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                          <Color blue="74" green="83" red="8a" type="rgb"/>
+                          <Color blue="6d" green="7b" red="8c" type="rgb"/>
                         </Property>
                         <Property name="text" type="java.lang.String" value="T&#x1ed5;ng s&#x1ed1; s&#xe1;ch"/>
                         <Property name="alignmentX" type="float" value="0.0"/>
@@ -240,7 +240,7 @@
                           <Connection code="statCaption2.getFont().deriveFont(12f)" type="code"/>
                         </Property>
                         <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                          <Color blue="74" green="83" red="8a" type="rgb"/>
+                          <Color blue="6d" green="7b" red="8c" type="rgb"/>
                         </Property>
                         <Property name="text" type="java.lang.String" value="Gi&#xe1; trung b&#xec;nh"/>
                         <Property name="alignmentX" type="float" value="0.0"/>
@@ -320,7 +320,7 @@
                           <Connection code="statCaption3.getFont().deriveFont(12f)" type="code"/>
                         </Property>
                         <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                          <Color blue="74" green="83" red="8a" type="rgb"/>
+                          <Color blue="6d" green="7b" red="8c" type="rgb"/>
                         </Property>
                         <Property name="text" type="java.lang.String" value="Kho&#x1ea3;ng gi&#xe1;"/>
                         <Property name="alignmentX" type="float" value="0.0"/>
@@ -439,7 +439,7 @@
                           <Connection code="actionDesc1.getFont().deriveFont(12f)" type="code"/>
                         </Property>
                         <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                          <Color blue="74" green="83" red="8a" type="rgb"/>
+                          <Color blue="6d" green="7b" red="8c" type="rgb"/>
                         </Property>
                         <Property name="text" type="java.lang.String" value="&lt;html&gt;Th&#xea;m m&#x1ed9;t &#x111;&#x1ea7;u s&#xe1;ch m&#x1edb;i v&#xe0;o kho.&lt;/html&gt;"/>
                         <Property name="alignmentX" type="float" value="0.0"/>
@@ -557,7 +557,7 @@
                           <Connection code="actionDesc2.getFont().deriveFont(12f)" type="code"/>
                         </Property>
                         <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                          <Color blue="74" green="83" red="8a" type="rgb"/>
+                          <Color blue="6d" green="7b" red="8c" type="rgb"/>
                         </Property>
                         <Property name="text" type="java.lang.String" value="&lt;html&gt;T&#xec;m v&#xe0; ch&#x1ec9;nh s&#x1eed;a th&#xf4;ng tin s&#xe1;ch &#x111;&#xe3; c&#xf3;.&lt;/html&gt;"/>
                         <Property name="alignmentX" type="float" value="0.0"/>
@@ -675,7 +675,7 @@
                           <Connection code="actionDesc3.getFont().deriveFont(12f)" type="code"/>
                         </Property>
                         <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                          <Color blue="74" green="83" red="8a" type="rgb"/>
+                          <Color blue="6d" green="7b" red="8c" type="rgb"/>
                         </Property>
                         <Property name="text" type="java.lang.String" value="&lt;html&gt;X&#xf3;a m&#x1ed9;t &#x111;&#x1ea7;u s&#xe1;ch kh&#x1ecf;i kho.&lt;/html&gt;"/>
                         <Property name="alignmentX" type="float" value="0.0"/>

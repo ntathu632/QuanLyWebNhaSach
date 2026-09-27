@@ -82,28 +82,28 @@ public class PaymentFrm extends javax.swing.JPanel implements CustomerPage {
         btnCancelOrder = new javax.swing.JButton();
         btnPay = new javax.swing.JButton();
 
-        setBackground(new java.awt.Color(243, 238, 221));
+        setBackground(new java.awt.Color(255, 255, 255));
         setLayout(new java.awt.BorderLayout());
 
-        pnlContent.setBackground(new java.awt.Color(243, 238, 221));
+        pnlContent.setBackground(new java.awt.Color(255, 255, 255));
 
         lblTitle.setFont(new java.awt.Font("Cormorant Garamond", 1, 30)); // NOI18N
         lblTitle.setText("Thanh toán");
 
         pnlCard.setBackground(new java.awt.Color(255, 255, 255));
-        pnlCard.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(216, 211, 196), 1, true));
+        pnlCard.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(234, 223, 209), 1, true));
 
         lblAmountCaption.setText("Số tiền cần thanh toán:");
 
         lblAmount.setFont(new java.awt.Font("Raleway Medium", 0, 20)); // NOI18N
-        lblAmount.setForeground(new java.awt.Color(192, 57, 43));
+        lblAmount.setForeground(new java.awt.Color(138, 87, 59));
         lblAmount.setText("0₫");
 
         lblMethodCaption.setText("Phương thức thanh toán:");
 
         lblMethod.setText("VNPay");
 
-        btnCancelOrder.setBackground(new java.awt.Color(192, 96, 74));
+        btnCancelOrder.setBackground(new java.awt.Color(122, 74, 51));
         btnCancelOrder.setFont(new java.awt.Font("Raleway Medium", 0, 14)); // NOI18N
         btnCancelOrder.setForeground(new java.awt.Color(255, 255, 255));
         btnCancelOrder.setText("Hủy đơn hàng");
@@ -115,7 +115,7 @@ public class PaymentFrm extends javax.swing.JPanel implements CustomerPage {
             }
         });
 
-        btnPay.setBackground(new java.awt.Color(107, 127, 92));
+        btnPay.setBackground(new java.awt.Color(122, 74, 51));
         btnPay.setFont(new java.awt.Font("Raleway Medium", 0, 14)); // NOI18N
         btnPay.setForeground(new java.awt.Color(255, 255, 255));
         btnPay.setText("Thanh toán ngay");

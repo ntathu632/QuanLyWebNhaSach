@@ -10,10 +10,10 @@ import model.Customer;
 
 public interface CustomerPage {
 
-    /** Khóa mục navbar cần tô sáng khi đang ở trang này ("home", "search", "orders"), "" = không mục nào. */
+    /** Khóa mục thanh bên cần tô sáng khi đang ở trang này ("home", "orders", "cart"); khóa khác (vd. "search") hoặc "" = không tô mục nào. */
     String navKey();
 
-    /** Tiêu đề hiển thị trên title bar cửa sổ (sau "Bookshop - "). */
+    /** Tiêu đề hiển thị trên title bar cửa sổ (sau "Vintage Books - "). */
     String title();
 
     /** Dựng nội dung trang. "shell" dùng để điều hướng và lấy trạng thái đăng nhập. */

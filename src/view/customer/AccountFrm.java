@@ -94,11 +94,6 @@ public class AccountFrm extends javax.swing.JPanel implements CustomerPage {
     private void initComponents() {
 
         pnlContent = new javax.swing.JPanel();
-        pnlSidebar = new javax.swing.JPanel();
-        btnSideAccount = new javax.swing.JButton();
-        btnSideOrders = new javax.swing.JButton();
-        btnSidePassword = new javax.swing.JButton();
-        btnSideLogout = new javax.swing.JButton();
         scrMain = new javax.swing.JScrollPane();
         pnlMain = new javax.swing.JPanel();
         lblHeading = new javax.swing.JLabel();
@@ -159,97 +154,15 @@ public class AccountFrm extends javax.swing.JPanel implements CustomerPage {
         btnCancelAddress = new javax.swing.JButton();
         btnSaveAddress = new javax.swing.JButton();
 
-        setBackground(new java.awt.Color(243, 238, 221));
+        setBackground(new java.awt.Color(255, 255, 255));
         setLayout(new java.awt.BorderLayout());
 
-        pnlContent.setBackground(new java.awt.Color(243, 238, 221));
-
-        pnlSidebar.setBackground(new java.awt.Color(255, 255, 255));
-        pnlSidebar.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(216, 211, 196), 1, true));
-
-        btnSideAccount.setBackground(new java.awt.Color(243, 239, 230));
-        btnSideAccount.setFont(new java.awt.Font("Raleway Medium", 0, 14)); // NOI18N
-        btnSideAccount.setForeground(new java.awt.Color(107, 127, 92));
-        btnSideAccount.setIcon(new view.shared.FlatIcon(view.shared.FlatIcon.Kind.USER, view.shared.AppTheme.PRIMARY, 16));
-        btnSideAccount.setText("Quản lý tài khoản");
-        btnSideAccount.setBorderPainted(false);
-        btnSideAccount.setFocusPainted(false);
-        btnSideAccount.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        btnSideAccount.setIconTextGap(10);
-
-        btnSideOrders.setBackground(new java.awt.Color(255, 255, 255));
-        btnSideOrders.setFont(new java.awt.Font("Raleway Medium", 0, 14)); // NOI18N
-        btnSideOrders.setForeground(new java.awt.Color(58, 51, 40));
-        btnSideOrders.setIcon(new view.shared.FlatIcon(view.shared.FlatIcon.Kind.RECEIPT, new java.awt.Color(138, 131, 116), 16));
-        btnSideOrders.setText("Lịch sử đơn hàng");
-        btnSideOrders.setBorderPainted(false);
-        btnSideOrders.setFocusPainted(false);
-        btnSideOrders.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        btnSideOrders.setIconTextGap(10);
-        btnSideOrders.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSideOrdersActionPerformed(evt);
-            }
-        });
-
-        btnSidePassword.setBackground(new java.awt.Color(255, 255, 255));
-        btnSidePassword.setFont(new java.awt.Font("Raleway Medium", 0, 14)); // NOI18N
-        btnSidePassword.setForeground(new java.awt.Color(58, 51, 40));
-        btnSidePassword.setIcon(new view.shared.FlatIcon(view.shared.FlatIcon.Kind.PEN, new java.awt.Color(138, 131, 116), 16));
-        btnSidePassword.setText("Đổi mật khẩu");
-        btnSidePassword.setBorderPainted(false);
-        btnSidePassword.setFocusPainted(false);
-        btnSidePassword.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        btnSidePassword.setIconTextGap(10);
-        btnSidePassword.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSidePasswordActionPerformed(evt);
-            }
-        });
-
-        btnSideLogout.setBackground(new java.awt.Color(255, 255, 255));
-        btnSideLogout.setFont(new java.awt.Font("Raleway Medium", 0, 14)); // NOI18N
-        btnSideLogout.setForeground(new java.awt.Color(58, 51, 40));
-        btnSideLogout.setIcon(new view.shared.FlatIcon(view.shared.FlatIcon.Kind.LOGOUT, new java.awt.Color(138, 131, 116), 16));
-        btnSideLogout.setText("Đăng xuất");
-        btnSideLogout.setBorderPainted(false);
-        btnSideLogout.setFocusPainted(false);
-        btnSideLogout.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        btnSideLogout.setIconTextGap(10);
-        btnSideLogout.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSideLogoutActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout pnlSidebarLayout = new javax.swing.GroupLayout(pnlSidebar);
-        pnlSidebar.setLayout(pnlSidebarLayout);
-        pnlSidebarLayout.setHorizontalGroup(
-            pnlSidebarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlSidebarLayout.createSequentialGroup()
-                .addGap(6, 6, 6)
-                .addGroup(pnlSidebarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnSideAccount, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnSideOrders, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnSidePassword, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnSideLogout, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(6, 6, 6))
-        );
-        pnlSidebarLayout.setVerticalGroup(
-            pnlSidebarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlSidebarLayout.createSequentialGroup()
-                .addGap(14, 14, 14)
-                .addComponent(btnSideAccount, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addComponent(btnSideOrders, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addComponent(btnSidePassword, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addComponent(btnSideLogout, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(14, 14, 14))
-        );
+        pnlContent.setBackground(new java.awt.Color(255, 255, 255));
 
         scrMain.setBorder(null);
         scrMain.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
-        pnlMain.setBackground(new java.awt.Color(243, 238, 221));
+        pnlMain.setBackground(new java.awt.Color(255, 255, 255));
 
         lblHeading.setFont(new java.awt.Font("Cormorant Garamond", 1, 30)); // NOI18N
         lblHeading.setText("Quản lý tài khoản");
@@ -258,7 +171,7 @@ public class AccountFrm extends javax.swing.JPanel implements CustomerPage {
         pnlStats.setLayout(new java.awt.GridLayout(1, 2, 18, 0));
 
         pnlStatOrders.setBackground(new java.awt.Color(255, 255, 255));
-        pnlStatOrders.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(216, 211, 196), 1, true));
+        pnlStatOrders.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(234, 223, 209), 1, true));
 
         lblStatOrdersIcon.setIcon(new view.shared.FlatIcon(view.shared.FlatIcon.Kind.RECEIPT, view.shared.AppTheme.CHART_SKY, 20));
 
@@ -266,7 +179,7 @@ public class AccountFrm extends javax.swing.JPanel implements CustomerPage {
         lblStatOrdersValue.setText("0");
 
         lblStatOrdersCaption.setFont(new java.awt.Font("Raleway Medium", 0, 12)); // NOI18N
-        lblStatOrdersCaption.setForeground(new java.awt.Color(138, 131, 116));
+        lblStatOrdersCaption.setForeground(new java.awt.Color(140, 123, 109));
         lblStatOrdersCaption.setText("Tổng số đơn hàng");
 
         javax.swing.GroupLayout pnlStatOrdersLayout = new javax.swing.GroupLayout(pnlStatOrders);
@@ -296,15 +209,15 @@ public class AccountFrm extends javax.swing.JPanel implements CustomerPage {
         pnlStats.add(pnlStatOrders);
 
         pnlStatSpent.setBackground(new java.awt.Color(255, 255, 255));
-        pnlStatSpent.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(216, 211, 196), 1, true));
+        pnlStatSpent.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(234, 223, 209), 1, true));
 
         lblStatSpentIcon.setIcon(new view.shared.FlatIcon(view.shared.FlatIcon.Kind.MONEY, view.shared.AppTheme.CHART_GOLD, 20));
 
         lblStatSpentValue.setFont(new java.awt.Font("Raleway Medium", 0, 20)); // NOI18N
-        lblStatSpentValue.setText("0₫");
+        lblStatSpentValue.setText("0 đ");
 
         lblStatSpentCaption.setFont(new java.awt.Font("Raleway Medium", 0, 12)); // NOI18N
-        lblStatSpentCaption.setForeground(new java.awt.Color(138, 131, 116));
+        lblStatSpentCaption.setForeground(new java.awt.Color(140, 123, 109));
         lblStatSpentCaption.setText("Tổng chi tiêu (đơn đã thanh toán)");
 
         javax.swing.GroupLayout pnlStatSpentLayout = new javax.swing.GroupLayout(pnlStatSpent);
@@ -346,19 +259,19 @@ public class AccountFrm extends javax.swing.JPanel implements CustomerPage {
         lblName.setText("Họ tên");
 
         lblCustomerId.setFont(new java.awt.Font("Raleway Medium", 0, 13)); // NOI18N
-        lblCustomerId.setForeground(new java.awt.Color(90, 84, 72));
+        lblCustomerId.setForeground(new java.awt.Color(94, 77, 64));
         lblCustomerId.setText("Mã khách hàng: ...");
 
         lblUsername.setFont(new java.awt.Font("Raleway Medium", 0, 13)); // NOI18N
-        lblUsername.setForeground(new java.awt.Color(90, 84, 72));
+        lblUsername.setForeground(new java.awt.Color(94, 77, 64));
         lblUsername.setText("Username: ...");
 
         lblEmailSummary.setFont(new java.awt.Font("Raleway Medium", 0, 13)); // NOI18N
-        lblEmailSummary.setForeground(new java.awt.Color(90, 84, 72));
+        lblEmailSummary.setForeground(new java.awt.Color(94, 77, 64));
         lblEmailSummary.setText("Email: ...");
 
         lblPhoneSummary.setFont(new java.awt.Font("Raleway Medium", 0, 13)); // NOI18N
-        lblPhoneSummary.setForeground(new java.awt.Color(90, 84, 72));
+        lblPhoneSummary.setForeground(new java.awt.Color(94, 77, 64));
         lblPhoneSummary.setText("Số điện thoại: ...");
 
         javax.swing.GroupLayout pnlProfileLayout = new javax.swing.GroupLayout(pnlProfile);
@@ -394,16 +307,16 @@ public class AccountFrm extends javax.swing.JPanel implements CustomerPage {
         );
 
         pnlPasswordRow.setBackground(new java.awt.Color(255, 255, 255));
-        pnlPasswordRow.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(216, 211, 196), 1, true));
+        pnlPasswordRow.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(234, 223, 209), 1, true));
 
         lblPasswordCaption.setFont(new java.awt.Font("Raleway Medium", 0, 12)); // NOI18N
-        lblPasswordCaption.setForeground(new java.awt.Color(138, 131, 116));
+        lblPasswordCaption.setForeground(new java.awt.Color(140, 123, 109));
         lblPasswordCaption.setText("Mật khẩu");
 
         lblPasswordDots.setFont(new java.awt.Font("Raleway Medium", 0, 15)); // NOI18N
         lblPasswordDots.setText("**********");
 
-        btnEditPassword.setBackground(new java.awt.Color(107, 127, 92));
+        btnEditPassword.setBackground(new java.awt.Color(122, 74, 51));
         btnEditPassword.setFont(new java.awt.Font("Raleway Medium", 0, 14)); // NOI18N
         btnEditPassword.setForeground(new java.awt.Color(255, 255, 255));
         btnEditPassword.setText("Sửa");
@@ -444,16 +357,16 @@ public class AccountFrm extends javax.swing.JPanel implements CustomerPage {
         pnlRowFullName.setLayout(new java.awt.CardLayout());
 
         pnlViewFullName.setBackground(new java.awt.Color(255, 255, 255));
-        pnlViewFullName.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(216, 211, 196), 1, true));
+        pnlViewFullName.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(234, 223, 209), 1, true));
 
         lblFullNameCaption.setFont(new java.awt.Font("Raleway Medium", 0, 12)); // NOI18N
-        lblFullNameCaption.setForeground(new java.awt.Color(138, 131, 116));
+        lblFullNameCaption.setForeground(new java.awt.Color(140, 123, 109));
         lblFullNameCaption.setText("Họ tên");
 
         lblFullNameValue.setFont(new java.awt.Font("Raleway Medium", 0, 15)); // NOI18N
         lblFullNameValue.setText("Chưa cập nhật");
 
-        btnEditFullName.setBackground(new java.awt.Color(192, 96, 74));
+        btnEditFullName.setBackground(new java.awt.Color(122, 74, 51));
         btnEditFullName.setFont(new java.awt.Font("Raleway Medium", 0, 14)); // NOI18N
         btnEditFullName.setForeground(new java.awt.Color(255, 255, 255));
         btnEditFullName.setText("Sửa");
@@ -494,9 +407,9 @@ public class AccountFrm extends javax.swing.JPanel implements CustomerPage {
         pnlRowFullName.add(pnlViewFullName, "view");
 
         pnlEditFullName.setBackground(new java.awt.Color(255, 255, 255));
-        pnlEditFullName.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(216, 211, 196), 1, true));
+        pnlEditFullName.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(234, 223, 209), 1, true));
 
-        btnCancelFullName.setBackground(new java.awt.Color(192, 96, 74));
+        btnCancelFullName.setBackground(new java.awt.Color(122, 74, 51));
         btnCancelFullName.setFont(new java.awt.Font("Raleway Medium", 0, 14)); // NOI18N
         btnCancelFullName.setForeground(new java.awt.Color(255, 255, 255));
         btnCancelFullName.setText("Hủy");
@@ -508,7 +421,7 @@ public class AccountFrm extends javax.swing.JPanel implements CustomerPage {
             }
         });
 
-        btnSaveFullName.setBackground(new java.awt.Color(107, 127, 92));
+        btnSaveFullName.setBackground(new java.awt.Color(122, 74, 51));
         btnSaveFullName.setFont(new java.awt.Font("Raleway Medium", 0, 14)); // NOI18N
         btnSaveFullName.setForeground(new java.awt.Color(255, 255, 255));
         btnSaveFullName.setText("Lưu");
@@ -549,16 +462,16 @@ public class AccountFrm extends javax.swing.JPanel implements CustomerPage {
         pnlRowPhone.setLayout(new java.awt.CardLayout());
 
         pnlViewPhone.setBackground(new java.awt.Color(255, 255, 255));
-        pnlViewPhone.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(216, 211, 196), 1, true));
+        pnlViewPhone.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(234, 223, 209), 1, true));
 
         lblPhoneCaption.setFont(new java.awt.Font("Raleway Medium", 0, 12)); // NOI18N
-        lblPhoneCaption.setForeground(new java.awt.Color(138, 131, 116));
+        lblPhoneCaption.setForeground(new java.awt.Color(140, 123, 109));
         lblPhoneCaption.setText("Số điện thoại");
 
         lblPhoneValue.setFont(new java.awt.Font("Raleway Medium", 0, 15)); // NOI18N
         lblPhoneValue.setText("Chưa cập nhật");
 
-        btnEditPhone.setBackground(new java.awt.Color(192, 96, 74));
+        btnEditPhone.setBackground(new java.awt.Color(122, 74, 51));
         btnEditPhone.setFont(new java.awt.Font("Raleway Medium", 0, 14)); // NOI18N
         btnEditPhone.setForeground(new java.awt.Color(255, 255, 255));
         btnEditPhone.setText("Sửa");
@@ -599,9 +512,9 @@ public class AccountFrm extends javax.swing.JPanel implements CustomerPage {
         pnlRowPhone.add(pnlViewPhone, "view");
 
         pnlEditPhone.setBackground(new java.awt.Color(255, 255, 255));
-        pnlEditPhone.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(216, 211, 196), 1, true));
+        pnlEditPhone.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(234, 223, 209), 1, true));
 
-        btnCancelPhone.setBackground(new java.awt.Color(192, 96, 74));
+        btnCancelPhone.setBackground(new java.awt.Color(122, 74, 51));
         btnCancelPhone.setFont(new java.awt.Font("Raleway Medium", 0, 14)); // NOI18N
         btnCancelPhone.setForeground(new java.awt.Color(255, 255, 255));
         btnCancelPhone.setText("Hủy");
@@ -613,7 +526,7 @@ public class AccountFrm extends javax.swing.JPanel implements CustomerPage {
             }
         });
 
-        btnSavePhone.setBackground(new java.awt.Color(107, 127, 92));
+        btnSavePhone.setBackground(new java.awt.Color(122, 74, 51));
         btnSavePhone.setFont(new java.awt.Font("Raleway Medium", 0, 14)); // NOI18N
         btnSavePhone.setForeground(new java.awt.Color(255, 255, 255));
         btnSavePhone.setText("Lưu");
@@ -654,16 +567,16 @@ public class AccountFrm extends javax.swing.JPanel implements CustomerPage {
         pnlRowEmail.setLayout(new java.awt.CardLayout());
 
         pnlViewEmail.setBackground(new java.awt.Color(255, 255, 255));
-        pnlViewEmail.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(216, 211, 196), 1, true));
+        pnlViewEmail.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(234, 223, 209), 1, true));
 
         lblEmailCaption.setFont(new java.awt.Font("Raleway Medium", 0, 12)); // NOI18N
-        lblEmailCaption.setForeground(new java.awt.Color(138, 131, 116));
+        lblEmailCaption.setForeground(new java.awt.Color(140, 123, 109));
         lblEmailCaption.setText("Email");
 
         lblEmailValue.setFont(new java.awt.Font("Raleway Medium", 0, 15)); // NOI18N
         lblEmailValue.setText("Chưa cập nhật");
 
-        btnEditEmail.setBackground(new java.awt.Color(192, 96, 74));
+        btnEditEmail.setBackground(new java.awt.Color(122, 74, 51));
         btnEditEmail.setFont(new java.awt.Font("Raleway Medium", 0, 14)); // NOI18N
         btnEditEmail.setForeground(new java.awt.Color(255, 255, 255));
         btnEditEmail.setText("Sửa");
@@ -704,9 +617,9 @@ public class AccountFrm extends javax.swing.JPanel implements CustomerPage {
         pnlRowEmail.add(pnlViewEmail, "view");
 
         pnlEditEmail.setBackground(new java.awt.Color(255, 255, 255));
-        pnlEditEmail.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(216, 211, 196), 1, true));
+        pnlEditEmail.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(234, 223, 209), 1, true));
 
-        btnCancelEmail.setBackground(new java.awt.Color(192, 96, 74));
+        btnCancelEmail.setBackground(new java.awt.Color(122, 74, 51));
         btnCancelEmail.setFont(new java.awt.Font("Raleway Medium", 0, 14)); // NOI18N
         btnCancelEmail.setForeground(new java.awt.Color(255, 255, 255));
         btnCancelEmail.setText("Hủy");
@@ -718,7 +631,7 @@ public class AccountFrm extends javax.swing.JPanel implements CustomerPage {
             }
         });
 
-        btnSaveEmail.setBackground(new java.awt.Color(107, 127, 92));
+        btnSaveEmail.setBackground(new java.awt.Color(122, 74, 51));
         btnSaveEmail.setFont(new java.awt.Font("Raleway Medium", 0, 14)); // NOI18N
         btnSaveEmail.setForeground(new java.awt.Color(255, 255, 255));
         btnSaveEmail.setText("Lưu");
@@ -759,16 +672,16 @@ public class AccountFrm extends javax.swing.JPanel implements CustomerPage {
         pnlRowAddress.setLayout(new java.awt.CardLayout());
 
         pnlViewAddress.setBackground(new java.awt.Color(255, 255, 255));
-        pnlViewAddress.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(216, 211, 196), 1, true));
+        pnlViewAddress.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(234, 223, 209), 1, true));
 
         lblAddressCaption.setFont(new java.awt.Font("Raleway Medium", 0, 12)); // NOI18N
-        lblAddressCaption.setForeground(new java.awt.Color(138, 131, 116));
+        lblAddressCaption.setForeground(new java.awt.Color(140, 123, 109));
         lblAddressCaption.setText("Địa chỉ");
 
         lblAddressValue.setFont(new java.awt.Font("Raleway Medium", 0, 15)); // NOI18N
         lblAddressValue.setText("Chưa cập nhật");
 
-        btnEditAddress.setBackground(new java.awt.Color(192, 96, 74));
+        btnEditAddress.setBackground(new java.awt.Color(122, 74, 51));
         btnEditAddress.setFont(new java.awt.Font("Raleway Medium", 0, 14)); // NOI18N
         btnEditAddress.setForeground(new java.awt.Color(255, 255, 255));
         btnEditAddress.setText("Sửa");
@@ -809,9 +722,9 @@ public class AccountFrm extends javax.swing.JPanel implements CustomerPage {
         pnlRowAddress.add(pnlViewAddress, "view");
 
         pnlEditAddress.setBackground(new java.awt.Color(255, 255, 255));
-        pnlEditAddress.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(216, 211, 196), 1, true));
+        pnlEditAddress.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(234, 223, 209), 1, true));
 
-        btnCancelAddress.setBackground(new java.awt.Color(192, 96, 74));
+        btnCancelAddress.setBackground(new java.awt.Color(122, 74, 51));
         btnCancelAddress.setFont(new java.awt.Font("Raleway Medium", 0, 14)); // NOI18N
         btnCancelAddress.setForeground(new java.awt.Color(255, 255, 255));
         btnCancelAddress.setText("Hủy");
@@ -823,7 +736,7 @@ public class AccountFrm extends javax.swing.JPanel implements CustomerPage {
             }
         });
 
-        btnSaveAddress.setBackground(new java.awt.Color(107, 127, 92));
+        btnSaveAddress.setBackground(new java.awt.Color(122, 74, 51));
         btnSaveAddress.setFont(new java.awt.Font("Raleway Medium", 0, 14)); // NOI18N
         btnSaveAddress.setForeground(new java.awt.Color(255, 255, 255));
         btnSaveAddress.setText("Lưu");
@@ -906,8 +819,6 @@ public class AccountFrm extends javax.swing.JPanel implements CustomerPage {
             pnlContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlContentLayout.createSequentialGroup()
                 .addGap(28, 28, 28)
-                .addComponent(pnlSidebar, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(24, 24, 24)
                 .addComponent(scrMain, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(28, 28, 28))
         );
@@ -915,27 +826,13 @@ public class AccountFrm extends javax.swing.JPanel implements CustomerPage {
             pnlContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlContentLayout.createSequentialGroup()
                 .addGap(28, 28, 28)
-                .addGroup(pnlContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(pnlSidebar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(scrMain, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(scrMain, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(28, 28, 28))
         );
 
         add(pnlContent, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
-
-    private void btnSideOrdersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSideOrdersActionPerformed
-        shell.navigateTo(new OrderHistoryFrm(customer));
-    }//GEN-LAST:event_btnSideOrdersActionPerformed
-
-    private void btnSidePasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSidePasswordActionPerformed
-        ChangePasswordDialog.show(this, customer.getUsername());
-    }//GEN-LAST:event_btnSidePasswordActionPerformed
-
-    private void btnSideLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSideLogoutActionPerformed
-        shell.logout();
-    }//GEN-LAST:event_btnSideLogoutActionPerformed
 
     private void lblAvatarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblAvatarMouseClicked
         chooseAndUploadAvatar();
@@ -1010,7 +907,7 @@ public class AccountFrm extends javax.swing.JPanel implements CustomerPage {
             }
         }
         lblStatOrdersValue.setText(String.valueOf(orders.size()));
-        lblStatSpentValue.setText(String.format("%,.0f₫", totalSpent));
+        lblStatSpentValue.setText(String.format(java.util.Locale.forLanguageTag("vi-VN"), "%,.0f đ", totalSpent));
     }
 
     // Khối hồ sơ tóm tắt + giá trị các mục thông tin. Không có "Customer
@@ -1160,10 +1057,6 @@ public class AccountFrm extends javax.swing.JPanel implements CustomerPage {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnEditPassword;
-    private javax.swing.JButton btnSideAccount;
-    private javax.swing.JButton btnSideLogout;
-    private javax.swing.JButton btnSideOrders;
-    private javax.swing.JButton btnSidePassword;
     private javax.swing.JLabel lblAvatar;
     private javax.swing.JLabel lblCustomerId;
     private javax.swing.JLabel lblEmailSummary;
@@ -1183,7 +1076,6 @@ public class AccountFrm extends javax.swing.JPanel implements CustomerPage {
     private javax.swing.JPanel pnlMain;
     private javax.swing.JPanel pnlPasswordRow;
     private javax.swing.JPanel pnlProfile;
-    private javax.swing.JPanel pnlSidebar;
     private javax.swing.JPanel pnlStatOrders;
     private javax.swing.JPanel pnlStatSpent;
     private javax.swing.JPanel pnlStats;

@@ -3,7 +3,7 @@
 <Form version="1.5" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
   <Properties>
     <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-      <Color blue="dd" green="ee" red="f3" type="rgb"/>
+      <Color blue="ff" green="ff" red="ff" type="rgb"/>
     </Property>
   </Properties>
   <AuxValues>
@@ -23,7 +23,7 @@
     <Container class="javax.swing.JPanel" name="pnlContent">
       <Properties>
         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="dd" green="ee" red="f3" type="rgb"/>
+          <Color blue="ff" green="ff" red="ff" type="rgb"/>
         </Property>
       </Properties>
       <Constraints>
@@ -75,7 +75,7 @@
               <Font name="Raleway Medium" size="12" style="0"/>
             </Property>
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="74" green="83" red="8a" type="rgb"/>
+              <Color blue="6d" green="7b" red="8c" type="rgb"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Chọn 1 sách, nhập số lượng đếm được thực tế — hệ thống chỉ điều chỉnh khi có chênh lệch."/>
           </Properties>
@@ -138,7 +138,7 @@
             <Component class="javax.swing.JButton" name="btnCheck">
               <Properties>
                 <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                  <Color blue="4a" green="60" red="c0" type="rgb"/>
+                  <Color blue="33" green="4a" red="7a" type="rgb"/>
                 </Property>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                   <Font name="Raleway Medium" size="14" style="0"/>
@@ -184,7 +184,7 @@
                       </TableColumnModel>
                     </Property>
                     <Property name="gridColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                      <Color blue="c4" green="d3" red="d8" type="rgb"/>
+                      <Color blue="d1" green="df" red="ea" type="rgb"/>
                     </Property>
                     <Property name="rowHeight" type="int" value="28"/>
                     <Property name="selectionMode" type="int" value="0"/>

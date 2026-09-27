@@ -245,7 +245,7 @@ public class ManageBooksPage extends javax.swing.JPanel implements AdminPage {
         statCard1.add(statValue1);
         statCard1.add(filler2);
         statCaption1.setFont(statCaption1.getFont().deriveFont(12f));
-        statCaption1.setForeground(new java.awt.Color(138, 131, 116));
+        statCaption1.setForeground(new java.awt.Color(140, 123, 109));
         statCaption1.setText("Tổng số sách");
         statCaption1.setAlignmentX(0.0F);
         statCard1.add(statCaption1);
@@ -265,7 +265,7 @@ public class ManageBooksPage extends javax.swing.JPanel implements AdminPage {
         statCard2.add(statValue2);
         statCard2.add(filler4);
         statCaption2.setFont(statCaption2.getFont().deriveFont(12f));
-        statCaption2.setForeground(new java.awt.Color(138, 131, 116));
+        statCaption2.setForeground(new java.awt.Color(140, 123, 109));
         statCaption2.setText("Giá trung bình");
         statCaption2.setAlignmentX(0.0F);
         statCard2.add(statCaption2);
@@ -285,7 +285,7 @@ public class ManageBooksPage extends javax.swing.JPanel implements AdminPage {
         statCard3.add(statValue3);
         statCard3.add(filler6);
         statCaption3.setFont(statCaption3.getFont().deriveFont(12f));
-        statCaption3.setForeground(new java.awt.Color(138, 131, 116));
+        statCaption3.setForeground(new java.awt.Color(140, 123, 109));
         statCaption3.setText("Khoảng giá");
         statCaption3.setAlignmentX(0.0F);
         statCard3.add(statCaption3);
@@ -312,7 +312,7 @@ public class ManageBooksPage extends javax.swing.JPanel implements AdminPage {
         actionCard1.add(actionTitle1);
         actionCard1.add(filler9);
         actionDesc1.setFont(actionDesc1.getFont().deriveFont(12f));
-        actionDesc1.setForeground(new java.awt.Color(138, 131, 116));
+        actionDesc1.setForeground(new java.awt.Color(140, 123, 109));
         actionDesc1.setText("<html>Thêm một đầu sách mới vào kho.</html>");
         actionDesc1.setAlignmentX(0.0F);
         actionCard1.add(actionDesc1);
@@ -336,7 +336,7 @@ public class ManageBooksPage extends javax.swing.JPanel implements AdminPage {
         actionCard2.add(actionTitle2);
         actionCard2.add(filler13);
         actionDesc2.setFont(actionDesc2.getFont().deriveFont(12f));
-        actionDesc2.setForeground(new java.awt.Color(138, 131, 116));
+        actionDesc2.setForeground(new java.awt.Color(140, 123, 109));
         actionDesc2.setText("<html>Tìm và chỉnh sửa thông tin sách đã có.</html>");
         actionDesc2.setAlignmentX(0.0F);
         actionCard2.add(actionDesc2);
@@ -360,7 +360,7 @@ public class ManageBooksPage extends javax.swing.JPanel implements AdminPage {
         actionCard3.add(actionTitle3);
         actionCard3.add(filler17);
         actionDesc3.setFont(actionDesc3.getFont().deriveFont(12f));
-        actionDesc3.setForeground(new java.awt.Color(138, 131, 116));
+        actionDesc3.setForeground(new java.awt.Color(140, 123, 109));
         actionDesc3.setText("<html>Xóa một đầu sách khỏi kho.</html>");
         actionDesc3.setAlignmentX(0.0F);
         actionCard3.add(actionDesc3);

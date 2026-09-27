@@ -62,7 +62,7 @@ public class ReceiptDialog extends javax.swing.JDialog {
         setTitle("Lập hóa đơn thành công!");
         setResizable(false);
 
-        scrReceipt.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(201, 194, 174)));
+        scrReceipt.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(220, 207, 191)));
 
         txtReceipt.setEditable(false);
         txtReceipt.setBackground(new java.awt.Color(255, 255, 255));

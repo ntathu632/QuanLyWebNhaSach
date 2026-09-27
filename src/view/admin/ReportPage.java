@@ -357,7 +357,7 @@ public class ReportPage extends javax.swing.JPanel implements AdminPage {
         revenueStat1.add(revenueStatValue1);
         revenueStat1.add(filler5);
         revenueStatCaption1.setFont(revenueStatCaption1.getFont().deriveFont(12f));
-        revenueStatCaption1.setForeground(new java.awt.Color(138, 131, 116));
+        revenueStatCaption1.setForeground(new java.awt.Color(140, 123, 109));
         revenueStatCaption1.setText("Tổng đơn hàng đã thanh toán");
         revenueStatCaption1.setAlignmentX(0.0F);
         revenueStat1.add(revenueStatCaption1);
@@ -373,7 +373,7 @@ public class ReportPage extends javax.swing.JPanel implements AdminPage {
         revenueStat2.add(revenueStatValue2);
         revenueStat2.add(filler6);
         revenueStatCaption2.setFont(revenueStatCaption2.getFont().deriveFont(12f));
-        revenueStatCaption2.setForeground(new java.awt.Color(138, 131, 116));
+        revenueStatCaption2.setForeground(new java.awt.Color(140, 123, 109));
         revenueStatCaption2.setText("Tổng doanh thu");
         revenueStatCaption2.setAlignmentX(0.0F);
         revenueStat2.add(revenueStatCaption2);
@@ -474,7 +474,7 @@ public class ReportPage extends javax.swing.JPanel implements AdminPage {
 
         salesTab.add(filler12);
         note.setFont(note.getFont().deriveFont(11f));
-        note.setForeground(new java.awt.Color(138, 131, 116));
+        note.setForeground(new java.awt.Color(140, 123, 109));
         note.setText("Lưu ý: đơn đặt hàng qua ứng dụng hiện chưa tự tạo hóa đơn (Invoice) gắn nhân viên xử lý — bảng trên chỉ phản ánh dữ liệu hóa đơn đã có sẵn.");
         note.setAlignmentX(0.0F);
         salesTab.add(note);
