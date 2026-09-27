@@ -19,7 +19,9 @@ import view.shared.ChangePasswordDialog;
  *
  * @author anhthu632
  */
-public class SearchBookForPurchaseFrm extends javax.swing.JFrame {
+public class SearchBookForPurchaseFrm extends javax.swing.JPanel implements CustomerPage {
+
+    private CustomerShellFrm shell;
 
     /** null = khách vãng lai (chưa đăng nhập). */
     private Customer customer;
@@ -38,17 +40,33 @@ public class SearchBookForPurchaseFrm extends javax.swing.JFrame {
         this.customer = customer;
         this.categoryId = categoryId;
         initComponents();
-        txtSearch.putClientProperty("JTextField.placeholderText", "Tìm sách theo tên, ISBN...");
         txtKeyword.putClientProperty("JTextField.placeholderText", "Tìm theo mã sách, ISBN hoặc tên sách...");
         scrResults.getVerticalScrollBar().setUnitIncrement(16);
         txtKeyword.setText(keyword == null ? "" : keyword);
         lblCategoryBadge.setText("Danh mục: " + categoryName + "   (gõ tìm kiếm để xem tất cả sách)");
         lblCategoryBadge.setVisible(categoryId != null);
-        showLoginState();
         doSearch();
-        setSize(1100, 700);
-        setLocationRelativeTo(null);
-        AppTheme.maximize(this);
+    }
+
+    @Override
+    public String navKey() {
+        return "search";
+    }
+
+    @Override
+    public String title() {
+        return "Tìm kiếm sách";
+    }
+
+    @Override
+    public javax.swing.JPanel content(CustomerShellFrm shell) {
+        this.shell = shell;
+        return this;
+    }
+
+    @Override
+    public void customerLoggedIn(Customer customer) {
+        this.customer = customer;
     }
 
     /**
@@ -60,24 +78,6 @@ public class SearchBookForPurchaseFrm extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        pnlNavbar = new javax.swing.JPanel();
-        pnlNavLeft = new javax.swing.JPanel();
-        lblBrand = new javax.swing.JLabel();
-        btnHome = new javax.swing.JButton();
-        btnSearchNav = new javax.swing.JButton();
-        btnOrders = new javax.swing.JButton();
-        pnlNavSearch = new javax.swing.JPanel();
-        txtSearch = new javax.swing.JTextField();
-        btnSearch = new javax.swing.JButton();
-        pnlNavRight = new javax.swing.JPanel();
-        btnCart = new javax.swing.JButton();
-        lblCartBadge = new javax.swing.JLabel();
-        btnLogin = new javax.swing.JButton();
-        btnRegister = new javax.swing.JButton();
-        lblUser = new javax.swing.JLabel();
-        btnAccount = new javax.swing.JButton();
-        btnChangePassword = new javax.swing.JButton();
-        btnLogout = new javax.swing.JButton();
         pnlContent = new javax.swing.JPanel();
         lblTitle = new javax.swing.JLabel();
         txtKeyword = new javax.swing.JTextField();
@@ -88,187 +88,8 @@ public class SearchBookForPurchaseFrm extends javax.swing.JFrame {
         pnlResultsWrap = new javax.swing.JPanel();
         pnlResults = new javax.swing.JPanel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Bookshop - Tìm kiếm sách");
-
-        pnlNavbar.setBackground(new java.awt.Color(79, 93, 66));
-        pnlNavbar.setPreferredSize(new java.awt.Dimension(0, 68));
-        pnlNavbar.setLayout(new java.awt.BorderLayout());
-
-        pnlNavLeft.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 18, 0, 0));
-        pnlNavLeft.setOpaque(false);
-        pnlNavLeft.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 6, 16));
-
-        lblBrand.setFont(new java.awt.Font("Cormorant Garamond", 1, 26)); // NOI18N
-        lblBrand.setForeground(new java.awt.Color(255, 255, 255));
-        lblBrand.setIcon(new view.shared.FlatIcon(view.shared.FlatIcon.Kind.BOOK, java.awt.Color.WHITE, 22));
-        lblBrand.setText("Bookshop");
-        lblBrand.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 24));
-        lblBrand.setIconTextGap(10);
-        pnlNavLeft.add(lblBrand);
-
-        btnHome.setBackground(new java.awt.Color(79, 93, 66));
-        btnHome.setForeground(new java.awt.Color(221, 226, 211));
-        btnHome.setText("Trang chủ");
-        btnHome.setBorderPainted(false);
-        btnHome.setFocusPainted(false);
-        btnHome.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnHomeActionPerformed(evt);
-            }
-        });
-        pnlNavLeft.add(btnHome);
-
-        btnSearchNav.setBackground(new java.awt.Color(92, 110, 79));
-        btnSearchNav.setFont(new java.awt.Font("Raleway Medium", 0, 14)); // NOI18N
-        btnSearchNav.setForeground(new java.awt.Color(255, 255, 255));
-        btnSearchNav.setText("Tìm sách");
-        btnSearchNav.setBorderPainted(false);
-        btnSearchNav.setFocusPainted(false);
-        btnSearchNav.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSearchNavActionPerformed(evt);
-            }
-        });
-        pnlNavLeft.add(btnSearchNav);
-
-        btnOrders.setBackground(new java.awt.Color(79, 93, 66));
-        btnOrders.setForeground(new java.awt.Color(221, 226, 211));
-        btnOrders.setText("Đơn hàng của tôi");
-        btnOrders.setBorderPainted(false);
-        btnOrders.setFocusPainted(false);
-        btnOrders.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnOrdersActionPerformed(evt);
-            }
-        });
-        pnlNavLeft.add(btnOrders);
-
-        pnlNavbar.add(pnlNavLeft, java.awt.BorderLayout.WEST);
-
-        pnlNavSearch.setBorder(javax.swing.BorderFactory.createEmptyBorder(16, 24, 16, 24));
-        pnlNavSearch.setOpaque(false);
-        pnlNavSearch.setLayout(new java.awt.BorderLayout(6, 0));
-
-        txtSearch.setToolTipText("Tìm sách theo tên, ISBN...");
-        txtSearch.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtSearchActionPerformed(evt);
-            }
-        });
-        pnlNavSearch.add(txtSearch, java.awt.BorderLayout.CENTER);
-
-        btnSearch.setBackground(new java.awt.Color(192, 96, 74));
-        btnSearch.setIcon(new view.shared.FlatIcon(view.shared.FlatIcon.Kind.SEARCH, java.awt.Color.WHITE, 15));
-        btnSearch.setToolTipText("Tìm kiếm");
-        btnSearch.setBorderPainted(false);
-        btnSearch.setFocusPainted(false);
-        btnSearch.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSearchActionPerformed(evt);
-            }
-        });
-        pnlNavSearch.add(btnSearch, java.awt.BorderLayout.EAST);
-
-        pnlNavbar.add(pnlNavSearch, java.awt.BorderLayout.CENTER);
-
-        pnlNavRight.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 18));
-        pnlNavRight.setOpaque(false);
-        pnlNavRight.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 8, 16));
-
-        btnCart.setBackground(new java.awt.Color(79, 93, 66));
-        btnCart.setForeground(new java.awt.Color(255, 255, 255));
-        btnCart.setIcon(new view.shared.FlatIcon(view.shared.FlatIcon.Kind.RECEIPT, java.awt.Color.WHITE, 16));
-        btnCart.setText("Giỏ hàng");
-        btnCart.setBorderPainted(false);
-        btnCart.setFocusPainted(false);
-        btnCart.setIconTextGap(8);
-        btnCart.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCartActionPerformed(evt);
-            }
-        });
-        pnlNavRight.add(btnCart);
-
-        lblCartBadge.setBackground(new java.awt.Color(192, 96, 74));
-        lblCartBadge.setFont(new java.awt.Font("Raleway Medium", 0, 11)); // NOI18N
-        lblCartBadge.setForeground(new java.awt.Color(255, 255, 255));
-        lblCartBadge.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lblCartBadge.setText("0");
-        lblCartBadge.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 6, 1, 6));
-        lblCartBadge.setOpaque(true);
-        pnlNavRight.add(lblCartBadge);
-
-        btnLogin.setBackground(new java.awt.Color(255, 255, 255));
-        btnLogin.setFont(new java.awt.Font("Raleway Medium", 0, 14)); // NOI18N
-        btnLogin.setForeground(new java.awt.Color(79, 93, 66));
-        btnLogin.setText("Đăng nhập");
-        btnLogin.setBorderPainted(false);
-        btnLogin.setFocusPainted(false);
-        btnLogin.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnLoginActionPerformed(evt);
-            }
-        });
-        pnlNavRight.add(btnLogin);
-
-        btnRegister.setBackground(new java.awt.Color(192, 96, 74));
-        btnRegister.setFont(new java.awt.Font("Raleway Medium", 0, 14)); // NOI18N
-        btnRegister.setForeground(new java.awt.Color(255, 255, 255));
-        btnRegister.setText("Đăng ký");
-        btnRegister.setBorderPainted(false);
-        btnRegister.setFocusPainted(false);
-        btnRegister.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnRegisterActionPerformed(evt);
-            }
-        });
-        pnlNavRight.add(btnRegister);
-
-        lblUser.setForeground(new java.awt.Color(255, 255, 255));
-        lblUser.setText("Xin chào, khách hàng");
-        lblUser.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 12, 0, 8));
-        pnlNavRight.add(lblUser);
-
-        btnAccount.setBackground(new java.awt.Color(79, 93, 66));
-        btnAccount.setIcon(new view.shared.FlatIcon(view.shared.FlatIcon.Kind.PEN, java.awt.Color.WHITE, 16));
-        btnAccount.setToolTipText("Tài khoản của tôi");
-        btnAccount.setBorderPainted(false);
-        btnAccount.setFocusPainted(false);
-        btnAccount.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAccountActionPerformed(evt);
-            }
-        });
-        pnlNavRight.add(btnAccount);
-
-        btnChangePassword.setBackground(new java.awt.Color(79, 93, 66));
-        btnChangePassword.setIcon(new view.shared.FlatIcon(view.shared.FlatIcon.Kind.USER, java.awt.Color.WHITE, 16));
-        btnChangePassword.setToolTipText("Đổi mật khẩu");
-        btnChangePassword.setBorderPainted(false);
-        btnChangePassword.setFocusPainted(false);
-        btnChangePassword.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnChangePasswordActionPerformed(evt);
-            }
-        });
-        pnlNavRight.add(btnChangePassword);
-
-        btnLogout.setBackground(new java.awt.Color(79, 93, 66));
-        btnLogout.setIcon(new view.shared.FlatIcon(view.shared.FlatIcon.Kind.LOGOUT, java.awt.Color.WHITE, 16));
-        btnLogout.setToolTipText("Đăng xuất");
-        btnLogout.setBorderPainted(false);
-        btnLogout.setFocusPainted(false);
-        btnLogout.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnLogoutActionPerformed(evt);
-            }
-        });
-        pnlNavRight.add(btnLogout);
-
-        pnlNavbar.add(pnlNavRight, java.awt.BorderLayout.EAST);
-
-        getContentPane().add(pnlNavbar, java.awt.BorderLayout.NORTH);
+        setBackground(new java.awt.Color(243, 238, 221));
+        setLayout(new java.awt.BorderLayout());
 
         pnlContent.setBackground(new java.awt.Color(243, 238, 221));
 
@@ -349,63 +170,9 @@ public class SearchBookForPurchaseFrm extends javax.swing.JFrame {
                 .addGap(28, 28, 28))
         );
 
-        getContentPane().add(pnlContent, java.awt.BorderLayout.CENTER);
-
-        pack();
+        add(pnlContent, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnHomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHomeActionPerformed
-        AppTheme.switchFrame(this, new CustomerHomeFrm(customer));
-    }//GEN-LAST:event_btnHomeActionPerformed
-
-    private void btnSearchNavActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchNavActionPerformed
-        // Đang ở trang Tìm sách: bỏ lọc, hiện lại toàn bộ sách.
-        txtKeyword.setText("");
-        leaveCategoryMode();
-        doSearch();
-    }//GEN-LAST:event_btnSearchNavActionPerformed
-
-    private void btnOrdersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOrdersActionPerformed
-        if (ensureLoggedIn()) {
-            AppTheme.switchFrame(this, new OrderHistoryFrm(customer));
-        }
-    }//GEN-LAST:event_btnOrdersActionPerformed
-
-    private void txtSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSearchActionPerformed
-        searchFromNavbar();
-    }//GEN-LAST:event_txtSearchActionPerformed
-
-    private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
-        searchFromNavbar();
-    }//GEN-LAST:event_btnSearchActionPerformed
-
-    private void btnCartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCartActionPerformed
-        if (ensureLoggedIn()) {
-            AppTheme.switchFrame(this, new ShoppingCartFrm(customer));
-        }
-    }//GEN-LAST:event_btnCartActionPerformed
-
-    private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
-        login(false);
-    }//GEN-LAST:event_btnLoginActionPerformed
-
-    private void btnRegisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegisterActionPerformed
-        login(true);
-    }//GEN-LAST:event_btnRegisterActionPerformed
-
-    private void btnAccountActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAccountActionPerformed
-        if (ensureLoggedIn()) {
-            AppTheme.switchFrame(this, new AccountFrm(customer));
-        }
-    }//GEN-LAST:event_btnAccountActionPerformed
-
-    private void btnChangePasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChangePasswordActionPerformed
-        ChangePasswordDialog.show(this, customer != null ? customer.getUsername() : null);
-    }//GEN-LAST:event_btnChangePasswordActionPerformed
-
-    private void btnLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogoutActionPerformed
-        AppTheme.switchFrame(this, new CustomerHomeFrm(null));
-    }//GEN-LAST:event_btnLogoutActionPerformed
 
     private void txtKeywordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtKeywordActionPerformed
         doSearch();
@@ -427,7 +194,7 @@ public class SearchBookForPurchaseFrm extends javax.swing.JFrame {
         }
         pnlResults.removeAll();
         for (Book book : found) {
-            pnlResults.add(BookCard.build(book, () -> AppTheme.switchFrame(this, new BookDetailFrm(customer, book))));
+            pnlResults.add(BookCard.build(book, () -> shell.navigateTo(new BookDetailFrm(customer, book))));
         }
         lblResultCount.setText("Tìm thấy " + found.length + " cuốn sách");
         pnlResults.revalidate();
@@ -440,79 +207,15 @@ public class SearchBookForPurchaseFrm extends javax.swing.JFrame {
         lblCategoryBadge.setVisible(false);
     }
 
-    /** Ô tìm kiếm trên navbar: đưa từ khóa xuống ô tìm kiếm của trang rồi tìm luôn. */
-    private void searchFromNavbar() {
-        txtKeyword.setText(txtSearch.getText().trim());
-        leaveCategoryMode();
-        doSearch();
-    }
-
-    private void login(boolean startWithRegister) {
-        Customer c = CustomerLogin.show(this, startWithRegister);
-        if (c != null) {
-            customer = c;
-            showLoginState();
-        }
-    }
-
-    /** true nếu đã đăng nhập tài khoản Khách hàng; nếu chưa thì bật hộp thoại đăng nhập. */
-    private boolean ensureLoggedIn() {
-        if (customer == null) {
-            login(false);
-        }
-        return customer != null && isDisplayable();
-    }
-
-    /** Ẩn/hiện cụm nút bên phải navbar theo trạng thái đăng nhập. */
-    private void showLoginState() {
-        boolean guest = customer == null;
-        btnLogin.setVisible(guest);
-        btnRegister.setVisible(guest);
-        lblUser.setVisible(!guest);
-        btnAccount.setVisible(!guest);
-        btnChangePassword.setVisible(!guest);
-        btnLogout.setVisible(!guest);
-
-        if (guest) {
-            lblCartBadge.setVisible(false);
-        } else {
-            String name = customer.getFullName() != null ? customer.getFullName() : "khách hàng";
-            lblUser.setText("Xin chào, " + name);
-            int count = new ShoppingCartDAO().countItemsIfCartExists(customer);
-            lblCartBadge.setText(String.valueOf(count));
-            lblCartBadge.setVisible(count > 0);
-        }
-        pnlNavRight.revalidate();
-        pnlNavRight.repaint();
-    }
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnAccount;
-    private javax.swing.JButton btnCart;
-    private javax.swing.JButton btnChangePassword;
     private javax.swing.JButton btnFind;
-    private javax.swing.JButton btnHome;
-    private javax.swing.JButton btnLogin;
-    private javax.swing.JButton btnLogout;
-    private javax.swing.JButton btnOrders;
-    private javax.swing.JButton btnRegister;
-    private javax.swing.JButton btnSearch;
-    private javax.swing.JButton btnSearchNav;
-    private javax.swing.JLabel lblBrand;
-    private javax.swing.JLabel lblCartBadge;
     private javax.swing.JLabel lblCategoryBadge;
     private javax.swing.JLabel lblResultCount;
     private javax.swing.JLabel lblTitle;
-    private javax.swing.JLabel lblUser;
     private javax.swing.JPanel pnlContent;
-    private javax.swing.JPanel pnlNavLeft;
-    private javax.swing.JPanel pnlNavRight;
-    private javax.swing.JPanel pnlNavSearch;
-    private javax.swing.JPanel pnlNavbar;
     private javax.swing.JPanel pnlResults;
     private javax.swing.JPanel pnlResultsWrap;
     private javax.swing.JScrollPane scrResults;
     private javax.swing.JTextField txtKeyword;
-    private javax.swing.JTextField txtSearch;
     // End of variables declaration//GEN-END:variables
 }
