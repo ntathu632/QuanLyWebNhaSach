@@ -11,183 +11,51 @@ import dao.AuthorDAO;
 import dao.BookDAO;
 import dao.CategoryDAO;
 import dao.PublisherDAO;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.Image;
-import java.awt.Insets;
 import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
 import javax.swing.JFileChooser;
-import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.ListSelectionModel;
-import javax.swing.SwingConstants;
-import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import model.Author;
 import model.Book;
 import model.Category;
 import model.Publisher;
 
-public class EditBookPage implements AdminPage {
+public class EditBookPage extends javax.swing.JPanel implements AdminPage {
 
     private static final DecimalFormat PRICE_FMT = new DecimalFormat("0.##");
 
     private final Book book;
 
+    private AdminShellFrm shell;
+
+    private final File[] pickedImage = new File[1];
+
+    // Dữ liệu gốc của sách, nạp trong content(shell) — nút "Reset" dùng lại để
+    // đưa form về đúng trạng thái lúc mở trang.
+    private Publisher[] publishers;
+    private int currentPublisherID;
+    private final List<Integer> selectedCategoryIndexes = new ArrayList<>();
+    private final List<Integer> selectedAuthorIndexes = new ArrayList<>();
+    private File existingImageFile;
+
     public EditBookPage(Book book) {
         this.book = book;
-    }
+        initComponents();
 
-    @Override
-    public String navKey() {
-        return "books";
-    }
+        pageScroll.getVerticalScrollBar().setUnitIncrement(16);
 
-    @Override
-    public String title() {
-        return "Sửa Thông Tin Sách";
-    }
-
-    @Override
-    public AdminPage backTarget() {
-        return new SearchBookForEditPage();
-    }
-
-    @Override
-    public JPanel content(AdminShellFrm shell) {
-        JPanel content = new JPanel(new BorderLayout());
-        content.setBackground(AppTheme.BACKGROUND);
-        content.setBorder(new EmptyBorder(28, 28, 28, 28));
-
-        JPanel top = new JPanel();
-        top.setLayout(new BoxLayout(top, BoxLayout.Y_AXIS));
-        top.setBackground(AppTheme.BACKGROUND);
-
-        JLabel heading = new JLabel("Sửa thông tin sách");
-        heading.setFont(heading.getFont().deriveFont(Font.BOLD, 22f));
-        heading.setForeground(AppTheme.TEXT);
-        heading.setAlignmentX(JLabel.LEFT_ALIGNMENT);
-        heading.setBorder(new EmptyBorder(0, 0, 20, 0));
-        top.add(heading);
-
-        JPanel formCard = new JPanel(new GridBagLayout());
-        formCard.setBackground(Color.WHITE);
-        formCard.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createMatteBorder(0, 4, 0, 0, AppTheme.PRIMARY),
-                new EmptyBorder(24, 24, 24, 24)));
-        formCard.setMaximumSize(new Dimension(1160, 520));
-        formCard.setPreferredSize(new Dimension(1160, 520));
-        formCard.setAlignmentX(JPanel.LEFT_ALIGNMENT);
-
-        GridBagConstraints gbc = new GridBagConstraints();
-
-        JLabel lblBookID = new JLabel(String.valueOf(book.getBookID()));
-        lblBookID.setForeground(AppTheme.TEXT);
-        lblBookID.setFont(lblBookID.getFont().deriveFont(Font.BOLD));
-        formRow(formCard, gbc, 0, 0, "Mã sách:", lblBookID);
-
-        JTextField txtISBN = new JTextField(book.getISBN());
-        formRow(formCard, gbc, 0, 1, "ISBN:", txtISBN);
-
-        JTextField txtTitle = new JTextField(book.getTitle());
-        formRow(formCard, gbc, 0, 2, "Tên sách:", txtTitle);
-
-        JTextField txtPrice = new JTextField(PRICE_FMT.format(book.getPrice()));
-        formRow(formCard, gbc, 0, 3, "Giá bán:", txtPrice);
-
-        BookDAO bookDAOForLoad = new BookDAO();
-        int currentPublisherID = bookDAOForLoad.getPublisherID(book.getBookID());
-        List<Integer> currentCategoryIDs = bookDAOForLoad.getCategoryIDs(book.getBookID());
-        List<Integer> currentAuthorIDs = bookDAOForLoad.getAuthorIDs(book.getBookID());
-
-        Publisher[] publishers = new PublisherDAO().searchPublisher("");
-        JComboBox<Publisher> cboPublisher = new JComboBox<>(publishers);
-        for (Publisher p : publishers) {
-            if (p.getPublisherID() == currentPublisherID) {
-                cboPublisher.setSelectedItem(p);
-                break;
-            }
-        }
-        formRow(formCard, gbc, 0, 4, "Nhà xuất bản:", cboPublisher);
-
-        Category[] categories = new CategoryDAO().searchCategory("");
-        JList<Category> lstCategory = new JList<>(categories);
-        lstCategory.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-        lstCategory.setVisibleRowCount(4);
-        List<Integer> selectedCategoryIndexes = new ArrayList<>();
-        for (int i = 0; i < categories.length; i++) {
-            if (currentCategoryIDs.contains(categories[i].getCategoryID())) {
-                selectedCategoryIndexes.add(i);
-            }
-        }
-        lstCategory.setSelectedIndices(selectedCategoryIndexes.stream().mapToInt(Integer::intValue).toArray());
-        JScrollPane categoryScroll = new JScrollPane(lstCategory);
-        categoryScroll.setBorder(BorderFactory.createLineBorder(AppTheme.INPUT_BORDER));
-        categoryScroll.setPreferredSize(new Dimension(0, 90));
-        categoryScroll.setMinimumSize(new Dimension(0, 90));
-        formRow(formCard, gbc, 0, 5, "Danh mục:", categoryScroll);
-
-        Author[] authors = new AuthorDAO().searchAuthor("");
-        JList<Author> lstAuthor = new JList<>(authors);
-        lstAuthor.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-        lstAuthor.setVisibleRowCount(4);
-        List<Integer> selectedAuthorIndexes = new ArrayList<>();
-        for (int i = 0; i < authors.length; i++) {
-            if (currentAuthorIDs.contains(authors[i].getAuthorID())) {
-                selectedAuthorIndexes.add(i);
-            }
-        }
-        lstAuthor.setSelectedIndices(selectedAuthorIndexes.stream().mapToInt(Integer::intValue).toArray());
-        JScrollPane authorScroll = new JScrollPane(lstAuthor);
-        authorScroll.setBorder(BorderFactory.createLineBorder(AppTheme.INPUT_BORDER));
-        authorScroll.setPreferredSize(new Dimension(0, 90));
-        authorScroll.setMinimumSize(new Dimension(0, 90));
-        formRow(formCard, gbc, 0, 6, "Tác giả:", authorScroll);
-
-        JTextArea txtDescription = new JTextArea(book.getDescription(), 8, 20);
-        txtDescription.setLineWrap(true);
-        txtDescription.setWrapStyleWord(true);
-        JScrollPane descScroll = new JScrollPane(txtDescription);
-        descScroll.setBorder(BorderFactory.createLineBorder(AppTheme.INPUT_BORDER));
-
-        File[] pickedImage = new File[1];
-        JLabel lblThumbnail = new JLabel("Chưa có ảnh");
-        lblThumbnail.setHorizontalAlignment(SwingConstants.CENTER);
-        lblThumbnail.setPreferredSize(new Dimension(90, 120));
-        lblThumbnail.setMinimumSize(new Dimension(90, 120));
-        lblThumbnail.setMaximumSize(new Dimension(90, 120));
-        lblThumbnail.setBorder(BorderFactory.createLineBorder(AppTheme.INPUT_BORDER));
-        lblThumbnail.setForeground(AppTheme.TEXT);
-        lblThumbnail.setFont(lblThumbnail.getFont().deriveFont(11f));
-        File existingImageFile = BookImageStore.resolve(book.getImage());
-        if (existingImageFile != null && existingImageFile.isFile()) {
-            Image scaled = new ImageIcon(existingImageFile.getPath()).getImage()
-                    .getScaledInstance(90, 120, Image.SCALE_SMOOTH);
-            lblThumbnail.setIcon(new ImageIcon(scaled));
-            lblThumbnail.setText(null);
-        }
-
-        JButton btnPickImage = new JButton("Đổi ảnh...");
         AppTheme.secondary(btnPickImage);
         btnPickImage.addActionListener(e -> {
             JFileChooser chooser = new JFileChooser();
@@ -201,63 +69,6 @@ public class EditBookPage implements AdminPage {
             }
         });
 
-        JPanel imagePicker = new JPanel();
-        imagePicker.setLayout(new BoxLayout(imagePicker, BoxLayout.X_AXIS));
-        imagePicker.setOpaque(false);
-        imagePicker.add(lblThumbnail);
-        imagePicker.add(Box.createHorizontalStrut(12));
-        imagePicker.add(btnPickImage);
-
-        // Mô tả + Hình ảnh gộp vào 1 panel con (BorderLayout riêng) rồi gán làm
-        // MỘT ô duy nhất chiếm hết chiều cao cột phải (gridheight=7) — để BorderLayout
-        // tự chia không gian (Mô tả giãn hết phần còn lại, Hình ảnh giữ đúng kích
-        // thước cố định), tránh GridBagLayout tính sai chiều cao khi chia theo hàng
-        // dùng chung với cột trái (bug từng làm khung ảnh 90x120 bị bóp còn ~20px).
-        JPanel rightColumn = new JPanel(new BorderLayout(0, 8));
-        rightColumn.setOpaque(false);
-
-        JPanel descBlock = new JPanel(new BorderLayout(0, 6));
-        descBlock.setOpaque(false);
-        JLabel descLabel = new JLabel("Mô tả:");
-        descLabel.setForeground(AppTheme.TEXT);
-        descBlock.add(descLabel, BorderLayout.NORTH);
-        descBlock.add(descScroll, BorderLayout.CENTER);
-        rightColumn.add(descBlock, BorderLayout.CENTER);
-
-        JPanel imageBlock = new JPanel(new BorderLayout(0, 6));
-        imageBlock.setOpaque(false);
-        JLabel imageLabel = new JLabel("Hình ảnh:");
-        imageLabel.setForeground(AppTheme.TEXT);
-        imageBlock.add(imageLabel, BorderLayout.NORTH);
-        JPanel imageBlockRow = new JPanel(new BorderLayout());
-        imageBlockRow.setOpaque(false);
-        imageBlockRow.add(imagePicker, BorderLayout.WEST);
-        imageBlock.add(imageBlockRow, BorderLayout.CENTER);
-        rightColumn.add(imageBlock, BorderLayout.SOUTH);
-
-        gbc.gridx = 2;
-        gbc.gridy = 0;
-        gbc.gridwidth = 2;
-        gbc.gridheight = 7;
-        gbc.weightx = 1;
-        gbc.weighty = 1;
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.anchor = GridBagConstraints.NORTHWEST;
-        gbc.insets = new Insets(8, 32, 8, 0);
-        formCard.add(rightColumn, gbc);
-
-        top.add(formCard);
-        top.add(Box.createVerticalStrut(18));
-
-        JPanel buttonRow = new JPanel();
-        buttonRow.setLayout(new BoxLayout(buttonRow, BoxLayout.X_AXIS));
-        buttonRow.setBackground(AppTheme.BACKGROUND);
-        buttonRow.setAlignmentX(JPanel.LEFT_ALIGNMENT);
-        buttonRow.setMaximumSize(new Dimension(1160, 40));
-
-        buttonRow.add(Box.createHorizontalGlue());
-
-        JButton btnReset = new JButton("Reset");
         AppTheme.secondary(btnReset);
         btnReset.addActionListener(e -> {
             txtISBN.setText(book.getISBN());
@@ -283,44 +94,78 @@ public class EditBookPage implements AdminPage {
                 lblThumbnail.setText("Chưa có ảnh");
             }
         });
-        buttonRow.add(btnReset);
-        buttonRow.add(Box.createHorizontalStrut(12));
 
-        JButton btnSave = new JButton("Lưu");
         AppTheme.primary(btnSave);
         btnSave.addActionListener(e -> onSave(shell, txtISBN, txtTitle, txtPrice, cboPublisher, lstCategory, lstAuthor, txtDescription, pickedImage));
-        buttonRow.add(btnSave);
-
-        top.add(buttonRow);
-
-        JScrollPane pageScroll = new JScrollPane(top);
-        pageScroll.setBorder(null);
-        pageScroll.getVerticalScrollBar().setUnitIncrement(16);
-        content.add(pageScroll, BorderLayout.CENTER);
-        return content;
     }
 
-    /** col 0 = cột trái (gridx 0/1), col 1 = cột phải (gridx 2/3). */
-    private void formRow(JPanel panel, GridBagConstraints gbc, int col, int row, String label, JComponent field) {
-        int baseX = col * 2;
-        gbc.gridy = row;
-        gbc.gridheight = 1;
-        gbc.weighty = 0;
+    @Override
+    public String navKey() {
+        return "books";
+    }
 
-        gbc.gridx = baseX;
-        gbc.weightx = 0;
-        gbc.fill = GridBagConstraints.NONE;
-        gbc.anchor = GridBagConstraints.NORTHWEST;
-        gbc.insets = new Insets(8, col == 0 ? 0 : 32, 8, 14);
-        JLabel lbl = new JLabel(label);
-        lbl.setForeground(AppTheme.TEXT);
-        panel.add(lbl, gbc);
+    @Override
+    public String title() {
+        return "Sửa Thông Tin Sách";
+    }
 
-        gbc.gridx = baseX + 1;
-        gbc.weightx = 1;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.insets = new Insets(8, 0, 8, 0);
-        panel.add(field, gbc);
+    @Override
+    public AdminPage backTarget() {
+        return new SearchBookForEditPage();
+    }
+
+    @Override
+    public JPanel content(AdminShellFrm shell) {
+        this.shell = shell;
+
+        lblBookID.setText(String.valueOf(book.getBookID()));
+        txtISBN.setText(book.getISBN());
+        txtTitle.setText(book.getTitle());
+        txtPrice.setText(PRICE_FMT.format(book.getPrice()));
+
+        BookDAO bookDAOForLoad = new BookDAO();
+        currentPublisherID = bookDAOForLoad.getPublisherID(book.getBookID());
+        List<Integer> currentCategoryIDs = bookDAOForLoad.getCategoryIDs(book.getBookID());
+        List<Integer> currentAuthorIDs = bookDAOForLoad.getAuthorIDs(book.getBookID());
+
+        publishers = new PublisherDAO().searchPublisher("");
+        cboPublisher.setModel(new DefaultComboBoxModel<>(publishers));
+        for (Publisher p : publishers) {
+            if (p.getPublisherID() == currentPublisherID) {
+                cboPublisher.setSelectedItem(p);
+                break;
+            }
+        }
+
+        Category[] categories = new CategoryDAO().searchCategory("");
+        lstCategory.setListData(categories);
+        for (int i = 0; i < categories.length; i++) {
+            if (currentCategoryIDs.contains(categories[i].getCategoryID())) {
+                selectedCategoryIndexes.add(i);
+            }
+        }
+        lstCategory.setSelectedIndices(selectedCategoryIndexes.stream().mapToInt(Integer::intValue).toArray());
+
+        Author[] authors = new AuthorDAO().searchAuthor("");
+        lstAuthor.setListData(authors);
+        for (int i = 0; i < authors.length; i++) {
+            if (currentAuthorIDs.contains(authors[i].getAuthorID())) {
+                selectedAuthorIndexes.add(i);
+            }
+        }
+        lstAuthor.setSelectedIndices(selectedAuthorIndexes.stream().mapToInt(Integer::intValue).toArray());
+
+        txtDescription.setText(book.getDescription());
+
+        existingImageFile = BookImageStore.resolve(book.getImage());
+        if (existingImageFile != null && existingImageFile.isFile()) {
+            Image scaled = new ImageIcon(existingImageFile.getPath()).getImage()
+                    .getScaledInstance(90, 120, Image.SCALE_SMOOTH);
+            lblThumbnail.setIcon(new ImageIcon(scaled));
+            lblThumbnail.setText(null);
+        }
+
+        return this;
     }
 
     private void onSave(AdminShellFrm shell, JTextField txtISBN, JTextField txtTitle,
@@ -379,4 +224,319 @@ public class EditBookPage implements AdminPage {
             JOptionPane.showMessageDialog(shell, "Cập nhật thất bại! Vui lòng thử lại.");
         }
     }
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
+
+        pageScroll = new javax.swing.JScrollPane();
+        top = new javax.swing.JPanel();
+        heading = new javax.swing.JLabel();
+        formCard = new javax.swing.JPanel();
+        lblBookIDCaption = new javax.swing.JLabel();
+        lblBookID = new javax.swing.JLabel();
+        lblISBN = new javax.swing.JLabel();
+        txtISBN = new javax.swing.JTextField();
+        lblTitle = new javax.swing.JLabel();
+        txtTitle = new javax.swing.JTextField();
+        lblPrice = new javax.swing.JLabel();
+        txtPrice = new javax.swing.JTextField();
+        lblPublisher = new javax.swing.JLabel();
+        cboPublisher = new javax.swing.JComboBox<>();
+        lblCategory = new javax.swing.JLabel();
+        categoryScroll = new javax.swing.JScrollPane();
+        lstCategory = new javax.swing.JList<>();
+        lblAuthor = new javax.swing.JLabel();
+        authorScroll = new javax.swing.JScrollPane();
+        lstAuthor = new javax.swing.JList<>();
+        rightColumn = new javax.swing.JPanel();
+        descBlock = new javax.swing.JPanel();
+        descLabel = new javax.swing.JLabel();
+        descScroll = new javax.swing.JScrollPane();
+        txtDescription = new javax.swing.JTextArea();
+        imageBlock = new javax.swing.JPanel();
+        imageLabel = new javax.swing.JLabel();
+        imageBlockRow = new javax.swing.JPanel();
+        imagePicker = new javax.swing.JPanel();
+        lblThumbnail = new javax.swing.JLabel();
+        filler5 = new javax.swing.Box.Filler(new java.awt.Dimension(12, 0), new java.awt.Dimension(12, 0), new java.awt.Dimension(12, 32767));
+        btnPickImage = new javax.swing.JButton();
+        filler6 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 18), new java.awt.Dimension(0, 18), new java.awt.Dimension(32767, 18));
+        buttonRow = new javax.swing.JPanel();
+        filler7 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
+        btnReset = new javax.swing.JButton();
+        filler8 = new javax.swing.Box.Filler(new java.awt.Dimension(12, 0), new java.awt.Dimension(12, 0), new java.awt.Dimension(12, 32767));
+        btnSave = new javax.swing.JButton();
+
+        setBackground(AppTheme.BACKGROUND);
+        setBorder(javax.swing.BorderFactory.createEmptyBorder(28, 28, 28, 28));
+        setLayout(new java.awt.BorderLayout());
+
+        pageScroll.setBorder(null);
+        top.setBackground(AppTheme.BACKGROUND);
+        top.setLayout(new javax.swing.BoxLayout(top, javax.swing.BoxLayout.Y_AXIS));
+        heading.setFont(heading.getFont().deriveFont(java.awt.Font.BOLD, 22f));
+        heading.setForeground(AppTheme.TEXT);
+        heading.setText("Sửa thông tin sách");
+        heading.setAlignmentX(0.0F);
+        heading.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 20, 0));
+        top.add(heading);
+        formCard.setBackground(new java.awt.Color(255, 255, 255));
+        formCard.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createMatteBorder(0, 4, 0, 0, AppTheme.PRIMARY), javax.swing.BorderFactory.createEmptyBorder(24, 24, 24, 24)));
+        formCard.setAlignmentX(0.0F);
+        formCard.setMaximumSize(new java.awt.Dimension(1160, 520));
+        formCard.setPreferredSize(new java.awt.Dimension(1160, 520));
+        formCard.setLayout(new java.awt.GridBagLayout());
+        lblBookIDCaption.setForeground(AppTheme.TEXT);
+        lblBookIDCaption.setText("Mã sách:");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(8, 0, 8, 14);
+        formCard.add(lblBookIDCaption, gridBagConstraints);
+        lblBookID.setForeground(AppTheme.TEXT);
+        lblBookID.setFont(lblBookID.getFont().deriveFont(java.awt.Font.BOLD));
+        lblBookID.setText("0");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(8, 0, 8, 0);
+        formCard.add(lblBookID, gridBagConstraints);
+        lblISBN.setForeground(AppTheme.TEXT);
+        lblISBN.setText("ISBN:");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(8, 0, 8, 14);
+        formCard.add(lblISBN, gridBagConstraints);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(8, 0, 8, 0);
+        formCard.add(txtISBN, gridBagConstraints);
+        lblTitle.setForeground(AppTheme.TEXT);
+        lblTitle.setText("Tên sách:");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(8, 0, 8, 14);
+        formCard.add(lblTitle, gridBagConstraints);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(8, 0, 8, 0);
+        formCard.add(txtTitle, gridBagConstraints);
+        lblPrice.setForeground(AppTheme.TEXT);
+        lblPrice.setText("Giá bán:");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(8, 0, 8, 14);
+        formCard.add(lblPrice, gridBagConstraints);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(8, 0, 8, 0);
+        formCard.add(txtPrice, gridBagConstraints);
+        lblPublisher.setForeground(AppTheme.TEXT);
+        lblPublisher.setText("Nhà xuất bản:");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(8, 0, 8, 14);
+        formCard.add(lblPublisher, gridBagConstraints);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(8, 0, 8, 0);
+        formCard.add(cboPublisher, gridBagConstraints);
+        lblCategory.setForeground(AppTheme.TEXT);
+        lblCategory.setText("Danh mục:");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 5;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(8, 0, 8, 14);
+        formCard.add(lblCategory, gridBagConstraints);
+        categoryScroll.setBorder(javax.swing.BorderFactory.createLineBorder(AppTheme.INPUT_BORDER));
+        categoryScroll.setMinimumSize(new java.awt.Dimension(0, 90));
+        categoryScroll.setPreferredSize(new java.awt.Dimension(0, 90));
+        lstCategory.setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        lstCategory.setVisibleRowCount(4);
+        categoryScroll.setViewportView(lstCategory);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 5;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(8, 0, 8, 0);
+        formCard.add(categoryScroll, gridBagConstraints);
+
+        lblAuthor.setForeground(AppTheme.TEXT);
+        lblAuthor.setText("Tác giả:");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 6;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(8, 0, 8, 14);
+        formCard.add(lblAuthor, gridBagConstraints);
+        authorScroll.setBorder(javax.swing.BorderFactory.createLineBorder(AppTheme.INPUT_BORDER));
+        authorScroll.setMinimumSize(new java.awt.Dimension(0, 90));
+        authorScroll.setPreferredSize(new java.awt.Dimension(0, 90));
+        lstAuthor.setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        lstAuthor.setVisibleRowCount(4);
+        authorScroll.setViewportView(lstAuthor);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 6;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(8, 0, 8, 0);
+        formCard.add(authorScroll, gridBagConstraints);
+
+        rightColumn.setOpaque(false);
+        rightColumn.setLayout(new java.awt.BorderLayout(0, 8));
+        descBlock.setOpaque(false);
+        descBlock.setLayout(new java.awt.BorderLayout(0, 6));
+        descLabel.setForeground(AppTheme.TEXT);
+        descLabel.setText("Mô tả:");
+        descBlock.add(descLabel, java.awt.BorderLayout.NORTH);
+        descScroll.setBorder(javax.swing.BorderFactory.createLineBorder(AppTheme.INPUT_BORDER));
+        txtDescription.setColumns(20);
+        txtDescription.setLineWrap(true);
+        txtDescription.setRows(8);
+        txtDescription.setWrapStyleWord(true);
+        descScroll.setViewportView(txtDescription);
+        descBlock.add(descScroll, java.awt.BorderLayout.CENTER);
+
+        rightColumn.add(descBlock, java.awt.BorderLayout.CENTER);
+
+        imageBlock.setOpaque(false);
+        imageBlock.setLayout(new java.awt.BorderLayout(0, 6));
+        imageLabel.setForeground(AppTheme.TEXT);
+        imageLabel.setText("Hình ảnh:");
+        imageBlock.add(imageLabel, java.awt.BorderLayout.NORTH);
+        imageBlockRow.setOpaque(false);
+        imageBlockRow.setLayout(new java.awt.BorderLayout());
+        imagePicker.setOpaque(false);
+        imagePicker.setLayout(new javax.swing.BoxLayout(imagePicker, javax.swing.BoxLayout.X_AXIS));
+        lblThumbnail.setFont(lblThumbnail.getFont().deriveFont(11f));
+        lblThumbnail.setForeground(AppTheme.TEXT);
+        lblThumbnail.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblThumbnail.setText("Chưa có ảnh");
+        lblThumbnail.setBorder(javax.swing.BorderFactory.createLineBorder(AppTheme.INPUT_BORDER));
+        lblThumbnail.setMaximumSize(new java.awt.Dimension(90, 120));
+        lblThumbnail.setMinimumSize(new java.awt.Dimension(90, 120));
+        lblThumbnail.setPreferredSize(new java.awt.Dimension(90, 120));
+        imagePicker.add(lblThumbnail);
+        imagePicker.add(filler5);
+        btnPickImage.setText("Đổi ảnh...");
+        imagePicker.add(btnPickImage);
+        imageBlockRow.add(imagePicker, java.awt.BorderLayout.WEST);
+
+        imageBlock.add(imageBlockRow, java.awt.BorderLayout.CENTER);
+
+        rightColumn.add(imageBlock, java.awt.BorderLayout.SOUTH);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.gridheight = 7;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(8, 32, 8, 0);
+        formCard.add(rightColumn, gridBagConstraints);
+
+        top.add(formCard);
+
+        top.add(filler6);
+        buttonRow.setBackground(AppTheme.BACKGROUND);
+        buttonRow.setAlignmentX(0.0F);
+        buttonRow.setMaximumSize(new java.awt.Dimension(1160, 40));
+        buttonRow.setLayout(new javax.swing.BoxLayout(buttonRow, javax.swing.BoxLayout.X_AXIS));
+        buttonRow.add(filler7);
+        btnReset.setText("Reset");
+        buttonRow.add(btnReset);
+        buttonRow.add(filler8);
+        btnSave.setText("Lưu");
+        buttonRow.add(btnSave);
+        top.add(buttonRow);
+
+        pageScroll.setViewportView(top);
+
+        add(pageScroll, java.awt.BorderLayout.CENTER);
+    }// </editor-fold>//GEN-END:initComponents
+
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JScrollPane authorScroll;
+    private javax.swing.JButton btnPickImage;
+    private javax.swing.JButton btnReset;
+    private javax.swing.JButton btnSave;
+    private javax.swing.JPanel buttonRow;
+    private javax.swing.JScrollPane categoryScroll;
+    private javax.swing.JComboBox<Publisher> cboPublisher;
+    private javax.swing.JPanel descBlock;
+    private javax.swing.JLabel descLabel;
+    private javax.swing.JScrollPane descScroll;
+    private javax.swing.Box.Filler filler5;
+    private javax.swing.Box.Filler filler6;
+    private javax.swing.Box.Filler filler7;
+    private javax.swing.Box.Filler filler8;
+    private javax.swing.JPanel formCard;
+    private javax.swing.JLabel heading;
+    private javax.swing.JPanel imageBlock;
+    private javax.swing.JPanel imageBlockRow;
+    private javax.swing.JLabel imageLabel;
+    private javax.swing.JPanel imagePicker;
+    private javax.swing.JLabel lblAuthor;
+    private javax.swing.JLabel lblBookID;
+    private javax.swing.JLabel lblBookIDCaption;
+    private javax.swing.JLabel lblCategory;
+    private javax.swing.JLabel lblISBN;
+    private javax.swing.JLabel lblPrice;
+    private javax.swing.JLabel lblPublisher;
+    private javax.swing.JLabel lblThumbnail;
+    private javax.swing.JLabel lblTitle;
+    private javax.swing.JList<Author> lstAuthor;
+    private javax.swing.JList<Category> lstCategory;
+    private javax.swing.JScrollPane pageScroll;
+    private javax.swing.JPanel rightColumn;
+    private javax.swing.JPanel top;
+    private javax.swing.JTextArea txtDescription;
+    private javax.swing.JTextField txtISBN;
+    private javax.swing.JTextField txtPrice;
+    private javax.swing.JTextField txtTitle;
+    // End of variables declaration//GEN-END:variables
 }

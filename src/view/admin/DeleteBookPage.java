@@ -7,95 +7,37 @@ package view.admin;
 import view.shared.*;
 
 import dao.BookDAO;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import model.Book;
 
-public class DeleteBookPage implements AdminPage {
+public class DeleteBookPage extends javax.swing.JPanel implements AdminPage {
 
-    @Override
-    public String navKey() {
-        return "books";
-    }
+    private AdminShellFrm shell;
 
-    @Override
-    public String title() {
-        return "Xóa Sách";
-    }
+    private final DefaultTableModel model = new DefaultTableModel(new String[]{"ID", "ISBN", "Tên sách", "Giá", "Mô tả"}, 0) {
+        @Override
+        public boolean isCellEditable(int row, int col) {
+            return false;
+        }
+    };
 
-    @Override
-    public AdminPage backTarget() {
-        return new ManageBooksPage();
-    }
+    private final List<Book> currentBooks = new ArrayList<>();
 
-    @Override
-    public JPanel content(AdminShellFrm shell) {
-        JPanel content = new JPanel(new BorderLayout(0, 16));
-        content.setBackground(AppTheme.BACKGROUND);
-        content.setBorder(new EmptyBorder(28, 28, 28, 28));
+    private final Runnable doSearch;
 
-        JPanel header = new JPanel();
-        header.setLayout(new BoxLayout(header, BoxLayout.Y_AXIS));
-        header.setBackground(AppTheme.BACKGROUND);
+    public DeleteBookPage() {
+        initComponents();
 
-        JLabel heading = new JLabel("Xóa sách");
-        heading.setFont(heading.getFont().deriveFont(Font.BOLD, 22f));
-        heading.setForeground(AppTheme.TEXT);
-        heading.setAlignmentX(JLabel.LEFT_ALIGNMENT);
-        heading.setBorder(new EmptyBorder(0, 0, 4, 0));
-        header.add(heading);
-
-        JLabel hint = new JLabel("Chọn 1 sách trong bảng rồi bấm \"Xóa sách đã chọn\". Sách đang có dữ liệu liên quan (danh mục, tác giả, tồn kho, giỏ hàng, đơn hàng) sẽ không xóa được.");
-        hint.setFont(hint.getFont().deriveFont(12f));
-        hint.setForeground(new Color(0x8A, 0x83, 0x74));
-        hint.setAlignmentX(JLabel.LEFT_ALIGNMENT);
-        hint.setBorder(new EmptyBorder(0, 0, 16, 0));
-        header.add(hint);
-
-        JTextField txtKeyword = new JTextField();
         txtKeyword.putClientProperty("JTextField.placeholderText", "Tìm theo mã sách, ISBN hoặc tên sách...");
-
-        JButton btnSearch = new JButton("Tìm kiếm");
         AppTheme.primary(btnSearch);
+        AppTheme.secondary(btnDelete);
 
-        JPanel searchBar = new JPanel(new BorderLayout(10, 0));
-        searchBar.setBackground(AppTheme.BACKGROUND);
-        searchBar.setAlignmentX(JPanel.LEFT_ALIGNMENT);
-        searchBar.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
-        searchBar.add(txtKeyword, BorderLayout.CENTER);
-        searchBar.add(btnSearch, BorderLayout.EAST);
-        header.add(searchBar);
-
-        content.add(header, BorderLayout.NORTH);
-
-        String[] columns = {"ID", "ISBN", "Tên sách", "Giá", "Mô tả"};
-        DefaultTableModel model = new DefaultTableModel(columns, 0) {
-            @Override
-            public boolean isCellEditable(int row, int col) {
-                return false;
-            }
-        };
-        JTable table = new JTable(model);
-        table.setRowHeight(30);
-        table.setShowGrid(true);
-        table.setGridColor(AppTheme.TABLE_GRID);
+        table.setModel(model);
         table.getTableHeader().setReorderingAllowed(false);
         AppTheme.alignTableColumn(table, 0, SwingConstants.CENTER, 50, 50);
         AppTheme.alignTableColumn(table, 1, SwingConstants.CENTER, 140, 140);
@@ -103,9 +45,7 @@ public class DeleteBookPage implements AdminPage {
         AppTheme.alignTableColumn(table, 3, SwingConstants.RIGHT, 110, 110);
         AppTheme.alignTableColumn(table, 4, SwingConstants.LEFT, 220, 220);
 
-        final List<Book> currentBooks = new ArrayList<>();
-
-        Runnable doSearch = () -> {
+        doSearch = () -> {
             String keyword = txtKeyword.getText().trim();
             Book[] found = new BookDAO().searchBook(keyword);
             currentBooks.clear();
@@ -120,22 +60,6 @@ public class DeleteBookPage implements AdminPage {
         btnSearch.addActionListener(e -> doSearch.run());
         txtKeyword.addActionListener(e -> doSearch.run());
 
-        JPanel tableCard = new JPanel(new BorderLayout(0, 10));
-        tableCard.setBackground(Color.WHITE);
-        tableCard.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createMatteBorder(0, 4, 0, 0, AppTheme.SECONDARY),
-                new EmptyBorder(14, 16, 14, 16)));
-
-        JPanel tableHeader = new JPanel(new BorderLayout());
-        tableHeader.setBackground(Color.WHITE);
-
-        JLabel resultTitle = new JLabel("Kết quả");
-        resultTitle.setFont(resultTitle.getFont().deriveFont(Font.BOLD, 14f));
-        resultTitle.setForeground(AppTheme.TEXT);
-        tableHeader.add(resultTitle, BorderLayout.WEST);
-
-        JButton btnDelete = new JButton("Xóa sách đã chọn");
-        AppTheme.secondary(btnDelete);
         btnDelete.addActionListener(e -> {
             int row = table.getSelectedRow();
             if (row < 0 || row >= currentBooks.size()) {
@@ -157,18 +81,119 @@ public class DeleteBookPage implements AdminPage {
                 JOptionPane.showMessageDialog(shell, error);
             }
         });
-        tableHeader.add(btnDelete, BorderLayout.EAST);
+    }
 
-        tableCard.add(tableHeader, BorderLayout.NORTH);
+    @Override
+    public String navKey() {
+        return "books";
+    }
 
-        JScrollPane scroll = new JScrollPane(table);
-        scroll.setBorder(BorderFactory.createLineBorder(AppTheme.INPUT_BORDER));
-        tableCard.add(scroll, BorderLayout.CENTER);
+    @Override
+    public String title() {
+        return "Xóa Sách";
+    }
 
-        content.add(tableCard, BorderLayout.CENTER);
+    @Override
+    public AdminPage backTarget() {
+        return new ManageBooksPage();
+    }
+
+    @Override
+    public JPanel content(AdminShellFrm shell) {
+        this.shell = shell;
 
         doSearch.run();
 
-        return content;
+        return this;
     }
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        header = new javax.swing.JPanel();
+        heading = new javax.swing.JLabel();
+        hint = new javax.swing.JLabel();
+        searchBar = new javax.swing.JPanel();
+        txtKeyword = new javax.swing.JTextField();
+        btnSearch = new javax.swing.JButton();
+        tableCard = new javax.swing.JPanel();
+        tableHeader = new javax.swing.JPanel();
+        resultTitle = new javax.swing.JLabel();
+        btnDelete = new javax.swing.JButton();
+        scroll = new javax.swing.JScrollPane();
+        table = new javax.swing.JTable();
+
+        setBackground(AppTheme.BACKGROUND);
+        setBorder(javax.swing.BorderFactory.createEmptyBorder(28, 28, 28, 28));
+        setLayout(new java.awt.BorderLayout(0, 16));
+
+        header.setBackground(AppTheme.BACKGROUND);
+        header.setLayout(new javax.swing.BoxLayout(header, javax.swing.BoxLayout.Y_AXIS));
+        heading.setFont(heading.getFont().deriveFont(java.awt.Font.BOLD, 22f));
+        heading.setForeground(AppTheme.TEXT);
+        heading.setText("Xóa sách");
+        heading.setAlignmentX(0.0F);
+        heading.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 4, 0));
+        header.add(heading);
+        hint.setFont(hint.getFont().deriveFont(12f));
+        hint.setForeground(new java.awt.Color(138, 131, 116));
+        hint.setText("Chọn 1 sách trong bảng rồi bấm \"Xóa sách đã chọn\". Sách đang có dữ liệu liên quan (danh mục, tác giả, tồn kho, giỏ hàng, đơn hàng) sẽ không xóa được.");
+        hint.setAlignmentX(0.0F);
+        hint.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 16, 0));
+        header.add(hint);
+        searchBar.setBackground(AppTheme.BACKGROUND);
+        searchBar.setAlignmentX(0.0F);
+        searchBar.setMaximumSize(new java.awt.Dimension(2147483647, 40));
+        searchBar.setLayout(new java.awt.BorderLayout(10, 0));
+        searchBar.add(txtKeyword, java.awt.BorderLayout.CENTER);
+        btnSearch.setText("Tìm kiếm");
+        searchBar.add(btnSearch, java.awt.BorderLayout.EAST);
+        header.add(searchBar);
+
+        add(header, java.awt.BorderLayout.NORTH);
+
+        tableCard.setBackground(new java.awt.Color(255, 255, 255));
+        tableCard.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createMatteBorder(0, 4, 0, 0, AppTheme.SECONDARY), javax.swing.BorderFactory.createEmptyBorder(14, 16, 14, 16)));
+        tableCard.setLayout(new java.awt.BorderLayout(0, 10));
+        tableHeader.setBackground(new java.awt.Color(255, 255, 255));
+        tableHeader.setLayout(new java.awt.BorderLayout());
+        resultTitle.setFont(resultTitle.getFont().deriveFont(java.awt.Font.BOLD, 14f));
+        resultTitle.setForeground(AppTheme.TEXT);
+        resultTitle.setText("Kết quả");
+        tableHeader.add(resultTitle, java.awt.BorderLayout.WEST);
+        btnDelete.setText("Xóa sách đã chọn");
+        tableHeader.add(btnDelete, java.awt.BorderLayout.EAST);
+        tableCard.add(tableHeader, java.awt.BorderLayout.NORTH);
+
+        scroll.setBorder(javax.swing.BorderFactory.createLineBorder(AppTheme.INPUT_BORDER));
+        table.setGridColor(AppTheme.TABLE_GRID);
+        table.setRowHeight(30);
+        table.setShowGrid(true);
+        scroll.setViewportView(table);
+        tableCard.add(scroll, java.awt.BorderLayout.CENTER);
+
+        add(tableCard, java.awt.BorderLayout.CENTER);
+    }// </editor-fold>//GEN-END:initComponents
+
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnDelete;
+    private javax.swing.JButton btnSearch;
+    private javax.swing.JPanel header;
+    private javax.swing.JLabel heading;
+    private javax.swing.JLabel hint;
+    private javax.swing.JLabel resultTitle;
+    private javax.swing.JScrollPane scroll;
+    private javax.swing.JPanel searchBar;
+    private javax.swing.JTable table;
+    private javax.swing.JPanel tableCard;
+    private javax.swing.JPanel tableHeader;
+    private javax.swing.JTextField txtKeyword;
+    // End of variables declaration//GEN-END:variables
 }

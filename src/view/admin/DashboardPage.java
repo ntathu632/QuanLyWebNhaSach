@@ -5,19 +5,15 @@ package view.admin;
 import view.shared.*;
 
 import dao.DashboardDAO;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.GridLayout;
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.border.EmptyBorder;
 
-public class DashboardPage implements AdminPage {
+public class DashboardPage extends javax.swing.JPanel implements AdminPage {
+
+    public DashboardPage() {
+        initComponents();
+
+        pageScroll.getVerticalScrollBar().setUnitIncrement(16);
+    }
 
     @Override
     public String navKey() {
@@ -31,31 +27,10 @@ public class DashboardPage implements AdminPage {
 
     @Override
     public JPanel content(AdminShellFrm shell) {
-        JPanel content = new JPanel(new BorderLayout());
-        content.setBackground(AppTheme.BACKGROUND);
-        content.setBorder(new EmptyBorder(28, 28, 28, 28));
+        fillStatCards();
+        fillChartsGrid();
 
-        JPanel top = new JPanel();
-        top.setLayout(new BoxLayout(top, BoxLayout.Y_AXIS));
-        top.setBackground(AppTheme.BACKGROUND);
-
-        JLabel heading = new JLabel("Dashboard");
-        heading.setFont(heading.getFont().deriveFont(Font.BOLD, 22f));
-        heading.setForeground(AppTheme.TEXT);
-        heading.setAlignmentX(JLabel.LEFT_ALIGNMENT);
-        heading.setBorder(new EmptyBorder(0, 0, 20, 0));
-        top.add(heading);
-
-        top.add(buildStatCards());
-
-        top.add(Box.createVerticalStrut(18));
-        top.add(buildChartsGrid());
-
-        JScrollPane pageScroll = new JScrollPane(top);
-        pageScroll.setBorder(null);
-        pageScroll.getVerticalScrollBar().setUnitIncrement(16);
-        content.add(pageScroll, BorderLayout.CENTER);
-        return content;
+        return this;
     }
 
     // 4 biểu đồ khác dạng nhau, mỗi cái dùng 1 loại số liệu thật khác nhau từ
@@ -64,7 +39,7 @@ public class DashboardPage implements AdminPage {
     //   - Đường/vùng : số lượng đơn hàng theo ngày (mọi trạng thái)
     //   - Donut      : tỉ lệ đơn hàng theo trạng thái (Pending/Paid/Cancelled)
     //   - Cột ngang  : số đơn theo từng phương thức thanh toán
-    private JPanel buildChartsGrid() {
+    private void fillChartsGrid() {
         DashboardDAO dashboardDAO = new DashboardDAO();
 
         java.util.List<BarChartPanel.Item> revenueItems = new java.util.ArrayList<>();
@@ -80,71 +55,210 @@ public class DashboardPage implements AdminPage {
         java.util.List<DashboardDAO.LabelCount> statusItems = dashboardDAO.orderStatusBreakdown();
         java.util.List<DashboardDAO.LabelCount> paymentItems = dashboardDAO.paymentMethodBreakdown();
 
-        // Không đặt maximumSize/preferredSize theo chiều rộng cố định — để
-        // BoxLayout giãn full chiều ngang giống hệt hàng thẻ thống kê phía
-        // trên (row cũng dùng Integer.MAX_VALUE cho width), nhờ đó 2 hàng
-        // luôn thẳng mép nhau thay vì hàng dưới bị bó hẹp hơn hàng trên.
-        JPanel grid = new JPanel(new GridLayout(2, 2, 18, 18));
-        grid.setBackground(AppTheme.BACKGROUND);
-        grid.setAlignmentX(JPanel.LEFT_ALIGNMENT);
-        grid.setMaximumSize(new java.awt.Dimension(Integer.MAX_VALUE, 520));
-        grid.setPreferredSize(new java.awt.Dimension(0, 520));
-
-        grid.add(BarChartPanel.card("Doanh thu theo ngày (đơn đã thanh toán)", revenueItems, AppTheme.CHART_PINK, 250));
-        grid.add(LineChartPanel.card("Số đơn hàng theo ngày", orderCountItems, AppTheme.CHART_SKY, 250));
-        grid.add(DonutChartPanel.card("Tỉ lệ đơn hàng theo trạng thái", statusItems, AppTheme.CHART_GOLD, 250));
-        grid.add(HorizontalBarChartPanel.card("Đơn hàng theo phương thức thanh toán", paymentItems, AppTheme.CHART_ORANGE, 250));
-
-        return grid;
+        // Khung lưới 2x2 (chartsGrid) nằm trong form; 4 biểu đồ dựng từ dữ
+        // liệu thật nên được thêm vào lúc mở trang.
+        chartsGrid.removeAll();
+        chartsGrid.add(BarChartPanel.card("Doanh thu theo ngày (đơn đã thanh toán)", revenueItems, AppTheme.CHART_PINK, 250));
+        chartsGrid.add(LineChartPanel.card("Số đơn hàng theo ngày", orderCountItems, AppTheme.CHART_SKY, 250));
+        chartsGrid.add(DonutChartPanel.card("Tỉ lệ đơn hàng theo trạng thái", statusItems, AppTheme.CHART_GOLD, 250));
+        chartsGrid.add(HorizontalBarChartPanel.card("Đơn hàng theo phương thức thanh toán", paymentItems, AppTheme.CHART_ORANGE, 250));
     }
 
     // Số liệu thật lấy từ DB qua DashboardDAO (COUNT/SUM) — không phải số giả
     // định để trang trí. Doanh thu chỉ tính đơn đã "Paid" (xem AS-03 trong SRS).
-    private JPanel buildStatCards() {
+    private void fillStatCards() {
         DashboardDAO dashboardDAO = new DashboardDAO();
 
-        JPanel row = new JPanel(new GridLayout(1, 4, 18, 0));
-        row.setBackground(AppTheme.BACKGROUND);
-        row.setAlignmentX(JPanel.LEFT_ALIGNMENT);
-        row.setMaximumSize(new java.awt.Dimension(Integer.MAX_VALUE, 96));
-        row.setPreferredSize(new java.awt.Dimension(0, 96));
-
-        row.add(statCard(FlatIcon.Kind.BOOK, String.valueOf(dashboardDAO.countBooks()), "Tổng số sách", AppTheme.CHART_SKY));
-        row.add(statCard(FlatIcon.Kind.RECEIPT, String.valueOf(dashboardDAO.countOrders()), "Tổng đơn hàng", AppTheme.CHART_ORANGE));
-        row.add(statCard(FlatIcon.Kind.USERS, String.valueOf(dashboardDAO.countCustomers()), "Tổng khách hàng", AppTheme.CHART_PURPLE));
-        row.add(statCard(FlatIcon.Kind.MONEY, String.format("%,.0f₫", dashboardDAO.totalRevenue()), "Doanh thu đã thu", AppTheme.CHART_GOLD));
-
-        return row;
+        statValue1.setText(String.valueOf(dashboardDAO.countBooks()));
+        statValue2.setText(String.valueOf(dashboardDAO.countOrders()));
+        statValue3.setText(String.valueOf(dashboardDAO.countCustomers()));
+        statValue4.setText(String.format("%,.0f₫", dashboardDAO.totalRevenue()));
     }
 
-    private JPanel statCard(FlatIcon.Kind kind, String value, String caption, Color accent) {
-        JPanel card = new JPanel();
-        card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
-        card.setBackground(Color.WHITE);
-        card.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createMatteBorder(0, 4, 0, 0, accent),
-                new EmptyBorder(14, 16, 14, 16)));
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
 
-        JLabel iconLabel = new JLabel(new FlatIcon(kind, accent, 22));
-        iconLabel.setAlignmentX(JLabel.LEFT_ALIGNMENT);
-        card.add(iconLabel);
+        pageScroll = new javax.swing.JScrollPane();
+        top = new javax.swing.JPanel();
+        heading = new javax.swing.JLabel();
+        statRow = new javax.swing.JPanel();
+        statCard1 = new javax.swing.JPanel();
+        statIcon1 = new javax.swing.JLabel();
+        filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 6), new java.awt.Dimension(0, 6), new java.awt.Dimension(32767, 6));
+        statValue1 = new javax.swing.JLabel();
+        filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 2), new java.awt.Dimension(0, 2), new java.awt.Dimension(32767, 2));
+        statCaption1 = new javax.swing.JLabel();
+        statCard2 = new javax.swing.JPanel();
+        statIcon2 = new javax.swing.JLabel();
+        filler3 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 6), new java.awt.Dimension(0, 6), new java.awt.Dimension(32767, 6));
+        statValue2 = new javax.swing.JLabel();
+        filler4 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 2), new java.awt.Dimension(0, 2), new java.awt.Dimension(32767, 2));
+        statCaption2 = new javax.swing.JLabel();
+        statCard3 = new javax.swing.JPanel();
+        statIcon3 = new javax.swing.JLabel();
+        filler5 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 6), new java.awt.Dimension(0, 6), new java.awt.Dimension(32767, 6));
+        statValue3 = new javax.swing.JLabel();
+        filler6 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 2), new java.awt.Dimension(0, 2), new java.awt.Dimension(32767, 2));
+        statCaption3 = new javax.swing.JLabel();
+        statCard4 = new javax.swing.JPanel();
+        statIcon4 = new javax.swing.JLabel();
+        filler7 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 6), new java.awt.Dimension(0, 6), new java.awt.Dimension(32767, 6));
+        statValue4 = new javax.swing.JLabel();
+        filler8 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 2), new java.awt.Dimension(0, 2), new java.awt.Dimension(32767, 2));
+        statCaption4 = new javax.swing.JLabel();
+        filler9 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 18), new java.awt.Dimension(0, 18), new java.awt.Dimension(32767, 18));
+        chartsGrid = new javax.swing.JPanel();
 
-        card.add(Box.createVerticalStrut(6));
+        setBackground(AppTheme.BACKGROUND);
+        setBorder(javax.swing.BorderFactory.createEmptyBorder(28, 28, 28, 28));
+        setLayout(new java.awt.BorderLayout());
 
-        JLabel valueLabel = new JLabel(value);
-        valueLabel.setFont(valueLabel.getFont().deriveFont(Font.BOLD, 22f));
-        valueLabel.setForeground(AppTheme.TEXT);
-        valueLabel.setAlignmentX(JLabel.LEFT_ALIGNMENT);
-        card.add(valueLabel);
+        pageScroll.setBorder(null);
+        top.setBackground(AppTheme.BACKGROUND);
+        top.setLayout(new javax.swing.BoxLayout(top, javax.swing.BoxLayout.Y_AXIS));
+        heading.setFont(heading.getFont().deriveFont(java.awt.Font.BOLD, 22f));
+        heading.setForeground(AppTheme.TEXT);
+        heading.setText("Dashboard");
+        heading.setAlignmentX(0.0F);
+        heading.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 20, 0));
+        top.add(heading);
+        statRow.setBackground(AppTheme.BACKGROUND);
+        statRow.setAlignmentX(0.0F);
+        statRow.setMaximumSize(new java.awt.Dimension(2147483647, 96));
+        statRow.setPreferredSize(new java.awt.Dimension(0, 96));
+        statRow.setLayout(new java.awt.GridLayout(1, 4, 18, 0));
+        statCard1.setBackground(new java.awt.Color(255, 255, 255));
+        statCard1.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createMatteBorder(0, 4, 0, 0, AppTheme.CHART_SKY), javax.swing.BorderFactory.createEmptyBorder(14, 16, 14, 16)));
+        statCard1.setLayout(new javax.swing.BoxLayout(statCard1, javax.swing.BoxLayout.Y_AXIS));
+        statIcon1.setIcon(new FlatIcon(FlatIcon.Kind.BOOK, AppTheme.CHART_SKY, 22));
+        statIcon1.setAlignmentX(0.0F);
+        statCard1.add(statIcon1);
+        statCard1.add(filler1);
+        statValue1.setFont(statValue1.getFont().deriveFont(java.awt.Font.BOLD, 22f));
+        statValue1.setForeground(AppTheme.TEXT);
+        statValue1.setText("0");
+        statValue1.setAlignmentX(0.0F);
+        statCard1.add(statValue1);
+        statCard1.add(filler2);
+        statCaption1.setFont(statCaption1.getFont().deriveFont(12f));
+        statCaption1.setForeground(new java.awt.Color(138, 131, 116));
+        statCaption1.setText("Tổng số sách");
+        statCaption1.setAlignmentX(0.0F);
+        statCard1.add(statCaption1);
+        statRow.add(statCard1);
 
-        card.add(Box.createVerticalStrut(2));
+        statCard2.setBackground(new java.awt.Color(255, 255, 255));
+        statCard2.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createMatteBorder(0, 4, 0, 0, AppTheme.CHART_ORANGE), javax.swing.BorderFactory.createEmptyBorder(14, 16, 14, 16)));
+        statCard2.setLayout(new javax.swing.BoxLayout(statCard2, javax.swing.BoxLayout.Y_AXIS));
+        statIcon2.setIcon(new FlatIcon(FlatIcon.Kind.RECEIPT, AppTheme.CHART_ORANGE, 22));
+        statIcon2.setAlignmentX(0.0F);
+        statCard2.add(statIcon2);
+        statCard2.add(filler3);
+        statValue2.setFont(statValue2.getFont().deriveFont(java.awt.Font.BOLD, 22f));
+        statValue2.setForeground(AppTheme.TEXT);
+        statValue2.setText("0");
+        statValue2.setAlignmentX(0.0F);
+        statCard2.add(statValue2);
+        statCard2.add(filler4);
+        statCaption2.setFont(statCaption2.getFont().deriveFont(12f));
+        statCaption2.setForeground(new java.awt.Color(138, 131, 116));
+        statCaption2.setText("Tổng đơn hàng");
+        statCaption2.setAlignmentX(0.0F);
+        statCard2.add(statCaption2);
+        statRow.add(statCard2);
 
-        JLabel captionLabel = new JLabel(caption);
-        captionLabel.setFont(captionLabel.getFont().deriveFont(12f));
-        captionLabel.setForeground(new Color(0x8A, 0x83, 0x74));
-        captionLabel.setAlignmentX(JLabel.LEFT_ALIGNMENT);
-        card.add(captionLabel);
+        statCard3.setBackground(new java.awt.Color(255, 255, 255));
+        statCard3.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createMatteBorder(0, 4, 0, 0, AppTheme.CHART_PURPLE), javax.swing.BorderFactory.createEmptyBorder(14, 16, 14, 16)));
+        statCard3.setLayout(new javax.swing.BoxLayout(statCard3, javax.swing.BoxLayout.Y_AXIS));
+        statIcon3.setIcon(new FlatIcon(FlatIcon.Kind.USERS, AppTheme.CHART_PURPLE, 22));
+        statIcon3.setAlignmentX(0.0F);
+        statCard3.add(statIcon3);
+        statCard3.add(filler5);
+        statValue3.setFont(statValue3.getFont().deriveFont(java.awt.Font.BOLD, 22f));
+        statValue3.setForeground(AppTheme.TEXT);
+        statValue3.setText("0");
+        statValue3.setAlignmentX(0.0F);
+        statCard3.add(statValue3);
+        statCard3.add(filler6);
+        statCaption3.setFont(statCaption3.getFont().deriveFont(12f));
+        statCaption3.setForeground(new java.awt.Color(138, 131, 116));
+        statCaption3.setText("Tổng khách hàng");
+        statCaption3.setAlignmentX(0.0F);
+        statCard3.add(statCaption3);
+        statRow.add(statCard3);
 
-        return card;
-    }
+        statCard4.setBackground(new java.awt.Color(255, 255, 255));
+        statCard4.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createMatteBorder(0, 4, 0, 0, AppTheme.CHART_GOLD), javax.swing.BorderFactory.createEmptyBorder(14, 16, 14, 16)));
+        statCard4.setLayout(new javax.swing.BoxLayout(statCard4, javax.swing.BoxLayout.Y_AXIS));
+        statIcon4.setIcon(new FlatIcon(FlatIcon.Kind.MONEY, AppTheme.CHART_GOLD, 22));
+        statIcon4.setAlignmentX(0.0F);
+        statCard4.add(statIcon4);
+        statCard4.add(filler7);
+        statValue4.setFont(statValue4.getFont().deriveFont(java.awt.Font.BOLD, 22f));
+        statValue4.setForeground(AppTheme.TEXT);
+        statValue4.setText("0");
+        statValue4.setAlignmentX(0.0F);
+        statCard4.add(statValue4);
+        statCard4.add(filler8);
+        statCaption4.setFont(statCaption4.getFont().deriveFont(12f));
+        statCaption4.setForeground(new java.awt.Color(138, 131, 116));
+        statCaption4.setText("Doanh thu đã thu");
+        statCaption4.setAlignmentX(0.0F);
+        statCard4.add(statCaption4);
+        statRow.add(statCard4);
+
+        top.add(statRow);
+
+        top.add(filler9);
+        chartsGrid.setBackground(AppTheme.BACKGROUND);
+        chartsGrid.setAlignmentX(0.0F);
+        chartsGrid.setMaximumSize(new java.awt.Dimension(2147483647, 520));
+        chartsGrid.setPreferredSize(new java.awt.Dimension(0, 520));
+        chartsGrid.setLayout(new java.awt.GridLayout(2, 2, 18, 18));
+        top.add(chartsGrid);
+
+        pageScroll.setViewportView(top);
+
+        add(pageScroll, java.awt.BorderLayout.CENTER);
+    }// </editor-fold>//GEN-END:initComponents
+
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel chartsGrid;
+    private javax.swing.Box.Filler filler1;
+    private javax.swing.Box.Filler filler2;
+    private javax.swing.Box.Filler filler3;
+    private javax.swing.Box.Filler filler4;
+    private javax.swing.Box.Filler filler5;
+    private javax.swing.Box.Filler filler6;
+    private javax.swing.Box.Filler filler7;
+    private javax.swing.Box.Filler filler8;
+    private javax.swing.Box.Filler filler9;
+    private javax.swing.JLabel heading;
+    private javax.swing.JScrollPane pageScroll;
+    private javax.swing.JLabel statCaption1;
+    private javax.swing.JLabel statCaption2;
+    private javax.swing.JLabel statCaption3;
+    private javax.swing.JLabel statCaption4;
+    private javax.swing.JPanel statCard1;
+    private javax.swing.JPanel statCard2;
+    private javax.swing.JPanel statCard3;
+    private javax.swing.JPanel statCard4;
+    private javax.swing.JLabel statIcon1;
+    private javax.swing.JLabel statIcon2;
+    private javax.swing.JLabel statIcon3;
+    private javax.swing.JLabel statIcon4;
+    private javax.swing.JPanel statRow;
+    private javax.swing.JLabel statValue1;
+    private javax.swing.JLabel statValue2;
+    private javax.swing.JLabel statValue3;
+    private javax.swing.JLabel statValue4;
+    private javax.swing.JPanel top;
+    // End of variables declaration//GEN-END:variables
 }

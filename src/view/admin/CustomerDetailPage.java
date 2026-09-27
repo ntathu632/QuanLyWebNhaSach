@@ -15,21 +15,15 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.GridLayout;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
-import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import model.Account;
@@ -38,7 +32,7 @@ import model.Order;
 import model.OrderDetail;
 import model.Review;
 
-public class CustomerDetailPage implements AdminPage {
+public class CustomerDetailPage extends javax.swing.JPanel implements AdminPage {
 
     private static final SimpleDateFormat DATE_FMT = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
@@ -46,6 +40,24 @@ public class CustomerDetailPage implements AdminPage {
     private final Account account;
     private final AdminPage backTarget;
     private final String navKey;
+
+    private AdminShellFrm shell;
+
+    private List<Order> orders = new ArrayList<>();
+
+    private final DefaultTableModel orderModel = new DefaultTableModel(new String[]{"Mã đơn", "Ngày đặt", "Tổng tiền", "Trạng thái"}, 0) {
+        @Override
+        public boolean isCellEditable(int row, int col) {
+            return false;
+        }
+    };
+
+    private final DefaultTableModel reviewModel = new DefaultTableModel(new String[]{"Sách", "Số sao", "Nhận xét", "Ngày đánh giá"}, 0) {
+        @Override
+        public boolean isCellEditable(int row, int col) {
+            return false;
+        }
+    };
 
     public CustomerDetailPage(Customer customer, Account account) {
         this(customer, account, new ManageAccountPage(), "accounts");
@@ -59,6 +71,43 @@ public class CustomerDetailPage implements AdminPage {
         this.account = account;
         this.backTarget = backTarget;
         this.navKey = navKey;
+        initComponents();
+
+        pageScroll.getVerticalScrollBar().setUnitIncrement(16);
+
+        orderTable.setModel(orderModel);
+        orderTable.getTableHeader().setReorderingAllowed(false);
+        AppTheme.alignTableColumn(orderTable, 0, SwingConstants.CENTER, 80, 80);
+        AppTheme.alignTableColumn(orderTable, 1, SwingConstants.CENTER, 150, 150);
+        AppTheme.alignTableColumn(orderTable, 2, SwingConstants.RIGHT, 130, 130);
+        AppTheme.alignTableColumn(orderTable, 3, SwingConstants.CENTER, 120, 120);
+        orderTable.getColumnModel().getColumn(3).setCellRenderer(new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable t, Object value, boolean isSelected,
+                    boolean hasFocus, int row, int column) {
+                Component c = super.getTableCellRendererComponent(t, value, isSelected, hasFocus, row, column);
+                c.setForeground(statusColor(String.valueOf(value)));
+                setHorizontalAlignment(CENTER);
+                return c;
+            }
+        });
+
+        AppTheme.primary(btnDetail);
+        btnDetail.addActionListener(e -> {
+            int row = orderTable.getSelectedRow();
+            if (row < 0 || row >= orders.size()) {
+                JOptionPane.showMessageDialog(shell, "Vui lòng chọn 1 đơn hàng để xem chi tiết!");
+                return;
+            }
+            showOrderDetail(shell, orders.get(row));
+        });
+
+        reviewTable.setModel(reviewModel);
+        reviewTable.getTableHeader().setReorderingAllowed(false);
+        AppTheme.alignTableColumn(reviewTable, 0, SwingConstants.LEFT, 0, 0);
+        AppTheme.alignTableColumn(reviewTable, 1, SwingConstants.CENTER, 80, 80);
+        AppTheme.alignTableColumn(reviewTable, 2, SwingConstants.LEFT, 220, 220);
+        AppTheme.alignTableColumn(reviewTable, 3, SwingConstants.CENTER, 150, 150);
     }
 
     @Override
@@ -78,7 +127,9 @@ public class CustomerDetailPage implements AdminPage {
 
     @Override
     public JPanel content(AdminShellFrm shell) {
-        List<Order> orders = new OrderDAO().getOrdersByCustomer(customer.getCustomerID());
+        this.shell = shell;
+
+        orders = new OrderDAO().getOrdersByCustomer(customer.getCustomerID());
         List<Review> reviews = new ReviewDAO().getReviewsByCustomer(customer.getCustomerID());
 
         float totalSpent = 0f;
@@ -88,252 +139,52 @@ public class CustomerDetailPage implements AdminPage {
             }
         }
 
-        JPanel content = new JPanel(new BorderLayout());
-        content.setBackground(AppTheme.BACKGROUND);
-        content.setBorder(new EmptyBorder(28, 28, 28, 28));
+        heading.setText("Chi tiết khách hàng: " + customer.getFullName());
 
-        JPanel top = new JPanel();
-        top.setLayout(new BoxLayout(top, BoxLayout.Y_AXIS));
-        top.setBackground(AppTheme.BACKGROUND);
+        fillInfoCard();
+        fillStatRow(orders, reviews, totalSpent);
+        fillOrderTable(orders);
+        fillReviewTable(reviews);
 
-        JLabel heading = new JLabel("Chi tiết khách hàng: " + customer.getFullName());
-        heading.setFont(heading.getFont().deriveFont(Font.BOLD, 22f));
-        heading.setForeground(AppTheme.TEXT);
-        heading.setAlignmentX(JLabel.LEFT_ALIGNMENT);
-        heading.setBorder(new EmptyBorder(0, 0, 20, 0));
-        top.add(heading);
-
-        top.add(buildInfoCard());
-        top.add(Box.createVerticalStrut(18));
-
-        top.add(buildStatRow(orders, reviews, totalSpent));
-        top.add(Box.createVerticalStrut(18));
-
-        top.add(buildOrderTableCard(shell, orders));
-        top.add(Box.createVerticalStrut(18));
-
-        top.add(buildReviewTableCard(reviews));
-
-        JScrollPane pageScroll = new JScrollPane(top);
-        pageScroll.setBorder(null);
-        pageScroll.getVerticalScrollBar().setUnitIncrement(16);
-        content.add(pageScroll, BorderLayout.CENTER);
-        return content;
+        return this;
     }
 
-    private JPanel buildInfoCard() {
-        JPanel card = new JPanel(new GridLayout(2, 3, 24, 18));
-        card.setBackground(Color.WHITE);
-        card.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createMatteBorder(0, 4, 0, 0, AppTheme.PRIMARY),
-                new EmptyBorder(20, 20, 20, 20)));
-        card.setAlignmentX(JPanel.LEFT_ALIGNMENT);
-        card.setMaximumSize(new Dimension(Integer.MAX_VALUE, 130));
-
-        card.add(infoField("Username", account == null ? "— (chưa có tài khoản)" : account.getUsername()));
-        card.add(infoField("Họ tên", customer.getFullName()));
-        card.add(infoField("Trạng thái tài khoản", account == null ? "—"
-                : ("Active".equals(account.getStatus()) ? "Đang hoạt động" : "Đã khóa")));
-        card.add(infoField("Email", nullToDash(customer.getEmail())));
-        card.add(infoField("Số điện thoại", nullToDash(customer.getPhone())));
-        card.add(infoField("Địa chỉ", nullToDash(customer.getAddress())));
-
-        return card;
-    }
-
-    private JPanel infoField(String label, String value) {
-        JPanel p = new JPanel();
-        p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
-        p.setOpaque(false);
-
-        JLabel lbl = new JLabel(label);
-        lbl.setFont(lbl.getFont().deriveFont(12f));
-        lbl.setForeground(new Color(0x8A, 0x83, 0x74));
-        lbl.setAlignmentX(JLabel.LEFT_ALIGNMENT);
-        p.add(lbl);
-
-        p.add(Box.createVerticalStrut(4));
-
-        JLabel val = new JLabel(value);
-        val.setFont(val.getFont().deriveFont(Font.BOLD, 14f));
-        val.setForeground(AppTheme.TEXT);
-        val.setAlignmentX(JLabel.LEFT_ALIGNMENT);
-        p.add(val);
-
-        return p;
+    private void fillInfoCard() {
+        infoValue1.setText(account == null ? "— (chưa có tài khoản)" : account.getUsername());
+        infoValue2.setText(customer.getFullName());
+        infoValue3.setText(account == null ? "—"
+                : ("Active".equals(account.getStatus()) ? "Đang hoạt động" : "Đã khóa"));
+        infoValue4.setText(nullToDash(customer.getEmail()));
+        infoValue5.setText(nullToDash(customer.getPhone()));
+        infoValue6.setText(nullToDash(customer.getAddress()));
     }
 
     private String nullToDash(String s) {
         return (s == null || s.trim().isEmpty()) ? "—" : s;
     }
 
-    private JPanel buildStatRow(List<Order> orders, List<Review> reviews, float totalSpent) {
-        JPanel row = new JPanel(new GridLayout(1, 3, 18, 0));
-        row.setBackground(AppTheme.BACKGROUND);
-        row.setAlignmentX(JPanel.LEFT_ALIGNMENT);
-        row.setMaximumSize(new Dimension(Integer.MAX_VALUE, 96));
-        row.setPreferredSize(new Dimension(0, 96));
-
-        row.add(statCard(FlatIcon.Kind.RECEIPT, String.valueOf(orders.size()), "Tổng số đơn hàng", AppTheme.CHART_SKY));
-        row.add(statCard(FlatIcon.Kind.MONEY, String.format("%,.0f₫", totalSpent), "Tổng chi tiêu (đơn đã thanh toán)", AppTheme.CHART_GOLD));
-        row.add(statCard(FlatIcon.Kind.PEN, String.valueOf(reviews.size()), "Số đánh giá đã viết", AppTheme.CHART_PURPLE));
-
-        return row;
+    private void fillStatRow(List<Order> orders, List<Review> reviews, float totalSpent) {
+        statValue1.setText(String.valueOf(orders.size()));
+        statValue2.setText(String.format("%,.0f₫", totalSpent));
+        statValue3.setText(String.valueOf(reviews.size()));
     }
 
-    private JPanel statCard(FlatIcon.Kind kind, String value, String caption, Color accent) {
-        JPanel card = new JPanel();
-        card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
-        card.setBackground(Color.WHITE);
-        card.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createMatteBorder(0, 4, 0, 0, accent),
-                new EmptyBorder(14, 16, 14, 16)));
-
-        JLabel iconLabel = new JLabel(new FlatIcon(kind, accent, 22));
-        iconLabel.setAlignmentX(JLabel.LEFT_ALIGNMENT);
-        card.add(iconLabel);
-
-        card.add(Box.createVerticalStrut(6));
-
-        JLabel valueLabel = new JLabel(value);
-        valueLabel.setFont(valueLabel.getFont().deriveFont(Font.BOLD, 20f));
-        valueLabel.setForeground(AppTheme.TEXT);
-        valueLabel.setAlignmentX(JLabel.LEFT_ALIGNMENT);
-        card.add(valueLabel);
-
-        card.add(Box.createVerticalStrut(2));
-
-        JLabel captionLabel = new JLabel(caption);
-        captionLabel.setFont(captionLabel.getFont().deriveFont(12f));
-        captionLabel.setForeground(new Color(0x8A, 0x83, 0x74));
-        captionLabel.setAlignmentX(JLabel.LEFT_ALIGNMENT);
-        card.add(captionLabel);
-
-        return card;
-    }
-
-    private JPanel buildOrderTableCard(AdminShellFrm shell, List<Order> orders) {
-        JPanel card = new JPanel(new BorderLayout(0, 10));
-        card.setBackground(Color.WHITE);
-        card.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createMatteBorder(0, 4, 0, 0, AppTheme.PRIMARY),
-                new EmptyBorder(14, 16, 14, 16)));
-        card.setAlignmentX(JPanel.LEFT_ALIGNMENT);
-        card.setPreferredSize(new Dimension(0, 300));
-        card.setMaximumSize(new Dimension(Integer.MAX_VALUE, 300));
-
-        JPanel header = new JPanel(new BorderLayout());
-        header.setBackground(Color.WHITE);
-        JLabel title = new JLabel("Lịch sử đơn hàng");
-        title.setFont(title.getFont().deriveFont(Font.BOLD, 14f));
-        title.setForeground(AppTheme.TEXT);
-        header.add(title, BorderLayout.WEST);
-
-        String[] columns = {"Mã đơn", "Ngày đặt", "Tổng tiền", "Trạng thái"};
-        DefaultTableModel model = new DefaultTableModel(columns, 0) {
-            @Override
-            public boolean isCellEditable(int row, int col) {
-                return false;
-            }
-        };
+    private void fillOrderTable(List<Order> orders) {
+        orderModel.setRowCount(0);
         for (Order o : orders) {
-            model.addRow(new Object[]{o.getOrderID(), DATE_FMT.format(o.getOrderDate()),
+            orderModel.addRow(new Object[]{o.getOrderID(), DATE_FMT.format(o.getOrderDate()),
                 String.format("%,.0f₫", o.getTotalAmount()), statusLabel(o.getStatus())});
         }
-        JTable table = new JTable(model);
-        table.setRowHeight(28);
-        table.setGridColor(AppTheme.TABLE_GRID);
-        table.getTableHeader().setReorderingAllowed(false);
-        AppTheme.alignTableColumn(table, 0, SwingConstants.CENTER, 80, 80);
-        AppTheme.alignTableColumn(table, 1, SwingConstants.CENTER, 150, 150);
-        AppTheme.alignTableColumn(table, 2, SwingConstants.RIGHT, 130, 130);
-        AppTheme.alignTableColumn(table, 3, SwingConstants.CENTER, 120, 120);
-        table.getColumnModel().getColumn(3).setCellRenderer(new DefaultTableCellRenderer() {
-            @Override
-            public Component getTableCellRendererComponent(JTable t, Object value, boolean isSelected,
-                    boolean hasFocus, int row, int column) {
-                Component c = super.getTableCellRendererComponent(t, value, isSelected, hasFocus, row, column);
-                c.setForeground(statusColor(String.valueOf(value)));
-                setHorizontalAlignment(CENTER);
-                return c;
-            }
-        });
-
-        JButton btnDetail = new JButton("Xem chi tiết");
-        AppTheme.primary(btnDetail);
-        btnDetail.addActionListener(e -> {
-            int row = table.getSelectedRow();
-            if (row < 0 || row >= orders.size()) {
-                JOptionPane.showMessageDialog(shell, "Vui lòng chọn 1 đơn hàng để xem chi tiết!");
-                return;
-            }
-            showOrderDetail(shell, orders.get(row));
-        });
-        header.add(btnDetail, BorderLayout.EAST);
-        card.add(header, BorderLayout.NORTH);
-
-        JScrollPane scroll = new JScrollPane(table);
-        scroll.setBorder(BorderFactory.createLineBorder(AppTheme.INPUT_BORDER));
-        card.add(scroll, BorderLayout.CENTER);
-
-        if (orders.isEmpty()) {
-            JLabel empty = new JLabel("Khách hàng chưa có đơn hàng nào.");
-            empty.setForeground(new Color(0x8A, 0x83, 0x74));
-            card.add(empty, BorderLayout.SOUTH);
-        }
-
-        return card;
+        orderEmpty.setVisible(orders.isEmpty());
     }
 
-    private JPanel buildReviewTableCard(List<Review> reviews) {
-        JPanel card = new JPanel(new BorderLayout(0, 10));
-        card.setBackground(Color.WHITE);
-        card.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createMatteBorder(0, 4, 0, 0, AppTheme.PRIMARY),
-                new EmptyBorder(14, 16, 14, 16)));
-        card.setAlignmentX(JPanel.LEFT_ALIGNMENT);
-        card.setPreferredSize(new Dimension(0, 260));
-        card.setMaximumSize(new Dimension(Integer.MAX_VALUE, 260));
-
-        JPanel header = new JPanel(new BorderLayout());
-        header.setBackground(Color.WHITE);
-        JLabel title = new JLabel("Đánh giá đã viết");
-        title.setFont(title.getFont().deriveFont(Font.BOLD, 14f));
-        title.setForeground(AppTheme.TEXT);
-        header.add(title, BorderLayout.WEST);
-        card.add(header, BorderLayout.NORTH);
-
-        String[] columns = {"Sách", "Số sao", "Nhận xét", "Ngày đánh giá"};
-        DefaultTableModel model = new DefaultTableModel(columns, 0) {
-            @Override
-            public boolean isCellEditable(int row, int col) {
-                return false;
-            }
-        };
+    private void fillReviewTable(List<Review> reviews) {
+        reviewModel.setRowCount(0);
         for (Review r : reviews) {
-            model.addRow(new Object[]{r.getBookTitle(), r.getRating() + " ★",
+            reviewModel.addRow(new Object[]{r.getBookTitle(), r.getRating() + " ★",
                 r.getComment(), DATE_FMT.format(r.getReviewDate())});
         }
-        JTable table = new JTable(model);
-        table.setRowHeight(28);
-        table.setGridColor(AppTheme.TABLE_GRID);
-        table.getTableHeader().setReorderingAllowed(false);
-        AppTheme.alignTableColumn(table, 0, SwingConstants.LEFT, 0, 0);
-        AppTheme.alignTableColumn(table, 1, SwingConstants.CENTER, 80, 80);
-        AppTheme.alignTableColumn(table, 2, SwingConstants.LEFT, 220, 220);
-        AppTheme.alignTableColumn(table, 3, SwingConstants.CENTER, 150, 150);
-
-        JScrollPane scroll = new JScrollPane(table);
-        scroll.setBorder(BorderFactory.createLineBorder(AppTheme.INPUT_BORDER));
-        card.add(scroll, BorderLayout.CENTER);
-
-        if (reviews.isEmpty()) {
-            JLabel empty = new JLabel("Khách hàng chưa viết đánh giá nào.");
-            empty.setForeground(new Color(0x8A, 0x83, 0x74));
-            card.add(empty, BorderLayout.SOUTH);
-        }
-
-        return card;
+        reviewEmpty.setVisible(reviews.isEmpty());
     }
 
     private void showOrderDetail(AdminShellFrm shell, Order order) {
@@ -387,4 +238,381 @@ public class CustomerDetailPage implements AdminPage {
         }
         return AppTheme.CHART_ORANGE;
     }
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        pageScroll = new javax.swing.JScrollPane();
+        top = new javax.swing.JPanel();
+        heading = new javax.swing.JLabel();
+        infoCard = new javax.swing.JPanel();
+        infoField1 = new javax.swing.JPanel();
+        infoLabel1 = new javax.swing.JLabel();
+        filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 4), new java.awt.Dimension(0, 4), new java.awt.Dimension(32767, 4));
+        infoValue1 = new javax.swing.JLabel();
+        infoField2 = new javax.swing.JPanel();
+        infoLabel2 = new javax.swing.JLabel();
+        filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 4), new java.awt.Dimension(0, 4), new java.awt.Dimension(32767, 4));
+        infoValue2 = new javax.swing.JLabel();
+        infoField3 = new javax.swing.JPanel();
+        infoLabel3 = new javax.swing.JLabel();
+        filler3 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 4), new java.awt.Dimension(0, 4), new java.awt.Dimension(32767, 4));
+        infoValue3 = new javax.swing.JLabel();
+        infoField4 = new javax.swing.JPanel();
+        infoLabel4 = new javax.swing.JLabel();
+        filler4 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 4), new java.awt.Dimension(0, 4), new java.awt.Dimension(32767, 4));
+        infoValue4 = new javax.swing.JLabel();
+        infoField5 = new javax.swing.JPanel();
+        infoLabel5 = new javax.swing.JLabel();
+        filler5 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 4), new java.awt.Dimension(0, 4), new java.awt.Dimension(32767, 4));
+        infoValue5 = new javax.swing.JLabel();
+        infoField6 = new javax.swing.JPanel();
+        infoLabel6 = new javax.swing.JLabel();
+        filler6 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 4), new java.awt.Dimension(0, 4), new java.awt.Dimension(32767, 4));
+        infoValue6 = new javax.swing.JLabel();
+        filler7 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 18), new java.awt.Dimension(0, 18), new java.awt.Dimension(32767, 18));
+        statRow = new javax.swing.JPanel();
+        statCard1 = new javax.swing.JPanel();
+        statIcon1 = new javax.swing.JLabel();
+        filler8 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 6), new java.awt.Dimension(0, 6), new java.awt.Dimension(32767, 6));
+        statValue1 = new javax.swing.JLabel();
+        filler9 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 2), new java.awt.Dimension(0, 2), new java.awt.Dimension(32767, 2));
+        statCaption1 = new javax.swing.JLabel();
+        statCard2 = new javax.swing.JPanel();
+        statIcon2 = new javax.swing.JLabel();
+        filler10 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 6), new java.awt.Dimension(0, 6), new java.awt.Dimension(32767, 6));
+        statValue2 = new javax.swing.JLabel();
+        filler11 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 2), new java.awt.Dimension(0, 2), new java.awt.Dimension(32767, 2));
+        statCaption2 = new javax.swing.JLabel();
+        statCard3 = new javax.swing.JPanel();
+        statIcon3 = new javax.swing.JLabel();
+        filler12 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 6), new java.awt.Dimension(0, 6), new java.awt.Dimension(32767, 6));
+        statValue3 = new javax.swing.JLabel();
+        filler13 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 2), new java.awt.Dimension(0, 2), new java.awt.Dimension(32767, 2));
+        statCaption3 = new javax.swing.JLabel();
+        filler14 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 18), new java.awt.Dimension(0, 18), new java.awt.Dimension(32767, 18));
+        orderCard = new javax.swing.JPanel();
+        orderHeader = new javax.swing.JPanel();
+        orderTitle = new javax.swing.JLabel();
+        btnDetail = new javax.swing.JButton();
+        orderScroll = new javax.swing.JScrollPane();
+        orderTable = new javax.swing.JTable();
+        orderEmpty = new javax.swing.JLabel();
+        filler15 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 18), new java.awt.Dimension(0, 18), new java.awt.Dimension(32767, 18));
+        reviewCard = new javax.swing.JPanel();
+        reviewHeader = new javax.swing.JPanel();
+        reviewTitle = new javax.swing.JLabel();
+        reviewScroll = new javax.swing.JScrollPane();
+        reviewTable = new javax.swing.JTable();
+        reviewEmpty = new javax.swing.JLabel();
+
+        setBackground(AppTheme.BACKGROUND);
+        setBorder(javax.swing.BorderFactory.createEmptyBorder(28, 28, 28, 28));
+        setLayout(new java.awt.BorderLayout());
+
+        pageScroll.setBorder(null);
+        top.setBackground(AppTheme.BACKGROUND);
+        top.setLayout(new javax.swing.BoxLayout(top, javax.swing.BoxLayout.Y_AXIS));
+        heading.setFont(heading.getFont().deriveFont(java.awt.Font.BOLD, 22f));
+        heading.setForeground(AppTheme.TEXT);
+        heading.setText("Chi tiết khách hàng: ");
+        heading.setAlignmentX(0.0F);
+        heading.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 20, 0));
+        top.add(heading);
+        infoCard.setBackground(new java.awt.Color(255, 255, 255));
+        infoCard.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createMatteBorder(0, 4, 0, 0, AppTheme.PRIMARY), javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20)));
+        infoCard.setAlignmentX(0.0F);
+        infoCard.setMaximumSize(new java.awt.Dimension(2147483647, 130));
+        infoCard.setLayout(new java.awt.GridLayout(2, 3, 24, 18));
+        infoField1.setOpaque(false);
+        infoField1.setLayout(new javax.swing.BoxLayout(infoField1, javax.swing.BoxLayout.Y_AXIS));
+        infoLabel1.setFont(infoLabel1.getFont().deriveFont(12f));
+        infoLabel1.setForeground(new java.awt.Color(138, 131, 116));
+        infoLabel1.setText("Username");
+        infoLabel1.setAlignmentX(0.0F);
+        infoField1.add(infoLabel1);
+        infoField1.add(filler1);
+        infoValue1.setFont(infoValue1.getFont().deriveFont(java.awt.Font.BOLD, 14f));
+        infoValue1.setForeground(AppTheme.TEXT);
+        infoValue1.setText("—");
+        infoValue1.setAlignmentX(0.0F);
+        infoField1.add(infoValue1);
+        infoCard.add(infoField1);
+
+        infoField2.setOpaque(false);
+        infoField2.setLayout(new javax.swing.BoxLayout(infoField2, javax.swing.BoxLayout.Y_AXIS));
+        infoLabel2.setFont(infoLabel2.getFont().deriveFont(12f));
+        infoLabel2.setForeground(new java.awt.Color(138, 131, 116));
+        infoLabel2.setText("Họ tên");
+        infoLabel2.setAlignmentX(0.0F);
+        infoField2.add(infoLabel2);
+        infoField2.add(filler2);
+        infoValue2.setFont(infoValue2.getFont().deriveFont(java.awt.Font.BOLD, 14f));
+        infoValue2.setForeground(AppTheme.TEXT);
+        infoValue2.setText("—");
+        infoValue2.setAlignmentX(0.0F);
+        infoField2.add(infoValue2);
+        infoCard.add(infoField2);
+
+        infoField3.setOpaque(false);
+        infoField3.setLayout(new javax.swing.BoxLayout(infoField3, javax.swing.BoxLayout.Y_AXIS));
+        infoLabel3.setFont(infoLabel3.getFont().deriveFont(12f));
+        infoLabel3.setForeground(new java.awt.Color(138, 131, 116));
+        infoLabel3.setText("Trạng thái tài khoản");
+        infoLabel3.setAlignmentX(0.0F);
+        infoField3.add(infoLabel3);
+        infoField3.add(filler3);
+        infoValue3.setFont(infoValue3.getFont().deriveFont(java.awt.Font.BOLD, 14f));
+        infoValue3.setForeground(AppTheme.TEXT);
+        infoValue3.setText("—");
+        infoValue3.setAlignmentX(0.0F);
+        infoField3.add(infoValue3);
+        infoCard.add(infoField3);
+
+        infoField4.setOpaque(false);
+        infoField4.setLayout(new javax.swing.BoxLayout(infoField4, javax.swing.BoxLayout.Y_AXIS));
+        infoLabel4.setFont(infoLabel4.getFont().deriveFont(12f));
+        infoLabel4.setForeground(new java.awt.Color(138, 131, 116));
+        infoLabel4.setText("Email");
+        infoLabel4.setAlignmentX(0.0F);
+        infoField4.add(infoLabel4);
+        infoField4.add(filler4);
+        infoValue4.setFont(infoValue4.getFont().deriveFont(java.awt.Font.BOLD, 14f));
+        infoValue4.setForeground(AppTheme.TEXT);
+        infoValue4.setText("—");
+        infoValue4.setAlignmentX(0.0F);
+        infoField4.add(infoValue4);
+        infoCard.add(infoField4);
+
+        infoField5.setOpaque(false);
+        infoField5.setLayout(new javax.swing.BoxLayout(infoField5, javax.swing.BoxLayout.Y_AXIS));
+        infoLabel5.setFont(infoLabel5.getFont().deriveFont(12f));
+        infoLabel5.setForeground(new java.awt.Color(138, 131, 116));
+        infoLabel5.setText("Số điện thoại");
+        infoLabel5.setAlignmentX(0.0F);
+        infoField5.add(infoLabel5);
+        infoField5.add(filler5);
+        infoValue5.setFont(infoValue5.getFont().deriveFont(java.awt.Font.BOLD, 14f));
+        infoValue5.setForeground(AppTheme.TEXT);
+        infoValue5.setText("—");
+        infoValue5.setAlignmentX(0.0F);
+        infoField5.add(infoValue5);
+        infoCard.add(infoField5);
+
+        infoField6.setOpaque(false);
+        infoField6.setLayout(new javax.swing.BoxLayout(infoField6, javax.swing.BoxLayout.Y_AXIS));
+        infoLabel6.setFont(infoLabel6.getFont().deriveFont(12f));
+        infoLabel6.setForeground(new java.awt.Color(138, 131, 116));
+        infoLabel6.setText("Địa chỉ");
+        infoLabel6.setAlignmentX(0.0F);
+        infoField6.add(infoLabel6);
+        infoField6.add(filler6);
+        infoValue6.setFont(infoValue6.getFont().deriveFont(java.awt.Font.BOLD, 14f));
+        infoValue6.setForeground(AppTheme.TEXT);
+        infoValue6.setText("—");
+        infoValue6.setAlignmentX(0.0F);
+        infoField6.add(infoValue6);
+        infoCard.add(infoField6);
+
+        top.add(infoCard);
+
+        top.add(filler7);
+        statRow.setBackground(AppTheme.BACKGROUND);
+        statRow.setAlignmentX(0.0F);
+        statRow.setMaximumSize(new java.awt.Dimension(2147483647, 96));
+        statRow.setPreferredSize(new java.awt.Dimension(0, 96));
+        statRow.setLayout(new java.awt.GridLayout(1, 3, 18, 0));
+        statCard1.setBackground(new java.awt.Color(255, 255, 255));
+        statCard1.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createMatteBorder(0, 4, 0, 0, AppTheme.CHART_SKY), javax.swing.BorderFactory.createEmptyBorder(14, 16, 14, 16)));
+        statCard1.setLayout(new javax.swing.BoxLayout(statCard1, javax.swing.BoxLayout.Y_AXIS));
+        statIcon1.setIcon(new FlatIcon(FlatIcon.Kind.RECEIPT, AppTheme.CHART_SKY, 22));
+        statIcon1.setAlignmentX(0.0F);
+        statCard1.add(statIcon1);
+        statCard1.add(filler8);
+        statValue1.setFont(statValue1.getFont().deriveFont(java.awt.Font.BOLD, 20f));
+        statValue1.setForeground(AppTheme.TEXT);
+        statValue1.setText("0");
+        statValue1.setAlignmentX(0.0F);
+        statCard1.add(statValue1);
+        statCard1.add(filler9);
+        statCaption1.setFont(statCaption1.getFont().deriveFont(12f));
+        statCaption1.setForeground(new java.awt.Color(138, 131, 116));
+        statCaption1.setText("Tổng số đơn hàng");
+        statCaption1.setAlignmentX(0.0F);
+        statCard1.add(statCaption1);
+        statRow.add(statCard1);
+
+        statCard2.setBackground(new java.awt.Color(255, 255, 255));
+        statCard2.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createMatteBorder(0, 4, 0, 0, AppTheme.CHART_GOLD), javax.swing.BorderFactory.createEmptyBorder(14, 16, 14, 16)));
+        statCard2.setLayout(new javax.swing.BoxLayout(statCard2, javax.swing.BoxLayout.Y_AXIS));
+        statIcon2.setIcon(new FlatIcon(FlatIcon.Kind.MONEY, AppTheme.CHART_GOLD, 22));
+        statIcon2.setAlignmentX(0.0F);
+        statCard2.add(statIcon2);
+        statCard2.add(filler10);
+        statValue2.setFont(statValue2.getFont().deriveFont(java.awt.Font.BOLD, 20f));
+        statValue2.setForeground(AppTheme.TEXT);
+        statValue2.setText("0₫");
+        statValue2.setAlignmentX(0.0F);
+        statCard2.add(statValue2);
+        statCard2.add(filler11);
+        statCaption2.setFont(statCaption2.getFont().deriveFont(12f));
+        statCaption2.setForeground(new java.awt.Color(138, 131, 116));
+        statCaption2.setText("Tổng chi tiêu (đơn đã thanh toán)");
+        statCaption2.setAlignmentX(0.0F);
+        statCard2.add(statCaption2);
+        statRow.add(statCard2);
+
+        statCard3.setBackground(new java.awt.Color(255, 255, 255));
+        statCard3.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createMatteBorder(0, 4, 0, 0, AppTheme.CHART_PURPLE), javax.swing.BorderFactory.createEmptyBorder(14, 16, 14, 16)));
+        statCard3.setLayout(new javax.swing.BoxLayout(statCard3, javax.swing.BoxLayout.Y_AXIS));
+        statIcon3.setIcon(new FlatIcon(FlatIcon.Kind.PEN, AppTheme.CHART_PURPLE, 22));
+        statIcon3.setAlignmentX(0.0F);
+        statCard3.add(statIcon3);
+        statCard3.add(filler12);
+        statValue3.setFont(statValue3.getFont().deriveFont(java.awt.Font.BOLD, 20f));
+        statValue3.setForeground(AppTheme.TEXT);
+        statValue3.setText("0");
+        statValue3.setAlignmentX(0.0F);
+        statCard3.add(statValue3);
+        statCard3.add(filler13);
+        statCaption3.setFont(statCaption3.getFont().deriveFont(12f));
+        statCaption3.setForeground(new java.awt.Color(138, 131, 116));
+        statCaption3.setText("Số đánh giá đã viết");
+        statCaption3.setAlignmentX(0.0F);
+        statCard3.add(statCaption3);
+        statRow.add(statCard3);
+
+        top.add(statRow);
+
+        top.add(filler14);
+        orderCard.setBackground(new java.awt.Color(255, 255, 255));
+        orderCard.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createMatteBorder(0, 4, 0, 0, AppTheme.PRIMARY), javax.swing.BorderFactory.createEmptyBorder(14, 16, 14, 16)));
+        orderCard.setAlignmentX(0.0F);
+        orderCard.setMaximumSize(new java.awt.Dimension(2147483647, 300));
+        orderCard.setPreferredSize(new java.awt.Dimension(0, 300));
+        orderCard.setLayout(new java.awt.BorderLayout(0, 10));
+        orderHeader.setBackground(new java.awt.Color(255, 255, 255));
+        orderHeader.setLayout(new java.awt.BorderLayout());
+        orderTitle.setFont(orderTitle.getFont().deriveFont(java.awt.Font.BOLD, 14f));
+        orderTitle.setForeground(AppTheme.TEXT);
+        orderTitle.setText("Lịch sử đơn hàng");
+        orderHeader.add(orderTitle, java.awt.BorderLayout.WEST);
+        btnDetail.setText("Xem chi tiết");
+        orderHeader.add(btnDetail, java.awt.BorderLayout.EAST);
+        orderCard.add(orderHeader, java.awt.BorderLayout.NORTH);
+
+        orderScroll.setBorder(javax.swing.BorderFactory.createLineBorder(AppTheme.INPUT_BORDER));
+        orderTable.setGridColor(AppTheme.TABLE_GRID);
+        orderTable.setRowHeight(28);
+        orderScroll.setViewportView(orderTable);
+        orderCard.add(orderScroll, java.awt.BorderLayout.CENTER);
+
+        orderEmpty.setForeground(new java.awt.Color(138, 131, 116));
+        orderEmpty.setText("Khách hàng chưa có đơn hàng nào.");
+        orderCard.add(orderEmpty, java.awt.BorderLayout.SOUTH);
+        top.add(orderCard);
+
+        top.add(filler15);
+        reviewCard.setBackground(new java.awt.Color(255, 255, 255));
+        reviewCard.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createMatteBorder(0, 4, 0, 0, AppTheme.PRIMARY), javax.swing.BorderFactory.createEmptyBorder(14, 16, 14, 16)));
+        reviewCard.setAlignmentX(0.0F);
+        reviewCard.setMaximumSize(new java.awt.Dimension(2147483647, 260));
+        reviewCard.setPreferredSize(new java.awt.Dimension(0, 260));
+        reviewCard.setLayout(new java.awt.BorderLayout(0, 10));
+        reviewHeader.setBackground(new java.awt.Color(255, 255, 255));
+        reviewHeader.setLayout(new java.awt.BorderLayout());
+        reviewTitle.setFont(reviewTitle.getFont().deriveFont(java.awt.Font.BOLD, 14f));
+        reviewTitle.setForeground(AppTheme.TEXT);
+        reviewTitle.setText("Đánh giá đã viết");
+        reviewHeader.add(reviewTitle, java.awt.BorderLayout.WEST);
+        reviewCard.add(reviewHeader, java.awt.BorderLayout.NORTH);
+
+        reviewScroll.setBorder(javax.swing.BorderFactory.createLineBorder(AppTheme.INPUT_BORDER));
+        reviewTable.setGridColor(AppTheme.TABLE_GRID);
+        reviewTable.setRowHeight(28);
+        reviewScroll.setViewportView(reviewTable);
+        reviewCard.add(reviewScroll, java.awt.BorderLayout.CENTER);
+
+        reviewEmpty.setForeground(new java.awt.Color(138, 131, 116));
+        reviewEmpty.setText("Khách hàng chưa viết đánh giá nào.");
+        reviewCard.add(reviewEmpty, java.awt.BorderLayout.SOUTH);
+        top.add(reviewCard);
+
+        pageScroll.setViewportView(top);
+
+        add(pageScroll, java.awt.BorderLayout.CENTER);
+    }// </editor-fold>//GEN-END:initComponents
+
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnDetail;
+    private javax.swing.Box.Filler filler1;
+    private javax.swing.Box.Filler filler10;
+    private javax.swing.Box.Filler filler11;
+    private javax.swing.Box.Filler filler12;
+    private javax.swing.Box.Filler filler13;
+    private javax.swing.Box.Filler filler14;
+    private javax.swing.Box.Filler filler15;
+    private javax.swing.Box.Filler filler2;
+    private javax.swing.Box.Filler filler3;
+    private javax.swing.Box.Filler filler4;
+    private javax.swing.Box.Filler filler5;
+    private javax.swing.Box.Filler filler6;
+    private javax.swing.Box.Filler filler7;
+    private javax.swing.Box.Filler filler8;
+    private javax.swing.Box.Filler filler9;
+    private javax.swing.JLabel heading;
+    private javax.swing.JPanel infoCard;
+    private javax.swing.JPanel infoField1;
+    private javax.swing.JPanel infoField2;
+    private javax.swing.JPanel infoField3;
+    private javax.swing.JPanel infoField4;
+    private javax.swing.JPanel infoField5;
+    private javax.swing.JPanel infoField6;
+    private javax.swing.JLabel infoLabel1;
+    private javax.swing.JLabel infoLabel2;
+    private javax.swing.JLabel infoLabel3;
+    private javax.swing.JLabel infoLabel4;
+    private javax.swing.JLabel infoLabel5;
+    private javax.swing.JLabel infoLabel6;
+    private javax.swing.JLabel infoValue1;
+    private javax.swing.JLabel infoValue2;
+    private javax.swing.JLabel infoValue3;
+    private javax.swing.JLabel infoValue4;
+    private javax.swing.JLabel infoValue5;
+    private javax.swing.JLabel infoValue6;
+    private javax.swing.JPanel orderCard;
+    private javax.swing.JLabel orderEmpty;
+    private javax.swing.JPanel orderHeader;
+    private javax.swing.JScrollPane orderScroll;
+    private javax.swing.JTable orderTable;
+    private javax.swing.JLabel orderTitle;
+    private javax.swing.JScrollPane pageScroll;
+    private javax.swing.JPanel reviewCard;
+    private javax.swing.JLabel reviewEmpty;
+    private javax.swing.JPanel reviewHeader;
+    private javax.swing.JScrollPane reviewScroll;
+    private javax.swing.JTable reviewTable;
+    private javax.swing.JLabel reviewTitle;
+    private javax.swing.JLabel statCaption1;
+    private javax.swing.JLabel statCaption2;
+    private javax.swing.JLabel statCaption3;
+    private javax.swing.JPanel statCard1;
+    private javax.swing.JPanel statCard2;
+    private javax.swing.JPanel statCard3;
+    private javax.swing.JLabel statIcon1;
+    private javax.swing.JLabel statIcon2;
+    private javax.swing.JLabel statIcon3;
+    private javax.swing.JPanel statRow;
+    private javax.swing.JLabel statValue1;
+    private javax.swing.JLabel statValue2;
+    private javax.swing.JLabel statValue3;
+    private javax.swing.JPanel top;
+    // End of variables declaration//GEN-END:variables
 }

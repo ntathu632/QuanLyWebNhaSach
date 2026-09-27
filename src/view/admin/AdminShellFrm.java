@@ -11,27 +11,18 @@ import view.shared.*;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.SwingConstants;
-import javax.swing.border.EmptyBorder;
 import model.Account;
 
 public class AdminShellFrm extends javax.swing.JFrame {
 
     final Account account;
-
-    private JPanel contentContainer;
-    private JPanel topbarLeft;
 
     private static final class NavItem {
 
@@ -49,6 +40,7 @@ public class AdminShellFrm extends javax.swing.JFrame {
 
     public AdminShellFrm(Account a) {
         this.account = a;
+        initComponents();
         initShell();
         navigateTo(new DashboardPage());
     }
@@ -66,107 +58,45 @@ public class AdminShellFrm extends javax.swing.JFrame {
     }
 
     private void initShell() {
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setBackground(AppTheme.BACKGROUND);
-        getContentPane().setLayout(new BorderLayout());
         // Title bar (FlatLaf vẽ riêng, cũng màu HEADER) và khối "Bookshop Admin"
         // ngay bên dưới cùng là màu xanh olive — nếu không có đường kẻ phân tách,
         // 2 khối sẽ nhìn dính liền thành 1. Thêm viền sáng màu nền để tách rõ.
         ((JComponent) getContentPane()).setBorder(BorderFactory.createMatteBorder(2, 0, 0, 0, AppTheme.BACKGROUND));
 
-        contentContainer = new JPanel(new BorderLayout());
-        contentContainer.setBackground(AppTheme.BACKGROUND);
+        // Sidebar (WEST) + rightSide (topbar NORTH, contentContainer CENTER)
+        // được dựng trong form (initComponents). Ở đây chỉ gắn hành vi.
+        addNavItem(btnNavDashboard, "dashboard", FlatIcon.Kind.HOME, () -> navigateTo(new DashboardPage()));
+        addNavItem(btnNavBooks, "books", FlatIcon.Kind.BOOK, () -> navigateTo(new ManageBooksPage()));
+        addNavItem(btnNavCategory, "category", FlatIcon.Kind.TAG, () -> navigateTo(new ManageCategoryPage()));
+        addNavItem(btnNavAuthor, "author", FlatIcon.Kind.PEN, () -> navigateTo(new ManageAuthorPage()));
+        addNavItem(btnNavPublisher, "publisher", FlatIcon.Kind.BUILDING, () -> navigateTo(new ManagePublisherPage()));
+        addNavItem(btnNavSupplier, "supplier", FlatIcon.Kind.BUILDING, () -> navigateTo(new ManageSupplierPage()));
+        addNavItem(btnNavCustomers, "customers", FlatIcon.Kind.USER, () -> navigateTo(new ManageCustomerPage()));
+        addNavItem(btnNavEmployees, "employees", FlatIcon.Kind.USERS, () -> navigateTo(new ManageEmployeePage()));
+        addNavItem(btnNavAccounts, "accounts", FlatIcon.Kind.SEARCH, () -> navigateTo(new ManageAccountPage()));
+        addNavItem(btnNavReports, "reports", FlatIcon.Kind.CHART, () -> navigateTo(new ReportPage()));
 
-        // Sidebar phải nằm ở WEST của layout NGOÀI CÙNG để chiếm trọn chiều cao
-        // cửa sổ. Topbar + content được gộp vào 1 panel con riêng (layout riêng)
-        // rồi mới đặt panel đó vào CENTER — nếu đặt topbar thẳng vào NORTH của
-        // layout ngoài cùng thì nó sẽ tràn full chiều ngang, đẩy sidebar tụt
-        // xuống dưới nó thay vì nằm cạnh nó.
-        JPanel rightSide = new JPanel(new BorderLayout());
-        rightSide.add(buildTopbar(), BorderLayout.NORTH);
-        rightSide.add(contentContainer, BorderLayout.CENTER);
+        AppTheme.sidebarNavMuted(btnChangePassword);
+        btnChangePassword.addActionListener(e -> ChangePasswordDialog.show(this, account.getUsername()));
 
-        getContentPane().add(buildSidebar(), BorderLayout.WEST);
-        getContentPane().add(rightSide, BorderLayout.CENTER);
+        AppTheme.sidebarNavMuted(btnLogout);
+        btnLogout.addActionListener(e -> {
+            view.customer.CustomerHomeFrm.openAsGuest();
+            this.dispose();
+        });
+
+        String username = (account != null && account.getUsername() != null) ? account.getUsername() : "admin";
+        userLabel.setText("Xin chào, " + username + "  ");
 
         setSize(1000, 640);
         setLocationRelativeTo(null);
         AppTheme.maximize(this);
     }
 
-    private JPanel buildSidebar() {
-        JPanel sidebar = new JPanel();
-        sidebar.setLayout(new BoxLayout(sidebar, BoxLayout.Y_AXIS));
-        sidebar.setBackground(AppTheme.HEADER);
-        sidebar.setPreferredSize(new Dimension(AppTheme.SIDEBAR_WIDTH, 0));
-
-        // Panel cao đúng bằng TOPBAR_HEIGHT để hàng "Bookshop Admin" luôn ngang
-        // hàng với topbar bên phải, không bị lệch cao/thấp giữa 2 bên.
-        JPanel brandPanel = new JPanel(new BorderLayout());
-        brandPanel.setBackground(AppTheme.HEADER);
-        brandPanel.setBorder(new EmptyBorder(0, 18, 0, 12));
-        brandPanel.setAlignmentX(JPanel.LEFT_ALIGNMENT);
-        brandPanel.setPreferredSize(new Dimension(AppTheme.SIDEBAR_WIDTH, AppTheme.TOPBAR_HEIGHT));
-        brandPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, AppTheme.TOPBAR_HEIGHT));
-        brandPanel.setMinimumSize(new Dimension(AppTheme.SIDEBAR_WIDTH, AppTheme.TOPBAR_HEIGHT));
-
-        JLabel brand = new JLabel("Bookshop Admin");
-        brand.setIcon(new FlatIcon(FlatIcon.Kind.BOOK, Color.WHITE, 20));
-        brand.setIconTextGap(10);
-        brand.setForeground(Color.WHITE);
-        brand.setFont(brand.getFont().deriveFont(Font.BOLD, 17f));
-        brandPanel.add(brand, BorderLayout.CENTER);
-        sidebar.add(brandPanel);
-
-        // Đường phân cách rõ ràng giữa khối brand và danh sách điều hướng bên
-        // dưới — dày hơn separator thường (2px) để dễ nhận ra ranh giới.
-        JPanel brandDivider = new JPanel();
-        brandDivider.setMaximumSize(new Dimension(Integer.MAX_VALUE, 2));
-        brandDivider.setPreferredSize(new Dimension(0, 2));
-        brandDivider.setBackground(AppTheme.PRIMARY_HOVER);
-        sidebar.add(brandDivider);
-
-        addNavItem(sidebar, "dashboard", FlatIcon.Kind.HOME, "Dashboard", () -> navigateTo(new DashboardPage()));
-
-        sidebar.add(sidebarSeparator());
-        sidebar.add(sidebarSectionLabel("QUẢN LÝ"));
-
-        addNavItem(sidebar, "books", FlatIcon.Kind.BOOK, "Quản lý sách", () -> navigateTo(new ManageBooksPage()));
-
-        addNavItem(sidebar, "category", FlatIcon.Kind.TAG, "Quản lý danh mục", () -> navigateTo(new ManageCategoryPage()));
-        addNavItem(sidebar, "author", FlatIcon.Kind.PEN, "Quản lý tác giả", () -> navigateTo(new ManageAuthorPage()));
-        addNavItem(sidebar, "publisher", FlatIcon.Kind.BUILDING, "Quản lý nhà xuất bản", () -> navigateTo(new ManagePublisherPage()));
-        addNavItem(sidebar, "supplier", FlatIcon.Kind.BUILDING, "Quản lý nhà cung cấp", () -> navigateTo(new ManageSupplierPage()));
-        addNavItem(sidebar, "customers", FlatIcon.Kind.USER, "Quản lý khách hàng", () -> navigateTo(new ManageCustomerPage()));
-        addNavItem(sidebar, "employees", FlatIcon.Kind.USERS, "Quản lý nhân viên", () -> navigateTo(new ManageEmployeePage()));
-        addNavItem(sidebar, "accounts", FlatIcon.Kind.SEARCH, "Quản lý tài khoản", () -> navigateTo(new ManageAccountPage()));
-
-        sidebar.add(sidebarSeparator());
-        sidebar.add(sidebarSectionLabel("BÁO CÁO"));
-        addNavItem(sidebar, "reports", FlatIcon.Kind.CHART, "Báo cáo thống kê", () -> navigateTo(new ReportPage()));
-
-        sidebar.add(Box.createVerticalGlue());
-        sidebar.add(sidebarSeparator());
-
-        JButton btnChangePassword = sidebarButton(FlatIcon.Kind.USER, "Đổi mật khẩu");
-        btnChangePassword.addActionListener(e -> ChangePasswordDialog.show(this, account.getUsername()));
-        sidebar.add(btnChangePassword);
-
-        JButton btnLogout = sidebarButton(FlatIcon.Kind.LOGOUT, "Đăng xuất");
-        btnLogout.addActionListener(e -> {
-            view.customer.CustomerHomeFrm.openAsGuest();
-            this.dispose();
-        });
-        sidebar.add(btnLogout);
-        sidebar.add(Box.createVerticalStrut(8));
-
-        return sidebar;
-    }
-
-    private void addNavItem(JPanel sidebar, String key, FlatIcon.Kind kind, String text, Runnable onClick) {
-        JButton btn = sidebarButton(kind, text);
+    private void addNavItem(JButton btn, String key, FlatIcon.Kind kind, Runnable onClick) {
+        AppTheme.sidebarNavMuted(btn);
         btn.addActionListener(e -> onClick.run());
-        sidebar.add(btn);
         navItems.add(new NavItem(key, btn, kind));
     }
 
@@ -201,44 +131,6 @@ public class AdminShellFrm extends javax.swing.JFrame {
         return btn;
     }
 
-    private JLabel sidebarSectionLabel(String text) {
-        JLabel lbl = new JLabel(text);
-        lbl.setForeground(AppTheme.SIDEBAR_TEXT_MUTED);
-        lbl.setFont(lbl.getFont().deriveFont(Font.BOLD, 11f));
-        lbl.setBorder(new EmptyBorder(14, 18, 6, 12));
-        lbl.setAlignmentX(JLabel.LEFT_ALIGNMENT);
-        return lbl;
-    }
-
-    private JPanel sidebarSeparator() {
-        JPanel sep = new JPanel();
-        sep.setMaximumSize(new Dimension(Integer.MAX_VALUE, 1));
-        sep.setBackground(AppTheme.PRIMARY_HOVER);
-        return sep;
-    }
-
-    private JPanel buildTopbar() {
-        JPanel topbar = new JPanel(new BorderLayout());
-        topbar.setBackground(AppTheme.BACKGROUND);
-        topbar.setPreferredSize(new Dimension(0, AppTheme.TOPBAR_HEIGHT));
-        topbar.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, AppTheme.INPUT_BORDER));
-
-        topbarLeft = new JPanel();
-        topbarLeft.setLayout(new BoxLayout(topbarLeft, BoxLayout.X_AXIS));
-        topbarLeft.setBackground(AppTheme.BACKGROUND);
-        topbarLeft.setBorder(new EmptyBorder(0, 18, 0, 0));
-        topbar.add(topbarLeft, BorderLayout.WEST);
-
-        String username = (account != null && account.getUsername() != null) ? account.getUsername() : "admin";
-        JLabel userLabel = new JLabel("Xin chào, " + username + "  ");
-        userLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-        userLabel.setForeground(AppTheme.TEXT);
-        userLabel.setFont(userLabel.getFont().deriveFont(Font.PLAIN, 13f));
-        topbar.add(userLabel, BorderLayout.EAST);
-
-        return topbar;
-    }
-
     /**
      * Dựng lại nút "quay lại" bên trái topbar mỗi lần điều hướng (nếu trang
      * có backTarget). Không hiện lại tên trang ở đây nữa — mỗi trang đã tự
@@ -260,4 +152,242 @@ public class AdminShellFrm extends javax.swing.JFrame {
         topbarLeft.revalidate();
         topbarLeft.repaint();
     }
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        sidebar = new javax.swing.JPanel();
+        brandPanel = new javax.swing.JPanel();
+        brand = new javax.swing.JLabel();
+        brandDivider = new javax.swing.JPanel();
+        btnNavDashboard = new javax.swing.JButton();
+        sidebarSeparator1 = new javax.swing.JPanel();
+        lblSectionManage = new javax.swing.JLabel();
+        btnNavBooks = new javax.swing.JButton();
+        btnNavCategory = new javax.swing.JButton();
+        btnNavAuthor = new javax.swing.JButton();
+        btnNavPublisher = new javax.swing.JButton();
+        btnNavSupplier = new javax.swing.JButton();
+        btnNavCustomers = new javax.swing.JButton();
+        btnNavEmployees = new javax.swing.JButton();
+        btnNavAccounts = new javax.swing.JButton();
+        sidebarSeparator2 = new javax.swing.JPanel();
+        lblSectionReport = new javax.swing.JLabel();
+        btnNavReports = new javax.swing.JButton();
+        filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
+        sidebarSeparator3 = new javax.swing.JPanel();
+        btnChangePassword = new javax.swing.JButton();
+        btnLogout = new javax.swing.JButton();
+        filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 8), new java.awt.Dimension(0, 8), new java.awt.Dimension(32767, 8));
+        rightSide = new javax.swing.JPanel();
+        topbar = new javax.swing.JPanel();
+        topbarLeft = new javax.swing.JPanel();
+        userLabel = new javax.swing.JLabel();
+        contentContainer = new javax.swing.JPanel();
+
+        setDefaultCloseOperation(3);
+        getContentPane().setLayout(new java.awt.BorderLayout());
+
+        sidebar.setBackground(AppTheme.HEADER);
+        sidebar.setPreferredSize(new java.awt.Dimension(AppTheme.SIDEBAR_WIDTH, 0));
+        sidebar.setLayout(new javax.swing.BoxLayout(sidebar, javax.swing.BoxLayout.Y_AXIS));
+        brandPanel.setBackground(AppTheme.HEADER);
+        brandPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 18, 0, 12));
+        brandPanel.setAlignmentX(0.0F);
+        brandPanel.setMaximumSize(new java.awt.Dimension(Integer.MAX_VALUE, AppTheme.TOPBAR_HEIGHT));
+        brandPanel.setMinimumSize(new java.awt.Dimension(AppTheme.SIDEBAR_WIDTH, AppTheme.TOPBAR_HEIGHT));
+        brandPanel.setPreferredSize(new java.awt.Dimension(AppTheme.SIDEBAR_WIDTH, AppTheme.TOPBAR_HEIGHT));
+        brandPanel.setLayout(new java.awt.BorderLayout());
+        brand.setText("Bookshop Admin");
+        brand.setIcon(new FlatIcon(FlatIcon.Kind.BOOK, java.awt.Color.WHITE, 20));
+        brand.setIconTextGap(10);
+        brand.setForeground(new java.awt.Color(255, 255, 255));
+        brand.setFont(brand.getFont().deriveFont(java.awt.Font.BOLD, 17f));
+        brandPanel.add(brand, java.awt.BorderLayout.CENTER);
+        sidebar.add(brandPanel);
+
+        brandDivider.setMaximumSize(new java.awt.Dimension(2147483647, 2));
+        brandDivider.setPreferredSize(new java.awt.Dimension(0, 2));
+        brandDivider.setBackground(AppTheme.PRIMARY_HOVER);
+        brandDivider.setLayout(new java.awt.FlowLayout());
+        sidebar.add(brandDivider);
+
+        btnNavDashboard.setText("Dashboard");
+        btnNavDashboard.setIcon(new FlatIcon(FlatIcon.Kind.HOME, AppTheme.SIDEBAR_TEXT_MUTED, 16));
+        btnNavDashboard.setIconTextGap(10);
+        btnNavDashboard.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        btnNavDashboard.setAlignmentX(0.0F);
+        btnNavDashboard.setMaximumSize(new java.awt.Dimension(2147483647, 42));
+        sidebar.add(btnNavDashboard);
+        sidebarSeparator1.setBackground(AppTheme.PRIMARY_HOVER);
+        sidebarSeparator1.setMaximumSize(new java.awt.Dimension(2147483647, 1));
+        sidebarSeparator1.setLayout(new java.awt.FlowLayout());
+        sidebar.add(sidebarSeparator1);
+
+        lblSectionManage.setForeground(AppTheme.SIDEBAR_TEXT_MUTED);
+        lblSectionManage.setFont(lblSectionManage.getFont().deriveFont(java.awt.Font.BOLD, 11f));
+        lblSectionManage.setText("QUẢN LÝ");
+        lblSectionManage.setBorder(javax.swing.BorderFactory.createEmptyBorder(14, 18, 6, 12));
+        lblSectionManage.setAlignmentX(0.0F);
+        sidebar.add(lblSectionManage);
+        btnNavBooks.setText("Quản lý sách");
+        btnNavBooks.setIcon(new FlatIcon(FlatIcon.Kind.BOOK, AppTheme.SIDEBAR_TEXT_MUTED, 16));
+        btnNavBooks.setIconTextGap(10);
+        btnNavBooks.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        btnNavBooks.setAlignmentX(0.0F);
+        btnNavBooks.setMaximumSize(new java.awt.Dimension(2147483647, 42));
+        sidebar.add(btnNavBooks);
+        btnNavCategory.setText("Quản lý danh mục");
+        btnNavCategory.setIcon(new FlatIcon(FlatIcon.Kind.TAG, AppTheme.SIDEBAR_TEXT_MUTED, 16));
+        btnNavCategory.setIconTextGap(10);
+        btnNavCategory.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        btnNavCategory.setAlignmentX(0.0F);
+        btnNavCategory.setMaximumSize(new java.awt.Dimension(2147483647, 42));
+        sidebar.add(btnNavCategory);
+        btnNavAuthor.setText("Quản lý tác giả");
+        btnNavAuthor.setIcon(new FlatIcon(FlatIcon.Kind.PEN, AppTheme.SIDEBAR_TEXT_MUTED, 16));
+        btnNavAuthor.setIconTextGap(10);
+        btnNavAuthor.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        btnNavAuthor.setAlignmentX(0.0F);
+        btnNavAuthor.setMaximumSize(new java.awt.Dimension(2147483647, 42));
+        sidebar.add(btnNavAuthor);
+        btnNavPublisher.setText("Quản lý nhà xuất bản");
+        btnNavPublisher.setIcon(new FlatIcon(FlatIcon.Kind.BUILDING, AppTheme.SIDEBAR_TEXT_MUTED, 16));
+        btnNavPublisher.setIconTextGap(10);
+        btnNavPublisher.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        btnNavPublisher.setAlignmentX(0.0F);
+        btnNavPublisher.setMaximumSize(new java.awt.Dimension(2147483647, 42));
+        sidebar.add(btnNavPublisher);
+        btnNavSupplier.setText("Quản lý nhà cung cấp");
+        btnNavSupplier.setIcon(new FlatIcon(FlatIcon.Kind.BUILDING, AppTheme.SIDEBAR_TEXT_MUTED, 16));
+        btnNavSupplier.setIconTextGap(10);
+        btnNavSupplier.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        btnNavSupplier.setAlignmentX(0.0F);
+        btnNavSupplier.setMaximumSize(new java.awt.Dimension(2147483647, 42));
+        sidebar.add(btnNavSupplier);
+        btnNavCustomers.setText("Quản lý khách hàng");
+        btnNavCustomers.setIcon(new FlatIcon(FlatIcon.Kind.USER, AppTheme.SIDEBAR_TEXT_MUTED, 16));
+        btnNavCustomers.setIconTextGap(10);
+        btnNavCustomers.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        btnNavCustomers.setAlignmentX(0.0F);
+        btnNavCustomers.setMaximumSize(new java.awt.Dimension(2147483647, 42));
+        sidebar.add(btnNavCustomers);
+        btnNavEmployees.setText("Quản lý nhân viên");
+        btnNavEmployees.setIcon(new FlatIcon(FlatIcon.Kind.USERS, AppTheme.SIDEBAR_TEXT_MUTED, 16));
+        btnNavEmployees.setIconTextGap(10);
+        btnNavEmployees.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        btnNavEmployees.setAlignmentX(0.0F);
+        btnNavEmployees.setMaximumSize(new java.awt.Dimension(2147483647, 42));
+        sidebar.add(btnNavEmployees);
+        btnNavAccounts.setText("Quản lý tài khoản");
+        btnNavAccounts.setIcon(new FlatIcon(FlatIcon.Kind.SEARCH, AppTheme.SIDEBAR_TEXT_MUTED, 16));
+        btnNavAccounts.setIconTextGap(10);
+        btnNavAccounts.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        btnNavAccounts.setAlignmentX(0.0F);
+        btnNavAccounts.setMaximumSize(new java.awt.Dimension(2147483647, 42));
+        sidebar.add(btnNavAccounts);
+        sidebarSeparator2.setBackground(AppTheme.PRIMARY_HOVER);
+        sidebarSeparator2.setMaximumSize(new java.awt.Dimension(2147483647, 1));
+        sidebarSeparator2.setLayout(new java.awt.FlowLayout());
+        sidebar.add(sidebarSeparator2);
+
+        lblSectionReport.setForeground(AppTheme.SIDEBAR_TEXT_MUTED);
+        lblSectionReport.setFont(lblSectionReport.getFont().deriveFont(java.awt.Font.BOLD, 11f));
+        lblSectionReport.setText("BÁO CÁO");
+        lblSectionReport.setBorder(javax.swing.BorderFactory.createEmptyBorder(14, 18, 6, 12));
+        lblSectionReport.setAlignmentX(0.0F);
+        sidebar.add(lblSectionReport);
+        btnNavReports.setText("Báo cáo thống kê");
+        btnNavReports.setIcon(new FlatIcon(FlatIcon.Kind.CHART, AppTheme.SIDEBAR_TEXT_MUTED, 16));
+        btnNavReports.setIconTextGap(10);
+        btnNavReports.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        btnNavReports.setAlignmentX(0.0F);
+        btnNavReports.setMaximumSize(new java.awt.Dimension(2147483647, 42));
+        sidebar.add(btnNavReports);
+        sidebar.add(filler1);
+        sidebarSeparator3.setBackground(AppTheme.PRIMARY_HOVER);
+        sidebarSeparator3.setMaximumSize(new java.awt.Dimension(2147483647, 1));
+        sidebarSeparator3.setLayout(new java.awt.FlowLayout());
+        sidebar.add(sidebarSeparator3);
+
+        btnChangePassword.setText("Đổi mật khẩu");
+        btnChangePassword.setIcon(new FlatIcon(FlatIcon.Kind.USER, AppTheme.SIDEBAR_TEXT_MUTED, 16));
+        btnChangePassword.setIconTextGap(10);
+        btnChangePassword.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        btnChangePassword.setAlignmentX(0.0F);
+        btnChangePassword.setMaximumSize(new java.awt.Dimension(2147483647, 42));
+        sidebar.add(btnChangePassword);
+        btnLogout.setText("Đăng xuất");
+        btnLogout.setIcon(new FlatIcon(FlatIcon.Kind.LOGOUT, AppTheme.SIDEBAR_TEXT_MUTED, 16));
+        btnLogout.setIconTextGap(10);
+        btnLogout.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        btnLogout.setAlignmentX(0.0F);
+        btnLogout.setMaximumSize(new java.awt.Dimension(2147483647, 42));
+        sidebar.add(btnLogout);
+        sidebar.add(filler2);
+        getContentPane().add(sidebar, java.awt.BorderLayout.WEST);
+
+        rightSide.setLayout(new java.awt.BorderLayout());
+        topbar.setBackground(AppTheme.BACKGROUND);
+        topbar.setPreferredSize(new java.awt.Dimension(0, AppTheme.TOPBAR_HEIGHT));
+        topbar.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, AppTheme.INPUT_BORDER));
+        topbar.setLayout(new java.awt.BorderLayout());
+        topbarLeft.setBackground(AppTheme.BACKGROUND);
+        topbarLeft.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 18, 0, 0));
+        topbarLeft.setLayout(new javax.swing.BoxLayout(topbarLeft, javax.swing.BoxLayout.X_AXIS));
+        topbar.add(topbarLeft, java.awt.BorderLayout.WEST);
+
+        userLabel.setText("Xin chào, admin  ");
+        userLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        userLabel.setForeground(AppTheme.TEXT);
+        userLabel.setFont(userLabel.getFont().deriveFont(java.awt.Font.PLAIN, 13f));
+        topbar.add(userLabel, java.awt.BorderLayout.EAST);
+        rightSide.add(topbar, java.awt.BorderLayout.NORTH);
+
+        contentContainer.setBackground(AppTheme.BACKGROUND);
+        contentContainer.setLayout(new java.awt.BorderLayout());
+        rightSide.add(contentContainer, java.awt.BorderLayout.CENTER);
+
+        getContentPane().add(rightSide, java.awt.BorderLayout.CENTER);
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel brand;
+    private javax.swing.JPanel brandDivider;
+    private javax.swing.JPanel brandPanel;
+    private javax.swing.JButton btnChangePassword;
+    private javax.swing.JButton btnLogout;
+    private javax.swing.JButton btnNavAccounts;
+    private javax.swing.JButton btnNavAuthor;
+    private javax.swing.JButton btnNavBooks;
+    private javax.swing.JButton btnNavCategory;
+    private javax.swing.JButton btnNavCustomers;
+    private javax.swing.JButton btnNavDashboard;
+    private javax.swing.JButton btnNavEmployees;
+    private javax.swing.JButton btnNavPublisher;
+    private javax.swing.JButton btnNavReports;
+    private javax.swing.JButton btnNavSupplier;
+    private javax.swing.JPanel contentContainer;
+    private javax.swing.Box.Filler filler1;
+    private javax.swing.Box.Filler filler2;
+    private javax.swing.JLabel lblSectionManage;
+    private javax.swing.JLabel lblSectionReport;
+    private javax.swing.JPanel rightSide;
+    private javax.swing.JPanel sidebar;
+    private javax.swing.JPanel sidebarSeparator1;
+    private javax.swing.JPanel sidebarSeparator2;
+    private javax.swing.JPanel sidebarSeparator3;
+    private javax.swing.JPanel topbar;
+    private javax.swing.JPanel topbarLeft;
+    private javax.swing.JLabel userLabel;
+    // End of variables declaration//GEN-END:variables
 }
