@@ -13,7 +13,7 @@ import model.Account;
 import model.Customer;
 import view.admin.AdminShellFrm;
 import view.inventory.LowStockFrm;
-import view.sales.InStoreSaleFrm;
+import view.sales.SalesShellFrm;
 import view.shared.LoginDialog;
 
 final class CustomerLogin {
@@ -38,7 +38,7 @@ final class CustomerLogin {
             }
             case "Admin" -> new AdminShellFrm(account).setVisible(true);
             case "Inventory Staff" -> new LowStockFrm(accountDAO.getEmployeeByUsername(account.getUsername())).setVisible(true);
-            case "Sales Staff" -> new InStoreSaleFrm(accountDAO.getEmployeeByUsername(account.getUsername())).setVisible(true);
+            case "Sales Staff" -> new SalesShellFrm(accountDAO.getEmployeeByUsername(account.getUsername())).setVisible(true);
             default -> {
                 JOptionPane.showMessageDialog(owner, "Vai trò này chưa được hỗ trợ trong phiên bản hiện tại!");
                 return null;
