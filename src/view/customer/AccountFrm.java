@@ -1048,6 +1048,13 @@ public class AccountFrm extends javax.swing.JPanel implements CustomerPage {
             JOptionPane.showMessageDialog(this, "Email không hợp lệ!");
             return;
         }
+        // Giữ lại giá trị cũ: lưu CSDL thất bại thì trả đối tượng customer về như
+        // trước, tránh giá trị chưa lưu nằm lại trong bộ nhớ (Shell dùng chung
+        // đối tượng này) rồi bị gửi kèm ở lần lưu trường khác.
+        String oldFullName = customer.getFullName();
+        String oldPhone = customer.getPhone();
+        String oldEmail = customer.getEmail();
+        String oldAddress = customer.getAddress();
         setter.accept(customer, v);
         String error = new CustomerDAO().updateCustomer(customer);
         if (error == null) {
@@ -1055,6 +1062,10 @@ public class AccountFrm extends javax.swing.JPanel implements CustomerPage {
             shell.showLoginState();
             showCard(row, "view");
         } else {
+            customer.setFullName(oldFullName);
+            customer.setPhone(oldPhone);
+            customer.setEmail(oldEmail);
+            customer.setAddress(oldAddress);
             JOptionPane.showMessageDialog(this, error);
         }
     }

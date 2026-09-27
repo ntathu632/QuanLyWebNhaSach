@@ -205,12 +205,19 @@ public class OrderDAO extends DAO {
         try {
             con.setAutoCommit(false);
 
-            if ("Cancelled".equals(status)) {
-                PreparedStatement psCurrent = con.prepareStatement("SELECT status FROM Orders WHERE orderID = ?");
-                psCurrent.setInt(1, orderID);
-                ResultSet rsCurrent = psCurrent.executeQuery();
-                String currentStatus = rsCurrent.next() ? rsCurrent.getString(1) : null;
+            PreparedStatement psCurrent = con.prepareStatement("SELECT status FROM Orders WHERE orderID = ?");
+            psCurrent.setInt(1, orderID);
+            ResultSet rsCurrent = psCurrent.executeQuery();
+            String currentStatus = rsCurrent.next() ? rsCurrent.getString(1) : null;
 
+            // Đơn đã hủy là trạng thái cuối: sách đã được hoàn kho (và thanh toán
+            // nếu có đã chuyển "Refunded"), đổi ngược lại sẽ làm lệch tồn kho.
+            if ("Cancelled".equals(currentStatus) && !"Cancelled".equals(status)) {
+                con.rollback();
+                return false;
+            }
+
+            if ("Cancelled".equals(status)) {
                 if (!"Cancelled".equals(currentStatus)) {
                     PreparedStatement psDetails = con.prepareStatement("SELECT bookID, quantity FROM OrderDetail WHERE orderID = ?");
                     psDetails.setInt(1, orderID);
@@ -224,6 +231,18 @@ public class OrderDAO extends DAO {
                         psRestock.executeUpdate();
                     }
                 }
+            }
+
+            // Nhân viên đặt "Paid" bằng tay (đã thu tiền khi giao hàng) mà đơn
+            // chưa có Payment thì tạo luôn 1 Payment "Paid" cho khớp. Đơn khách tự
+            // thanh toán đã có Payment từ trước (UNIQUE orderID) nên bỏ qua.
+            if ("Paid".equals(status)) {
+                PreparedStatement psPayment = con.prepareStatement(
+                        "INSERT INTO Payment (amount, paymentMethod, status, orderID) "
+                        + "SELECT totalAmount, 'Cash on Delivery', 'Paid', orderID FROM Orders o "
+                        + "WHERE o.orderID = ? AND NOT EXISTS (SELECT 1 FROM Payment p WHERE p.orderID = o.orderID)");
+                psPayment.setInt(1, orderID);
+                psPayment.executeUpdate();
             }
 
             PreparedStatement ps = con.prepareStatement("UPDATE Orders SET status = ? WHERE orderID = ?");

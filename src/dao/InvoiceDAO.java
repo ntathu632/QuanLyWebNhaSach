@@ -12,7 +12,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -35,16 +37,26 @@ public class InvoiceDAO extends DAO {
             con.setAutoCommit(false);
 
             // BR-04: kiểm tra đủ tồn kho cho TỪNG sách trước khi tạo gì cả.
+            // Cộng dồn các dòng cùng 1 sách (thêm cùng sách nhiều lần vào hóa
+            // đơn) rồi mới so với tồn kho — so riêng từng dòng thì 2 dòng mỗi
+            // dòng vừa đủ vẫn lọt qua và làm tồn kho bị âm.
+            Map<Integer, Integer> neededByBook = new LinkedHashMap<>();
+            Map<Integer, String> titleByBook = new LinkedHashMap<>();
             for (OrderDetail d : details) {
+                int bookID = d.getBook().getBookID();
+                neededByBook.merge(bookID, d.getQuantity(), Integer::sum);
+                titleByBook.putIfAbsent(bookID, d.getBook().getTitle());
+            }
+            for (Map.Entry<Integer, Integer> e : neededByBook.entrySet()) {
                 PreparedStatement psStock = con.prepareStatement(
                         "SELECT ISNULL(stockQuantity, 0) FROM Inventory WHERE bookID = ?");
-                psStock.setInt(1, d.getBook().getBookID());
+                psStock.setInt(1, e.getKey());
                 ResultSet rs = psStock.executeQuery();
                 int stock = rs.next() ? rs.getInt(1) : 0;
-                if (stock < d.getQuantity()) {
+                if (stock < e.getValue()) {
                     con.rollback();
-                    return "Không đủ tồn kho cho sách \"" + d.getBook().getTitle()
-                            + "\" (còn " + stock + ", cần " + d.getQuantity() + ")!";
+                    return "Không đủ tồn kho cho sách \"" + titleByBook.get(e.getKey())
+                            + "\" (còn " + stock + ", cần " + e.getValue() + ")!";
                 }
             }
 

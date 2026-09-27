@@ -256,6 +256,10 @@ public class OrderManagementFrm extends javax.swing.JPanel implements SalesPage 
             return;
         }
         Order selected = currentOrders.get(row);
+        if ("Cancelled".equals(selected.getStatus())) {
+            JOptionPane.showMessageDialog(this, "Đơn hàng đã hủy, không thể đổi trạng thái!");
+            return;
+        }
 
         String newStatus = UpdateOrderStatusDialog.ask(this, selected.getOrderID(), selected.getStatus());
         if (newStatus == null || newStatus.equals(selected.getStatus())) {
