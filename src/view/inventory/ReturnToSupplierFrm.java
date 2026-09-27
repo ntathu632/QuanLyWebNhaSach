@@ -27,7 +27,9 @@ import view.shared.ChangePasswordDialog;
  *
  * @author anhthu632
  */
-public class ReturnToSupplierFrm extends javax.swing.JFrame {
+public class ReturnToSupplierFrm extends javax.swing.JPanel implements InventoryPage {
+
+    private InventoryShellFrm shell;
 
     private final Employee employee;
 
@@ -40,8 +42,6 @@ public class ReturnToSupplierFrm extends javax.swing.JFrame {
     public ReturnToSupplierFrm(Employee employee) {
         this.employee = employee;
         initComponents();
-        InventoryNav.styleSidebar(btnNavReturn, btnNavLowStock, btnNavImport, btnNavReturn, btnNavChecking, btnNavHistory, btnNavBooks, btnChangePassword, btnLogout);
-        lblUser.setText(InventoryNav.greeting(employee));
         txtKeyword.putClientProperty("JTextField.placeholderText", "Tìm theo mã sách, ISBN hoặc tên sách...");
         AppTheme.primary(btnSearch);
         AppTheme.secondary(btnReturn);
@@ -50,9 +50,22 @@ public class ReturnToSupplierFrm extends javax.swing.JFrame {
         AppTheme.alignTableColumn(tblBooks, 2, SwingConstants.LEFT, 0, 0);
         AppTheme.alignTableColumn(tblBooks, 3, SwingConstants.CENTER, 140, 140);
         doSearch();
-        setSize(1000, 640);
-        setLocationRelativeTo(null);
-        AppTheme.maximize(this);
+    }
+
+    @Override
+    public String navKey() {
+        return "return";
+    }
+
+    @Override
+    public String title() {
+        return "Xuất Trả Nhà Cung Cấp";
+    }
+
+    @Override
+    public javax.swing.JPanel content(InventoryShellFrm shell) {
+        this.shell = shell;
+        return this;
     }
 
     /**
@@ -64,25 +77,6 @@ public class ReturnToSupplierFrm extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        pnlSidebar = new javax.swing.JPanel();
-        lblBrand = new javax.swing.JLabel();
-        pnlBrandDivider = new javax.swing.JPanel();
-        lblSectionStock = new javax.swing.JLabel();
-        btnNavLowStock = new javax.swing.JButton();
-        btnNavImport = new javax.swing.JButton();
-        btnNavReturn = new javax.swing.JButton();
-        btnNavChecking = new javax.swing.JButton();
-        btnNavHistory = new javax.swing.JButton();
-        pnlSep1 = new javax.swing.JPanel();
-        lblSectionLookup = new javax.swing.JLabel();
-        btnNavBooks = new javax.swing.JButton();
-        pnlSep2 = new javax.swing.JPanel();
-        btnChangePassword = new javax.swing.JButton();
-        btnLogout = new javax.swing.JButton();
-        pnlRight = new javax.swing.JPanel();
-        pnlTopbar = new javax.swing.JPanel();
-        lblUser = new javax.swing.JLabel();
-        pnlTopLine = new javax.swing.JPanel();
         pnlContent = new javax.swing.JPanel();
         lblTitle = new javax.swing.JLabel();
         lblHint = new javax.swing.JLabel();
@@ -94,220 +88,8 @@ public class ReturnToSupplierFrm extends javax.swing.JFrame {
         scrBooks = new javax.swing.JScrollPane();
         tblBooks = new javax.swing.JTable();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Bookshop Management - Xuất Trả Nhà Cung Cấp");
-
-        pnlSidebar.setBackground(new java.awt.Color(79, 93, 66));
-        pnlSidebar.setPreferredSize(new java.awt.Dimension(240, 0));
-
-        lblBrand.setFont(new java.awt.Font("Raleway Medium", 1, 17)); // NOI18N
-        lblBrand.setForeground(new java.awt.Color(255, 255, 255));
-        lblBrand.setIcon(new view.shared.FlatIcon(view.shared.FlatIcon.Kind.BUILDING, java.awt.Color.WHITE, 20));
-        lblBrand.setText("Bookshop Kho");
-        lblBrand.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 18, 0, 12));
-        lblBrand.setIconTextGap(10);
-
-        pnlBrandDivider.setBackground(new java.awt.Color(92, 110, 79));
-        pnlBrandDivider.setLayout(new java.awt.BorderLayout());
-
-        lblSectionStock.setFont(new java.awt.Font("Raleway Medium", 1, 11)); // NOI18N
-        lblSectionStock.setForeground(new java.awt.Color(221, 226, 211));
-        lblSectionStock.setText("KHO SÁCH");
-        lblSectionStock.setBorder(javax.swing.BorderFactory.createEmptyBorder(14, 18, 6, 12));
-
-        btnNavLowStock.setBackground(new java.awt.Color(79, 93, 66));
-        btnNavLowStock.setFont(new java.awt.Font("Raleway Medium", 0, 15)); // NOI18N
-        btnNavLowStock.setForeground(new java.awt.Color(221, 226, 211));
-        btnNavLowStock.setIcon(new view.shared.FlatIcon(view.shared.FlatIcon.Kind.CHART, view.shared.AppTheme.SIDEBAR_TEXT_MUTED, 16));
-        btnNavLowStock.setText("Sách sắp hết hàng");
-        btnNavLowStock.setBorderPainted(false);
-        btnNavLowStock.setFocusPainted(false);
-        btnNavLowStock.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        btnNavLowStock.setIconTextGap(10);
-        btnNavLowStock.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnNavLowStockActionPerformed(evt);
-            }
-        });
-
-        btnNavImport.setBackground(new java.awt.Color(79, 93, 66));
-        btnNavImport.setFont(new java.awt.Font("Raleway Medium", 0, 15)); // NOI18N
-        btnNavImport.setForeground(new java.awt.Color(221, 226, 211));
-        btnNavImport.setIcon(new view.shared.FlatIcon(view.shared.FlatIcon.Kind.PLUS, view.shared.AppTheme.SIDEBAR_TEXT_MUTED, 16));
-        btnNavImport.setText("Nhập sách");
-        btnNavImport.setBorderPainted(false);
-        btnNavImport.setFocusPainted(false);
-        btnNavImport.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        btnNavImport.setIconTextGap(10);
-        btnNavImport.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnNavImportActionPerformed(evt);
-            }
-        });
-
-        btnNavReturn.setBackground(new java.awt.Color(79, 93, 66));
-        btnNavReturn.setFont(new java.awt.Font("Raleway Medium", 0, 15)); // NOI18N
-        btnNavReturn.setForeground(new java.awt.Color(255, 255, 255));
-        btnNavReturn.setIcon(new view.shared.FlatIcon(view.shared.FlatIcon.Kind.TRASH, java.awt.Color.WHITE, 16));
-        btnNavReturn.setText("Xuất trả NCC");
-        btnNavReturn.setBorderPainted(false);
-        btnNavReturn.setFocusPainted(false);
-        btnNavReturn.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        btnNavReturn.setIconTextGap(10);
-        btnNavReturn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnNavReturnActionPerformed(evt);
-            }
-        });
-
-        btnNavChecking.setBackground(new java.awt.Color(79, 93, 66));
-        btnNavChecking.setFont(new java.awt.Font("Raleway Medium", 0, 15)); // NOI18N
-        btnNavChecking.setForeground(new java.awt.Color(221, 226, 211));
-        btnNavChecking.setIcon(new view.shared.FlatIcon(view.shared.FlatIcon.Kind.BOOK, view.shared.AppTheme.SIDEBAR_TEXT_MUTED, 16));
-        btnNavChecking.setText("Kiểm kê kho");
-        btnNavChecking.setBorderPainted(false);
-        btnNavChecking.setFocusPainted(false);
-        btnNavChecking.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        btnNavChecking.setIconTextGap(10);
-        btnNavChecking.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnNavCheckingActionPerformed(evt);
-            }
-        });
-
-        btnNavHistory.setBackground(new java.awt.Color(79, 93, 66));
-        btnNavHistory.setFont(new java.awt.Font("Raleway Medium", 0, 15)); // NOI18N
-        btnNavHistory.setForeground(new java.awt.Color(221, 226, 211));
-        btnNavHistory.setIcon(new view.shared.FlatIcon(view.shared.FlatIcon.Kind.RECEIPT, view.shared.AppTheme.SIDEBAR_TEXT_MUTED, 16));
-        btnNavHistory.setText("Lịch sử nhập/trả");
-        btnNavHistory.setBorderPainted(false);
-        btnNavHistory.setFocusPainted(false);
-        btnNavHistory.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        btnNavHistory.setIconTextGap(10);
-        btnNavHistory.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnNavHistoryActionPerformed(evt);
-            }
-        });
-
-        pnlSep1.setBackground(new java.awt.Color(92, 110, 79));
-        pnlSep1.setLayout(new java.awt.BorderLayout());
-
-        lblSectionLookup.setFont(new java.awt.Font("Raleway Medium", 1, 11)); // NOI18N
-        lblSectionLookup.setForeground(new java.awt.Color(221, 226, 211));
-        lblSectionLookup.setText("TRA CỨU");
-        lblSectionLookup.setBorder(javax.swing.BorderFactory.createEmptyBorder(14, 18, 6, 12));
-
-        btnNavBooks.setBackground(new java.awt.Color(79, 93, 66));
-        btnNavBooks.setFont(new java.awt.Font("Raleway Medium", 0, 15)); // NOI18N
-        btnNavBooks.setForeground(new java.awt.Color(221, 226, 211));
-        btnNavBooks.setIcon(new view.shared.FlatIcon(view.shared.FlatIcon.Kind.SEARCH, view.shared.AppTheme.SIDEBAR_TEXT_MUTED, 16));
-        btnNavBooks.setText("Tra cứu sách");
-        btnNavBooks.setBorderPainted(false);
-        btnNavBooks.setFocusPainted(false);
-        btnNavBooks.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        btnNavBooks.setIconTextGap(10);
-        btnNavBooks.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnNavBooksActionPerformed(evt);
-            }
-        });
-
-        pnlSep2.setBackground(new java.awt.Color(92, 110, 79));
-        pnlSep2.setLayout(new java.awt.BorderLayout());
-
-        btnChangePassword.setBackground(new java.awt.Color(79, 93, 66));
-        btnChangePassword.setFont(new java.awt.Font("Raleway Medium", 0, 15)); // NOI18N
-        btnChangePassword.setForeground(new java.awt.Color(221, 226, 211));
-        btnChangePassword.setIcon(new view.shared.FlatIcon(view.shared.FlatIcon.Kind.USER, view.shared.AppTheme.SIDEBAR_TEXT_MUTED, 16));
-        btnChangePassword.setText("Đổi mật khẩu");
-        btnChangePassword.setBorderPainted(false);
-        btnChangePassword.setFocusPainted(false);
-        btnChangePassword.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        btnChangePassword.setIconTextGap(10);
-        btnChangePassword.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnChangePasswordActionPerformed(evt);
-            }
-        });
-
-        btnLogout.setBackground(new java.awt.Color(79, 93, 66));
-        btnLogout.setFont(new java.awt.Font("Raleway Medium", 0, 15)); // NOI18N
-        btnLogout.setForeground(new java.awt.Color(221, 226, 211));
-        btnLogout.setIcon(new view.shared.FlatIcon(view.shared.FlatIcon.Kind.LOGOUT, view.shared.AppTheme.SIDEBAR_TEXT_MUTED, 16));
-        btnLogout.setText("Đăng xuất");
-        btnLogout.setBorderPainted(false);
-        btnLogout.setFocusPainted(false);
-        btnLogout.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        btnLogout.setIconTextGap(10);
-        btnLogout.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnLogoutActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout pnlSidebarLayout = new javax.swing.GroupLayout(pnlSidebar);
-        pnlSidebar.setLayout(pnlSidebarLayout);
-        pnlSidebarLayout.setHorizontalGroup(
-            pnlSidebarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlSidebarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblBrand, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(pnlBrandDivider, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lblSectionStock, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnNavLowStock, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnNavImport, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnNavReturn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnNavChecking, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnNavHistory, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(pnlSep1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lblSectionLookup, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnNavBooks, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(pnlSep2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnChangePassword, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnLogout, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        pnlSidebarLayout.setVerticalGroup(
-            pnlSidebarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlSidebarLayout.createSequentialGroup()
-                .addComponent(lblBrand, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addComponent(pnlBrandDivider, javax.swing.GroupLayout.PREFERRED_SIZE, 2, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addComponent(lblSectionStock)
-                .addComponent(btnNavLowStock, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addComponent(btnNavImport, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addComponent(btnNavReturn, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addComponent(btnNavChecking, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addComponent(btnNavHistory, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addComponent(pnlSep1, javax.swing.GroupLayout.PREFERRED_SIZE, 1, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addComponent(lblSectionLookup)
-                .addComponent(btnNavBooks, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(pnlSep2, javax.swing.GroupLayout.PREFERRED_SIZE, 1, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addComponent(btnChangePassword, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addComponent(btnLogout, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(8, 8, 8))
-        );
-
-        getContentPane().add(pnlSidebar, java.awt.BorderLayout.WEST);
-
-        pnlRight.setBackground(new java.awt.Color(243, 238, 221));
-        pnlRight.setLayout(new java.awt.BorderLayout());
-
-        pnlTopbar.setBackground(new java.awt.Color(243, 238, 221));
-        pnlTopbar.setPreferredSize(new java.awt.Dimension(0, 56));
-        pnlTopbar.setLayout(new java.awt.BorderLayout());
-
-        lblUser.setFont(new java.awt.Font("Raleway Medium", 0, 13)); // NOI18N
-        lblUser.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        lblUser.setText("Xin chào, nhân viên kho");
-        lblUser.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 18));
-        pnlTopbar.add(lblUser, java.awt.BorderLayout.EAST);
-
-        pnlTopLine.setBackground(new java.awt.Color(201, 194, 174));
-        pnlTopLine.setPreferredSize(new java.awt.Dimension(0, 1));
-        pnlTopLine.setLayout(new java.awt.BorderLayout());
-        pnlTopbar.add(pnlTopLine, java.awt.BorderLayout.SOUTH);
-
-        pnlRight.add(pnlTopbar, java.awt.BorderLayout.NORTH);
+        setBackground(new java.awt.Color(243, 238, 221));
+        setLayout(new java.awt.BorderLayout());
 
         pnlContent.setBackground(new java.awt.Color(243, 238, 221));
 
@@ -434,44 +216,8 @@ public class ReturnToSupplierFrm extends javax.swing.JFrame {
                 .addGap(28, 28, 28))
         );
 
-        pnlRight.add(pnlContent, java.awt.BorderLayout.CENTER);
-
-        getContentPane().add(pnlRight, java.awt.BorderLayout.CENTER);
-
-        pack();
+        add(pnlContent, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
-
-    private void btnNavLowStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNavLowStockActionPerformed
-        InventoryNav.go(this, employee, "lowstock");
-    }//GEN-LAST:event_btnNavLowStockActionPerformed
-
-    private void btnNavImportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNavImportActionPerformed
-        InventoryNav.go(this, employee, "import");
-    }//GEN-LAST:event_btnNavImportActionPerformed
-
-    private void btnNavReturnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNavReturnActionPerformed
-        InventoryNav.go(this, employee, "return");
-    }//GEN-LAST:event_btnNavReturnActionPerformed
-
-    private void btnNavCheckingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNavCheckingActionPerformed
-        InventoryNav.go(this, employee, "checking");
-    }//GEN-LAST:event_btnNavCheckingActionPerformed
-
-    private void btnNavHistoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNavHistoryActionPerformed
-        InventoryNav.go(this, employee, "history");
-    }//GEN-LAST:event_btnNavHistoryActionPerformed
-
-    private void btnNavBooksActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNavBooksActionPerformed
-        InventoryNav.go(this, employee, "books");
-    }//GEN-LAST:event_btnNavBooksActionPerformed
-
-    private void btnChangePasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChangePasswordActionPerformed
-        ChangePasswordDialog.show(this, employee != null ? employee.getUsername() : null);
-    }//GEN-LAST:event_btnChangePasswordActionPerformed
-
-    private void btnLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogoutActionPerformed
-        InventoryNav.logout(this);
-    }//GEN-LAST:event_btnLogoutActionPerformed
 
     private void txtKeywordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtKeywordActionPerformed
         doSearch();
@@ -531,25 +277,6 @@ public class ReturnToSupplierFrm extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel lblBrand;
-    private javax.swing.JPanel pnlBrandDivider;
-    private javax.swing.JPanel pnlSidebar;
-    private javax.swing.JLabel lblSectionStock;
-    private javax.swing.JButton btnNavLowStock;
-    private javax.swing.JButton btnNavImport;
-    private javax.swing.JButton btnNavReturn;
-    private javax.swing.JButton btnNavChecking;
-    private javax.swing.JButton btnNavHistory;
-    private javax.swing.JPanel pnlSep1;
-    private javax.swing.JLabel lblSectionLookup;
-    private javax.swing.JButton btnNavBooks;
-    private javax.swing.JPanel pnlSep2;
-    private javax.swing.JButton btnChangePassword;
-    private javax.swing.JButton btnLogout;
-    private javax.swing.JLabel lblUser;
-    private javax.swing.JPanel pnlRight;
-    private javax.swing.JPanel pnlTopLine;
-    private javax.swing.JPanel pnlTopbar;
     private javax.swing.JLabel lblCardTitle;
     private javax.swing.JLabel lblTitle;
     private javax.swing.JPanel pnlCard;
