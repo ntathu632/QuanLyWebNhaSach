@@ -546,7 +546,8 @@ public class InStoreSaleFrm extends javax.swing.JPanel implements SalesPage {
         BookCoverPanel cover = new BookCoverPanel(book.getTitle(), book.getBookID(), book.getImage());
         JPanel coverWrap = new JPanel(new BorderLayout());
         coverWrap.setOpaque(false);
-        coverWrap.setPreferredSize(new Dimension(58, 100));
+        // Vùng vẽ bìa = 67 x 100 (tỉ lệ 2:3 như bìa sách thật) để ảnh không bị cắt hai bên.
+        coverWrap.setPreferredSize(new Dimension(75, 116));
         coverWrap.setBorder(new EmptyBorder(8, 8, 8, 0));
         coverWrap.add(cover, BorderLayout.CENTER);
         card.add(coverWrap, BorderLayout.WEST);
