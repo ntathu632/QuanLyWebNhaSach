@@ -181,7 +181,9 @@ public class CustomerDetailPage extends javax.swing.JPanel implements AdminPage 
     private void fillReviewTable(List<Review> reviews) {
         reviewModel.setRowCount(0);
         for (Review r : reviews) {
-            reviewModel.addRow(new Object[]{r.getBookTitle(), r.getRating() + " ★",
+            // Raleway không có ký tự ★ (hiện ra ô vuông) nên riêng ký tự sao dùng font logic "Dialog".
+            reviewModel.addRow(new Object[]{r.getBookTitle(),
+                "<html>" + r.getRating() + " <span style='font-family:Dialog'>★</span></html>",
                 r.getComment(), DATE_FMT.format(r.getReviewDate())});
         }
         reviewEmpty.setVisible(reviews.isEmpty());
@@ -334,7 +336,7 @@ public class CustomerDetailPage extends javax.swing.JPanel implements AdminPage 
         infoField1.setLayout(new javax.swing.BoxLayout(infoField1, javax.swing.BoxLayout.Y_AXIS));
         infoLabel1.setFont(infoLabel1.getFont().deriveFont(12f));
         infoLabel1.setForeground(new java.awt.Color(140, 123, 109));
-        infoLabel1.setText("Username");
+        infoLabel1.setText("Tên đăng nhập");
         infoLabel1.setAlignmentX(0.0F);
         infoField1.add(infoLabel1);
         infoField1.add(filler1);

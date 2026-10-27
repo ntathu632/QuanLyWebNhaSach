@@ -20,7 +20,7 @@ public class ManageSupplierPage extends javax.swing.JPanel implements AdminPage 
 
     private AdminShellFrm shell;
 
-    private final DefaultTableModel model = new DefaultTableModel(new String[]{"ID", "Tên nhà cung cấp", "Địa chỉ", "Điện thoại", "Email"}, 0) {
+    private final DefaultTableModel model = new DefaultTableModel(new String[]{"Mã", "Tên nhà cung cấp", "Địa chỉ", "Điện thoại", "Email"}, 0) {
         @Override
         public boolean isCellEditable(int row, int col) {
             return false;

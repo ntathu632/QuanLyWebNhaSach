@@ -1,17 +1,25 @@
 /*
  * Trang Kiểm kê kho (FR-INV-03) (JFrame Form) — đối chiếu tồn kho hệ thống
  * với số lượng đếm thực tế, chỉ điều chỉnh khi có chênh lệch (extend Update
- * Stock Quantity, không bắt buộc theo mọi lần kiểm kê). Sidebar, bảng (các
- * cột), nút Kiểm kê thiết kế trong Design; các dòng đổ vào bằng code.
+ * Stock Quantity, không bắt buộc theo mọi lần kiểm kê). Có ô tìm kiếm (tên,
+ * ISBN hoặc mã sách) và lọc theo danh mục để tìm sách cho nhanh. Sidebar, ô
+ * lọc, bảng (các cột), nút Kiểm kê thiết kế trong Design; danh sách danh mục
+ * và các dòng đổ vào bằng code.
  */
 package view.inventory;
 
+import dao.BookDAO;
+import dao.CategoryDAO;
 import dao.InventoryDAO;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
+import model.Book;
+import model.Category;
 import model.Employee;
 import model.Inventory;
 import view.shared.AppTheme;
@@ -31,6 +39,9 @@ public class InventoryCheckingFrm extends javax.swing.JPanel implements Inventor
     /** Các dòng tồn kho đang hiện trong bảng, cùng thứ tự với các dòng của tblInventory. */
     private final List<Inventory> currentItems = new ArrayList<>();
 
+    /** Các danh mục trong ô lọc, cùng thứ tự với các mục của cboCategory (trừ mục "Tất cả danh mục" ở đầu). */
+    private Category[] categories = new Category[0];
+
     /**
      * Creates new form InventoryCheckingFrm
      */
@@ -40,6 +51,8 @@ public class InventoryCheckingFrm extends javax.swing.JPanel implements Inventor
         AppTheme.secondary(btnCheck);
         AppTheme.alignTableColumn(tblInventory, 0, SwingConstants.LEFT, 0, 0);
         AppTheme.alignTableColumn(tblInventory, 1, SwingConstants.CENTER, 160, 160);
+        txtKeyword.putClientProperty("JTextField.placeholderText", "Tìm theo tên sách, ISBN hoặc mã sách...");
+        loadCategories();
         reload();
     }
 
@@ -71,6 +84,9 @@ public class InventoryCheckingFrm extends javax.swing.JPanel implements Inventor
         pnlContent = new javax.swing.JPanel();
         lblTitle = new javax.swing.JLabel();
         lblHint = new javax.swing.JLabel();
+        txtKeyword = new javax.swing.JTextField();
+        cboCategory = new javax.swing.JComboBox<>();
+        btnSearch = new javax.swing.JButton();
         pnlCard = new javax.swing.JPanel();
         lblCardTitle = new javax.swing.JLabel();
         btnCheck = new javax.swing.JButton();
@@ -88,6 +104,31 @@ public class InventoryCheckingFrm extends javax.swing.JPanel implements Inventor
         lblHint.setFont(new java.awt.Font("Raleway Medium", 0, 12)); // NOI18N
         lblHint.setForeground(new java.awt.Color(140, 123, 109));
         lblHint.setText("Chọn 1 sách, nhập số lượng đếm được thực tế — hệ thống chỉ điều chỉnh khi có chênh lệch.");
+
+        txtKeyword.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtKeywordActionPerformed(evt);
+            }
+        });
+
+        cboCategory.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Tất cả danh mục" }));
+        cboCategory.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cboCategoryActionPerformed(evt);
+            }
+        });
+
+        btnSearch.setBackground(new java.awt.Color(122, 74, 51));
+        btnSearch.setFont(new java.awt.Font("Raleway Medium", 0, 14)); // NOI18N
+        btnSearch.setForeground(new java.awt.Color(255, 255, 255));
+        btnSearch.setText("Tìm kiếm");
+        btnSearch.setBorderPainted(false);
+        btnSearch.setFocusPainted(false);
+        btnSearch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSearchActionPerformed(evt);
+            }
+        });
 
         pnlCard.setBackground(new java.awt.Color(255, 255, 255));
         pnlCard.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(234, 223, 209), 1, true));
@@ -164,6 +205,12 @@ public class InventoryCheckingFrm extends javax.swing.JPanel implements Inventor
                 .addGroup(pnlContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lblTitle)
                     .addComponent(lblHint)
+                    .addGroup(pnlContentLayout.createSequentialGroup()
+                        .addComponent(txtKeyword, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(10, 10, 10)
+                        .addComponent(cboCategory, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(10, 10, 10)
+                        .addComponent(btnSearch))
                     .addComponent(pnlCard, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(28, 28, 28))
         );
@@ -175,12 +222,29 @@ public class InventoryCheckingFrm extends javax.swing.JPanel implements Inventor
                 .addGap(4, 4, 4)
                 .addComponent(lblHint)
                 .addGap(16, 16, 16)
+                .addGroup(pnlContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtKeyword, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cboCategory, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(16, 16, 16)
                 .addComponent(pnlCard, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(28, 28, 28))
         );
 
         add(pnlContent, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void txtKeywordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtKeywordActionPerformed
+        reload();
+    }//GEN-LAST:event_txtKeywordActionPerformed
+
+    private void cboCategoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboCategoryActionPerformed
+        reload();
+    }//GEN-LAST:event_cboCategoryActionPerformed
+
+    private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
+        reload();
+    }//GEN-LAST:event_btnSearchActionPerformed
 
     private void btnCheckActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCheckActionPerformed
         int row = tblInventory.getSelectedRow();
@@ -214,8 +278,41 @@ public class InventoryCheckingFrm extends javax.swing.JPanel implements Inventor
         }
     }//GEN-LAST:event_btnCheckActionPerformed
 
+    /** Đổ danh sách danh mục vào ô lọc (mục đầu là "Tất cả danh mục"). */
+    private void loadCategories() {
+        categories = new CategoryDAO().searchCategory("");
+        for (Category category : categories) {
+            cboCategory.addItem(category.getCategoryName());
+        }
+    }
+
+    /** Nạp lại tồn kho từ CSDL rồi lọc theo từ khóa (tên, ISBN, mã sách) và danh mục đang chọn. */
     private void reload() {
-        List<Inventory> rows = new InventoryDAO().allInventory();
+        String keyword = txtKeyword.getText().trim();
+        int categoryIndex = cboCategory.getSelectedIndex() - 1;
+
+        Set<Integer> keywordIds = null;
+        if (!keyword.isEmpty()) {
+            keywordIds = new HashSet<>();
+            for (Book book : new BookDAO().searchBook(keyword)) {
+                keywordIds.add(book.getBookID());
+            }
+        }
+        Set<Integer> categoryIds = null;
+        if (categoryIndex >= 0 && categoryIndex < categories.length) {
+            categoryIds = new HashSet<>();
+            for (Book book : new BookDAO().searchByCategory(categories[categoryIndex].getCategoryID())) {
+                categoryIds.add(book.getBookID());
+            }
+        }
+
+        List<Inventory> rows = new ArrayList<>();
+        for (Inventory inv : new InventoryDAO().allInventory()) {
+            if ((keywordIds == null || keywordIds.contains(inv.getBookID()))
+                    && (categoryIds == null || categoryIds.contains(inv.getBookID()))) {
+                rows.add(inv);
+            }
+        }
         currentItems.clear();
         currentItems.addAll(rows);
         DefaultTableModel model = (DefaultTableModel) tblInventory.getModel();
@@ -226,6 +323,9 @@ public class InventoryCheckingFrm extends javax.swing.JPanel implements Inventor
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnSearch;
+    private javax.swing.JComboBox<String> cboCategory;
+    private javax.swing.JTextField txtKeyword;
     private javax.swing.JLabel lblCardTitle;
     private javax.swing.JLabel lblTitle;
     private javax.swing.JPanel pnlCard;

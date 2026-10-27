@@ -88,6 +88,8 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="lblCardTitle" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                              <Component id="cboCategory" min="-2" pref="220" max="-2" attributes="0"/>
                           </Group>
                           <Component id="scrStock" alignment="0" max="32767" attributes="0"/>
                       </Group>
@@ -101,6 +103,7 @@
                       <EmptySpace min="-2" pref="14" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="lblCardTitle" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="cboCategory" alignment="3" min="-2" pref="34" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
                       <Component id="scrStock" max="32767" attributes="0"/>
@@ -117,6 +120,21 @@
             </Property>
             <Property name="text" type="java.lang.String" value="Sách cần lưu ý khi tư vấn/bán hàng"/>
           </Properties>
+        </Component>
+        <Component class="javax.swing.JComboBox" name="cboCategory">
+          <Properties>
+            <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+              <StringArray count="1">
+                <StringItem index="0" value="T&#x1ea5;t c&#x1ea3; danh m&#x1ee5;c"/>
+              </StringArray>
+            </Property>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cboCategoryActionPerformed"/>
+          </Events>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+          </AuxValues>
         </Component>
             <Container class="javax.swing.JScrollPane" name="scrStock">
               <AuxValues>

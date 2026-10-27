@@ -30,6 +30,8 @@ public class ReportPage extends javax.swing.JPanel implements AdminPage {
     private final DefaultTableModel revenueModel = readOnlyModel(revenueColumns);
     private Object[][] revenueExport = new Object[][]{revenueColumns};
 
+    private static final java.awt.Color LOW_STOCK_RED = new java.awt.Color(0xC0, 0x1F, 0x1F);
+
     private final String[] inventoryColumns = {"Sách", "Đã nhập", "Đã xuất", "Tồn kho hiện tại"};
     private final DefaultTableModel inventoryModel = readOnlyModel(inventoryColumns);
     private Object[][] inventoryExport = new Object[][]{inventoryColumns};
@@ -71,18 +73,23 @@ public class ReportPage extends javax.swing.JPanel implements AdminPage {
         AppTheme.alignTableColumn(inventoryTable, 2, SwingConstants.CENTER, 90, 90);
         AppTheme.alignTableColumn(inventoryTable, 3, SwingConstants.RIGHT, 140, 140);
 
-        DefaultTableCellRenderer lowStockRenderer = new DefaultTableCellRenderer() {
-            @Override
-            public Component getTableCellRendererComponent(JTable t, Object value, boolean isSelected,
-                    boolean hasFocus, int row, int column) {
-                Component c = super.getTableCellRendererComponent(t, value, isSelected, hasFocus, row, column);
-                int qty = (Integer) value;
-                c.setForeground(qty < 10 ? AppTheme.ACCENT_TEXT : AppTheme.TEXT);
-                setHorizontalAlignment(RIGHT);
-                return c;
-            }
-        };
-        inventoryTable.getColumnModel().getColumn(3).setCellRenderer(lowStockRenderer);
+        // Sách dưới 10 cuốn: tô đỏ cả dòng, không chỉ ô số lượng.
+        int[] alignments = {SwingConstants.LEFT, SwingConstants.CENTER, SwingConstants.CENTER, SwingConstants.RIGHT};
+        for (int col = 0; col < alignments.length; col++) {
+            int alignment = alignments[col];
+            DefaultTableCellRenderer lowStockRenderer = new DefaultTableCellRenderer() {
+                @Override
+                public Component getTableCellRendererComponent(JTable t, Object value, boolean isSelected,
+                        boolean hasFocus, int row, int column) {
+                    Component c = super.getTableCellRendererComponent(t, value, isSelected, hasFocus, row, column);
+                    int qty = (Integer) t.getValueAt(row, 3);
+                    c.setForeground(qty < 10 ? LOW_STOCK_RED : AppTheme.TEXT);
+                    setHorizontalAlignment(alignment);
+                    return c;
+                }
+            };
+            inventoryTable.getColumnModel().getColumn(col).setCellRenderer(lowStockRenderer);
+        }
 
         AppTheme.secondary(btnExportInventory);
         btnExportInventory.addActionListener(ev -> {
@@ -283,8 +290,6 @@ public class ReportPage extends javax.swing.JPanel implements AdminPage {
         salesExportRow = new javax.swing.JPanel();
         btnExportSales = new javax.swing.JButton();
         filler11 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 0));
-        filler12 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 8), new java.awt.Dimension(0, 8), new java.awt.Dimension(32767, 8));
-        note = new javax.swing.JLabel();
 
         setBackground(AppTheme.BACKGROUND);
         setBorder(javax.swing.BorderFactory.createEmptyBorder(28, 28, 28, 28));
@@ -452,7 +457,7 @@ public class ReportPage extends javax.swing.JPanel implements AdminPage {
         empCard.setLayout(new java.awt.BorderLayout(0, 10));
         empTitle.setFont(empTitle.getFont().deriveFont(java.awt.Font.BOLD, 14f));
         empTitle.setForeground(AppTheme.TEXT);
-        empTitle.setText("Doanh số theo nhân viên xử lý (theo hóa đơn — Invoice)");
+        empTitle.setText("Doanh số theo nhân viên xử lý (theo hóa đơn)");
         empCard.add(empTitle, java.awt.BorderLayout.NORTH);
         empScroll.setBorder(javax.swing.BorderFactory.createLineBorder(AppTheme.INPUT_BORDER));
         empTable.setGridColor(AppTheme.TABLE_GRID);
@@ -472,12 +477,6 @@ public class ReportPage extends javax.swing.JPanel implements AdminPage {
         salesExportRow.add(filler11);
         salesTab.add(salesExportRow);
 
-        salesTab.add(filler12);
-        note.setFont(note.getFont().deriveFont(11f));
-        note.setForeground(new java.awt.Color(140, 123, 109));
-        note.setText("Lưu ý: đơn đặt hàng qua ứng dụng hiện chưa tự tạo hóa đơn (Invoice) gắn nhân viên xử lý — bảng trên chỉ phản ánh dữ liệu hóa đơn đã có sẵn.");
-        note.setAlignmentX(0.0F);
-        salesTab.add(note);
         tabs.addTab("Bán hàng", salesTab);
 
         add(tabs, java.awt.BorderLayout.CENTER);
@@ -500,7 +499,6 @@ public class ReportPage extends javax.swing.JPanel implements AdminPage {
     private javax.swing.Box.Filler filler1;
     private javax.swing.Box.Filler filler10;
     private javax.swing.Box.Filler filler11;
-    private javax.swing.Box.Filler filler12;
     private javax.swing.Box.Filler filler2;
     private javax.swing.Box.Filler filler3;
     private javax.swing.Box.Filler filler4;
@@ -518,7 +516,6 @@ public class ReportPage extends javax.swing.JPanel implements AdminPage {
     private javax.swing.JPanel inventoryTab;
     private javax.swing.JTable inventoryTable;
     private javax.swing.JLabel inventoryTitle;
-    private javax.swing.JLabel note;
     private javax.swing.JPanel resultArea;
     private javax.swing.JPanel revenueCard;
     private javax.swing.JPanel revenueExportRow;

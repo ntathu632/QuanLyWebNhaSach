@@ -11,8 +11,11 @@ package view.customer;
 import view.customer.component.BookCard;
 import dao.BookDAO;
 import dao.ShoppingCartDAO;
+import javax.swing.JOptionPane;
 import model.Book;
+import model.CartItem;
 import model.Customer;
+import model.ShoppingCart;
 import view.shared.AppTheme;
 import view.shared.ChangePasswordDialog;
 
@@ -29,6 +32,9 @@ public class SearchBookForPurchaseFrm extends javax.swing.JPanel implements Cust
 
     /** Đang lọc theo danh mục (mở từ trang chủ); gõ từ khóa rồi tìm thì thoát chế độ này. */
     private Integer categoryId;
+
+    /** Mở từ mục "Cửa hàng sách" ở thanh bên: cùng trang này nhưng đặt tên và tô sáng mục đó. */
+    private boolean store;
 
     /**
      * Creates new form SearchBookForPurchaseFrm
@@ -49,14 +55,23 @@ public class SearchBookForPurchaseFrm extends javax.swing.JPanel implements Cust
         doSearch();
     }
 
+    /** Gọi trước khi mở trang: đổi thành Cửa hàng sách (toàn bộ sách trong hệ thống). */
+    void showAsStore() {
+        store = true;
+        lblTitle.setText("Cửa hàng sách");
+        // Thanh tìm kiếm trên cùng của khung đã tìm sách, không cần ô tìm kiếm riêng ở trang này.
+        txtKeyword.setVisible(false);
+        btnFind.setVisible(false);
+    }
+
     @Override
     public String navKey() {
-        return "search";
+        return store ? "store" : "search";
     }
 
     @Override
     public String title() {
-        return "Tìm kiếm sách";
+        return store ? "Cửa hàng sách" : "Tìm kiếm sách";
     }
 
     @Override
@@ -195,12 +210,30 @@ public class SearchBookForPurchaseFrm extends javax.swing.JPanel implements Cust
         }
         pnlResults.removeAll();
         for (Book book : found) {
-            pnlResults.add(BookCard.build(book, () -> shell.navigateTo(new BookDetailFrm(customer, book))));
+            pnlResults.add(BookCard.build(book, () -> shell.navigateTo(new BookDetailFrm(customer, book)), () -> addToCart(book)));
         }
         lblResultCount.setText("Tìm thấy " + found.length + " cuốn sách");
         pnlResults.revalidate();
         pnlResults.repaint();
         scrResults.getVerticalScrollBar().setValue(0);
+    }
+
+    /** Thêm 1 cuốn vào giỏ ngay từ thẻ sách (chưa đăng nhập thì bật hộp thoại đăng nhập trước). */
+    private void addToCart(Book book) {
+        if (!shell.ensureLoggedIn()) {
+            return;
+        }
+        customer = shell.getCustomer();
+        CartItem item = new CartItem(1, book.getPrice(), book.getPrice(), book);
+        ShoppingCartDAO shoppingCartDAO = new ShoppingCartDAO();
+        ShoppingCart cart = shoppingCartDAO.getOrCreateCart(customer);
+        item.setCartID(cart.getCartID());
+        if (shoppingCartDAO.addCartItem(item)) {
+            shell.showLoginState();
+            JOptionPane.showMessageDialog(this, "Đã thêm \"" + book.getTitle() + "\" vào giỏ hàng!");
+        } else {
+            JOptionPane.showMessageDialog(this, "Thêm vào giỏ hàng thất bại! Vui lòng thử lại.");
+        }
     }
 
     private void leaveCategoryMode() {

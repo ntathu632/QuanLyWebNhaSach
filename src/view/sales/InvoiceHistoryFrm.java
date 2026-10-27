@@ -21,6 +21,7 @@ import javax.swing.table.DefaultTableModel;
 import model.Employee;
 import model.Invoice;
 import view.shared.AppTheme;
+import view.shared.Labels;
 import view.shared.ChangePasswordDialog;
 
 /**
@@ -47,6 +48,7 @@ public class InvoiceHistoryFrm extends javax.swing.JPanel implements SalesPage {
     public InvoiceHistoryFrm(Employee employee) {
         this.employee = employee;
         initComponents();
+        cboStatusFilter.setRenderer(Labels.comboRenderer());
         AppTheme.secondary(btnView);
         AppTheme.secondary(btnCancelInvoice);
         AppTheme.alignTableColumn(tblInvoices, 0, SwingConstants.CENTER, 70, 70);
@@ -297,7 +299,7 @@ public class InvoiceHistoryFrm extends javax.swing.JPanel implements SalesPage {
         for (Invoice iv : currentInvoices) {
             model.addRow(new Object[]{iv.getInvoiceID(), DATE_FMT.format(iv.getInvoiceDate()),
                 iv.getCustomerName(), iv.getEmployeeName(),
-                String.format("%,.0f₫", iv.getTotalAmount()), iv.getOrderStatus()});
+                String.format("%,.0f₫", iv.getTotalAmount()), Labels.status(iv.getOrderStatus())});
         }
     }
 
@@ -306,8 +308,8 @@ public class InvoiceHistoryFrm extends javax.swing.JPanel implements SalesPage {
         SalesOrderDetailDialog.show(this, "Chi tiết hóa đơn #" + invoice.getInvoiceID(), new String[][]{
             {"Khách hàng:", invoice.getCustomerName()},
             {"Nhân viên lập:", invoice.getEmployeeName()},
-            {"Phương thức thanh toán:", invoice.getPaymentMethod()},
-            {"Trạng thái:", invoice.getOrderStatus()}
+            {"Phương thức thanh toán:", Labels.paymentMethod(invoice.getPaymentMethod())},
+            {"Trạng thái:", Labels.status(invoice.getOrderStatus())}
         }, "Sách đã bán", new OrderDAO().getOrderDetails(invoice.getOrderID()), invoice.getTotalAmount());
     }
 

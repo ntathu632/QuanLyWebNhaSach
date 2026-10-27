@@ -161,7 +161,7 @@ public class OrderDAO extends DAO {
         return list;
     }
 
-    // FR-SALE-02 (Process Online Order): "đơn hàng online" = đơn CHƯA có
+    // FR-SALE-02 (Process Online Order): "đơn hàng trực tuyến" = đơn CHƯA có
     // Invoice (Invoice chỉ được tạo qua kênh tại quầy — InvoiceDAO.createInStoreSale()),
     // nên dùng NOT EXISTS làm tiêu chí phân biệt kênh thay vì thêm cột mới —
     // khớp đúng cách hiểu Payment/Invoice độc lập đã đính chính trong SRS (BR-09).

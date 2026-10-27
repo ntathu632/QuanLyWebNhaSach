@@ -52,8 +52,14 @@ public class DashboardPage extends javax.swing.JPanel implements AdminPage {
             orderCountItems.add(new BarChartPanel.Item(p.label, p.amount));
         }
 
-        java.util.List<DashboardDAO.LabelCount> statusItems = dashboardDAO.orderStatusBreakdown();
-        java.util.List<DashboardDAO.LabelCount> paymentItems = dashboardDAO.paymentMethodBreakdown();
+        java.util.List<DashboardDAO.LabelCount> statusItems = new java.util.ArrayList<>();
+        for (DashboardDAO.LabelCount lc : dashboardDAO.orderStatusBreakdown()) {
+            statusItems.add(new DashboardDAO.LabelCount(Labels.status(lc.label), lc.count));
+        }
+        java.util.List<DashboardDAO.LabelCount> paymentItems = new java.util.ArrayList<>();
+        for (DashboardDAO.LabelCount lc : dashboardDAO.paymentMethodBreakdown()) {
+            paymentItems.add(new DashboardDAO.LabelCount(Labels.paymentMethod(lc.label), lc.count));
+        }
 
         // Khung lưới 2x2 (chartsGrid) nằm trong form; 4 biểu đồ dựng từ dữ
         // liệu thật nên được thêm vào lúc mở trang.
@@ -124,7 +130,7 @@ public class DashboardPage extends javax.swing.JPanel implements AdminPage {
         top.setLayout(new javax.swing.BoxLayout(top, javax.swing.BoxLayout.Y_AXIS));
         heading.setFont(heading.getFont().deriveFont(java.awt.Font.BOLD, 22f));
         heading.setForeground(AppTheme.TEXT);
-        heading.setText("Dashboard");
+        heading.setText("Tổng quan");
         heading.setAlignmentX(0.0F);
         heading.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 20, 0));
         top.add(heading);

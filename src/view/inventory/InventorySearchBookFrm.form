@@ -42,6 +42,8 @@
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="txtKeyword" max="32767" attributes="0"/>
                           <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
+                          <Component id="cboCategory" min="-2" pref="220" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
                           <Component id="btnSearch" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <Component id="pnlCard" alignment="0" max="32767" attributes="0"/>
@@ -58,6 +60,7 @@
                   <EmptySpace min="-2" pref="16" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="txtKeyword" alignment="3" min="-2" pref="36" max="-2" attributes="0"/>
+                      <Component id="cboCategory" alignment="3" min="-2" pref="36" max="-2" attributes="0"/>
                       <Component id="btnSearch" alignment="3" min="-2" pref="36" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace min="-2" pref="16" max="-2" attributes="0"/>
@@ -80,6 +83,21 @@
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtKeywordActionPerformed"/>
           </Events>
+        </Component>
+        <Component class="javax.swing.JComboBox" name="cboCategory">
+          <Properties>
+            <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+              <StringArray count="1">
+                <StringItem index="0" value="T&#x1ea5;t c&#x1ea3; danh m&#x1ee5;c"/>
+              </StringArray>
+            </Property>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cboCategoryActionPerformed"/>
+          </Events>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+          </AuxValues>
         </Component>
         <Component class="javax.swing.JButton" name="btnSearch">
           <Properties>
@@ -163,7 +181,7 @@
                   <Properties>
                     <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
                       <Table columnCount="5" rowCount="0">
-                    <Column editable="false" title="ID" type="java.lang.Object"/>
+                    <Column editable="false" title="Mã" type="java.lang.Object"/>
                     <Column editable="false" title="ISBN" type="java.lang.Object"/>
                     <Column editable="false" title="Tên sách" type="java.lang.Object"/>
                     <Column editable="false" title="Giá" type="java.lang.Object"/>

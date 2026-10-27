@@ -39,9 +39,13 @@
                   <EmptySpace min="-2" pref="28" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Component id="lblTitle" alignment="0" min="-2" max="-2" attributes="0"/>
-                      <Component id="pnlCard" alignment="0" min="-2" pref="600" max="-2" attributes="0"/>
+                      <Group type="102" alignment="0" attributes="0">
+                          <Component id="pnlForm" min="0" pref="560" max="880" attributes="0"/>
+                          <EmptySpace min="-2" pref="24" max="-2" attributes="0"/>
+                          <Component id="pnlSummary" min="-2" pref="400" max="-2" attributes="0"/>
+                      </Group>
                   </Group>
-                  <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                  <EmptySpace min="28" pref="28" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -51,11 +55,15 @@
                   <EmptySpace min="-2" pref="28" max="-2" attributes="0"/>
                   <Component id="lblTitle" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="16" max="-2" attributes="0"/>
-                  <Component id="pnlCard" min="-2" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Component id="pnlForm" min="-2" max="-2" attributes="0"/>
+                      <Component id="pnlSummary" min="-2" max="-2" attributes="0"/>
+                  </Group>
                   <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
+        <LinkSize type="2" array="pnlForm, pnlSummary"/>
       </Layout>
       <SubComponents>
         <Component class="javax.swing.JLabel" name="lblTitle">
@@ -66,7 +74,7 @@
             <Property name="text" type="java.lang.String" value="Xác nhận đơn hàng"/>
           </Properties>
         </Component>
-        <Container class="javax.swing.JPanel" name="pnlCard">
+        <Container class="javax.swing.JPanel" name="pnlForm">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="ff" green="ff" red="ff" type="rgb"/>
@@ -74,7 +82,7 @@
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
               <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
                 <LineBorder roundedCorners="true">
-                  <Color PropertyName="color" blue="c4" green="d3" red="d8" type="rgb"/>
+                  <Color PropertyName="color" blue="d1" green="df" red="ea" type="rgb"/>
                 </LineBorder>
               </Border>
             </Property>
@@ -86,19 +94,9 @@
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" pref="24" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" alignment="0" attributes="0">
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="lblTotalCaption" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="lblAddressCaption" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="lblPaymentCaption" alignment="0" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <EmptySpace min="-2" pref="14" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="lblTotal" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="txtShippingAddress" alignment="0" pref="320" max="32767" attributes="0"/>
-                                  <Component id="cboPaymentMethod" alignment="0" min="0" pref="320" max="32767" attributes="0"/>
-                              </Group>
-                          </Group>
+                          <Component id="lblFormTitle" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="lblAddressCaption" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="txtShippingAddress" alignment="0" pref="320" max="32767" attributes="0"/>
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                               <Component id="btnBack" min="-2" max="-2" attributes="0"/>
@@ -114,21 +112,12 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" pref="24" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="lblTotalCaption" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="lblTotal" alignment="3" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace min="-2" pref="16" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="lblAddressCaption" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="txtShippingAddress" alignment="3" min="-2" pref="36" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace min="-2" pref="16" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="lblPaymentCaption" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="cboPaymentMethod" alignment="3" min="-2" pref="36" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace min="-2" pref="24" max="-2" attributes="0"/>
+                      <Component id="lblFormTitle" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
+                      <Component id="lblAddressCaption" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="8" max="-2" attributes="0"/>
+                      <Component id="txtShippingAddress" min="-2" pref="36" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="24" max="32767" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="btnBack" alignment="3" min="-2" pref="36" max="-2" attributes="0"/>
                           <Component id="btnConfirm" alignment="3" min="-2" pref="36" max="-2" attributes="0"/>
@@ -139,20 +128,15 @@
             </DimensionLayout>
           </Layout>
           <SubComponents>
-            <Component class="javax.swing.JLabel" name="lblTotalCaption">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Tổng tiền:"/>
-              </Properties>
-            </Component>
-            <Component class="javax.swing.JLabel" name="lblTotal">
+            <Component class="javax.swing.JLabel" name="lblFormTitle">
               <Properties>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Raleway Medium" size="20" style="0"/>
+                  <Font name="Raleway Medium" size="16" style="1"/>
                 </Property>
                 <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                  <Color blue="3b" green="57" red="8a" type="rgb"/>
+                  <Color blue="20" green="2a" red="3b" type="rgb"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="0₫"/>
+                <Property name="text" type="java.lang.String" value="Thông tin giao hàng"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JLabel" name="lblAddressCaption">
@@ -161,26 +145,6 @@
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="txtShippingAddress">
-            </Component>
-            <Component class="javax.swing.JLabel" name="lblPaymentCaption">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Phương thức thanh toán:"/>
-              </Properties>
-            </Component>
-            <Component class="javax.swing.JComboBox" name="cboPaymentMethod">
-              <Properties>
-                <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                  <StringArray count="4">
-                    <StringItem index="0" value="VNPay"/>
-                    <StringItem index="1" value="Momo"/>
-                    <StringItem index="2" value="Bank Transfer"/>
-                    <StringItem index="3" value="Cash on Delivery"/>
-                  </StringArray>
-                </Property>
-              </Properties>
-              <AuxValues>
-                <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
-              </AuxValues>
             </Component>
             <Component class="javax.swing.JButton" name="btnBack">
               <Properties>
@@ -219,6 +183,116 @@
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnConfirmActionPerformed"/>
               </Events>
+            </Component>
+          </SubComponents>
+        </Container>
+        <Container class="javax.swing.JPanel" name="pnlSummary">
+          <Properties>
+            <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="f4" green="f9" red="fc" type="rgb"/>
+            </Property>
+            <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+              <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
+                <LineBorder roundedCorners="true">
+                  <Color PropertyName="color" blue="d1" green="df" red="ea" type="rgb"/>
+                </LineBorder>
+              </Border>
+            </Property>
+          </Properties>
+
+          <Layout>
+            <DimensionLayout dim="0">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace min="-2" pref="24" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="lblSummaryTitle" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="pnlItems" alignment="0" max="32767" attributes="0"/>
+                          <Component id="sepSummary" alignment="0" max="32767" attributes="0"/>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Component id="lblTotalCaption" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="32767" attributes="0"/>
+                              <Component id="lblTotal" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                      </Group>
+                      <EmptySpace min="-2" pref="24" max="-2" attributes="0"/>
+                  </Group>
+              </Group>
+            </DimensionLayout>
+            <DimensionLayout dim="1">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace min="-2" pref="24" max="-2" attributes="0"/>
+                      <Component id="lblSummaryTitle" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
+                      <Component id="pnlItems" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
+                      <Component id="sepSummary" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="14" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="lblTotalCaption" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="lblTotal" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace min="-2" pref="24" max="-2" attributes="0"/>
+                  </Group>
+              </Group>
+            </DimensionLayout>
+          </Layout>
+          <SubComponents>
+            <Component class="javax.swing.JLabel" name="lblSummaryTitle">
+              <Properties>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Raleway Medium" size="16" style="1"/>
+                </Property>
+                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="20" green="2a" red="3b" type="rgb"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Tóm tắt đơn hàng"/>
+              </Properties>
+            </Component>
+            <Container class="javax.swing.JPanel" name="pnlItems">
+              <Properties>
+                <Property name="opaque" type="boolean" value="false"/>
+              </Properties>
+
+              <Layout>
+                <DimensionLayout dim="0">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                  </Group>
+                </DimensionLayout>
+                <DimensionLayout dim="1">
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                  </Group>
+                </DimensionLayout>
+              </Layout>
+            </Container>
+            <Component class="javax.swing.JSeparator" name="sepSummary">
+              <Properties>
+                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="ca" green="d8" red="e3" type="rgb"/>
+                </Property>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="lblTotalCaption">
+              <Properties>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Raleway Medium" size="15" style="0"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Tổng tiền:"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="lblTotal">
+              <Properties>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Raleway Medium" size="22" style="0"/>
+                </Property>
+                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="3b" green="57" red="8a" type="rgb"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="0₫"/>
+              </Properties>
             </Component>
           </SubComponents>
         </Container>

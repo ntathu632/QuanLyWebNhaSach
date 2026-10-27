@@ -14,6 +14,7 @@ import java.awt.Graphics2D;
 import java.awt.GradientPaint;
 import java.awt.Image;
 import java.awt.RenderingHints;
+import java.awt.Shape;
 import java.awt.geom.RoundRectangle2D;
 import java.io.File;
 import javax.imageio.ImageIO;
@@ -51,11 +52,14 @@ public class BookCoverPanel extends JComponent {
         int w = getWidth();
         int h = getHeight();
         RoundRectangle2D.Float shape = new RoundRectangle2D.Float(0, 0, w, h, 12, 12);
+        // Vùng cắt do khung cha (ví dụ ô cuộn) đặt sẵn: phải giữ nguyên và chỉ thu hẹp thêm theo hình bo góc,
+        // nếu dùng setClip(shape)/setClip(null) thì bìa sẽ vẽ tràn ra ngoài khung cuộn khi sách nằm lấp ló ở mép.
+        Shape inheritedClip = g2.getClip();
 
         if (realImage != null) {
-            g2.setClip(shape);
+            g2.clip(shape);
             drawCoverFit(g2, realImage, w, h);
-            g2.setClip(null);
+            g2.setClip(inheritedClip);
             g2.dispose();
             return;
         }
@@ -71,10 +75,10 @@ public class BookCoverPanel extends JComponent {
             g2.drawLine(x, h, x + h, 0);
         }
 
-        g2.setClip(shape);
+        g2.clip(shape);
         g2.setColor(new Color(0, 0, 0, 40));
         g2.fillRect(0, h - Math.max(28, h / 4), w, Math.max(28, h / 4));
-        g2.setClip(null);
+        g2.setClip(inheritedClip);
 
         int iconSize = Math.min(w, h) / 2;
         new FlatIcon(FlatIcon.Kind.BOOK, new Color(255, 255, 255, 235), iconSize)

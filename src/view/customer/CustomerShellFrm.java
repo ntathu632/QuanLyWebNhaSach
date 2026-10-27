@@ -28,8 +28,8 @@ public class CustomerShellFrm extends javax.swing.JFrame {
     private CustomerPage currentPage;
 
     /** Mục thanh bên có thể tô sáng: khóa điều hướng, nút và icon tương ứng (cùng thứ tự). */
-    private final String[] navKeys = {"home", "orders", "cart"};
-    private final FlatIcon.Kind[] navIcons = {FlatIcon.Kind.HOME, FlatIcon.Kind.RECEIPT, FlatIcon.Kind.CART};
+    private final String[] navKeys = {"home", "store", "orders", "cart"};
+    private final FlatIcon.Kind[] navIcons = {FlatIcon.Kind.HOME, FlatIcon.Kind.BOOK, FlatIcon.Kind.RECEIPT, FlatIcon.Kind.CART};
     private final JButton[] navButtons;
 
     /**
@@ -38,7 +38,7 @@ public class CustomerShellFrm extends javax.swing.JFrame {
     public CustomerShellFrm(Customer customer) {
         this.customer = customer;
         initComponents();
-        navButtons = new JButton[]{btnNavHome, btnNavOrders, btnNavCart};
+        navButtons = new JButton[]{btnNavHome, btnNavStore, btnNavOrders, btnNavCart};
         styleComponents();
         loadSidebarCategories();
         showLoginState();
@@ -112,15 +112,23 @@ public class CustomerShellFrm extends javax.swing.JFrame {
         openSearch(txtSearch.getText().trim());
     }
 
-    /** Mở trang ứng với mục điều hướng "key" (home, orders, cart, account). */
+    /** Mở trang ứng với mục điều hướng "key" (home, store, orders, cart, account). */
     void go(String key) {
         switch (key) {
             case "home" -> navigateTo(new CustomerHomeFrm(customer));
+            case "store" -> openStore();
             case "orders" -> navigateTo(new OrderHistoryFrm(customer));
             case "cart" -> navigateTo(new ShoppingCartFrm(customer));
             case "account" -> navigateTo(new AccountFrm(customer));
             default -> throw new IllegalArgumentException("Mục điều hướng không tồn tại: " + key);
         }
+    }
+
+    /** Mở Cửa hàng sách: toàn bộ sách có trong hệ thống (trang Tìm kiếm sách không lọc, đổi tiêu đề). */
+    private void openStore() {
+        SearchBookForPurchaseFrm page = new SearchBookForPurchaseFrm(customer, "", null, null);
+        page.showAsStore();
+        navigateTo(page);
     }
 
     /** Mở trang Tìm kiếm sách với từ khóa "keyword". */
@@ -221,6 +229,7 @@ public class CustomerShellFrm extends javax.swing.JFrame {
         pnlSidebar = new javax.swing.JPanel();
         lblBrand = new javax.swing.JLabel();
         btnNavHome = new javax.swing.JButton();
+        btnNavStore = new javax.swing.JButton();
         btnNavOrders = new javax.swing.JButton();
         btnNavCart = new javax.swing.JButton();
         pnlSidebarLine = new javax.swing.JPanel();
@@ -309,6 +318,16 @@ public class CustomerShellFrm extends javax.swing.JFrame {
             }
         });
         pnlSidebar.add(btnNavHome);
+
+        btnNavStore.setText("Cửa hàng sách");
+        btnNavStore.setIconTextGap(14);
+        btnNavStore.setMaximumSize(new java.awt.Dimension(32767, 46));
+        btnNavStore.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNavStoreActionPerformed(evt);
+            }
+        });
+        pnlSidebar.add(btnNavStore);
 
         btnNavOrders.setText("Đơn hàng của tôi");
         btnNavOrders.setIconTextGap(14);
@@ -454,6 +473,10 @@ public class CustomerShellFrm extends javax.swing.JFrame {
         go("home");
     }//GEN-LAST:event_btnNavHomeActionPerformed
 
+    private void btnNavStoreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNavStoreActionPerformed
+        go("store");
+    }//GEN-LAST:event_btnNavStoreActionPerformed
+
     private void btnNavOrdersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNavOrdersActionPerformed
         if (ensureLoggedIn()) {
             go("orders");
@@ -514,6 +537,7 @@ public class CustomerShellFrm extends javax.swing.JFrame {
     private javax.swing.JButton btnNavCart;
     private javax.swing.JButton btnNavHome;
     private javax.swing.JButton btnNavOrders;
+    private javax.swing.JButton btnNavStore;
     private javax.swing.JButton btnRegister;
     private javax.swing.JButton btnSearch;
     private javax.swing.JButton btnUserMenu;

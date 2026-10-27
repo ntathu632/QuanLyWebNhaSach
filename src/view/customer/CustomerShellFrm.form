@@ -140,6 +140,18 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnNavHomeActionPerformed"/>
           </Events>
         </Component>
+        <Component class="javax.swing.JButton" name="btnNavStore">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="C&#x1eed;a h&#xe0;ng s&#xe1;ch"/>
+            <Property name="iconTextGap" type="int" value="14"/>
+            <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[32767, 46]"/>
+            </Property>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnNavStoreActionPerformed"/>
+          </Events>
+        </Component>
         <Component class="javax.swing.JButton" name="btnNavOrders">
           <Properties>
             <Property name="text" type="java.lang.String" value="&#x110;&#x1a1;n h&#xe0;ng c&#x1ee7;a t&#xf4;i"/>

@@ -30,7 +30,7 @@ public class ManageEmployeePage extends javax.swing.JPanel implements AdminPage 
 
     private AdminShellFrm shell;
 
-    private final DefaultTableModel model = new DefaultTableModel(new String[]{"ID", "Họ tên", "Vị trí", "Điện thoại", "Email"}, 0) {
+    private final DefaultTableModel model = new DefaultTableModel(new String[]{"Mã", "Họ tên", "Vị trí", "Điện thoại", "Email"}, 0) {
         @Override
         public boolean isCellEditable(int row, int col) {
             return false;
@@ -40,6 +40,9 @@ public class ManageEmployeePage extends javax.swing.JPanel implements AdminPage 
     private final List<Employee> currentItems = new ArrayList<>();
 
     private final Runnable doSearch;
+
+    /** Vai trò đang chọn ở hàng nút chia theo vai trò; null là "Tất cả". */
+    private String selectedRole;
 
     public ManageEmployeePage() {
         initComponents();
@@ -63,10 +66,19 @@ public class ManageEmployeePage extends javax.swing.JPanel implements AdminPage 
             Employee[] found = new EmployeeDAO().searchEmployee(keyword);
             currentItems.clear();
             model.setRowCount(0);
-            for (Employee emp : found) {
-                currentItems.add(emp);
-                model.addRow(new Object[]{emp.getEmployeeID(), emp.getFullName(), emp.getPosition(), emp.getPhone(), emp.getEmail()});
+            java.util.Map<String, Integer> counts = new java.util.LinkedHashMap<>();
+            for (String position : POSITIONS) {
+                counts.put(position, 0);
             }
+            for (Employee emp : found) {
+                counts.merge(emp.getPosition(), 1, Integer::sum);
+                if (selectedRole != null && !selectedRole.equals(emp.getPosition())) {
+                    continue;
+                }
+                currentItems.add(emp);
+                model.addRow(new Object[]{emp.getEmployeeID(), emp.getFullName(), Labels.role(emp.getPosition()), emp.getPhone(), emp.getEmail()});
+            }
+            buildRoleChips(counts, found.length);
         };
 
         btnSearch.addActionListener(e -> doSearch.run());
@@ -105,6 +117,54 @@ public class ManageEmployeePage extends javax.swing.JPanel implements AdminPage 
         });
     }
 
+    /** Tên hiển thị tiếng Việt của vai trò trên nút chọn nhanh. */
+    private static String roleLabel(String role) {
+        switch (role) {
+            case "Admin":
+                return "Quản trị viên";
+            case "Sales Staff":
+                return "Nhân viên bán hàng";
+            case "Inventory Staff":
+                return "Nhân viên kho";
+            case "Customer":
+                return "Khách hàng";
+            default:
+                return role;
+        }
+    }
+
+    /** Dựng lại hàng nút chia theo vai trò: "Tất cả" và từng vai trò kèm số lượng trong kết quả tìm kiếm hiện tại. */
+    private void buildRoleChips(java.util.Map<String, Integer> counts, int total) {
+        roleBar.removeAll();
+        javax.swing.ButtonGroup group = new javax.swing.ButtonGroup();
+        roleBar.add(roleChip("Tất cả (" + total + ")", null, group));
+        for (java.util.Map.Entry<String, Integer> entry : counts.entrySet()) {
+            roleBar.add(roleChip(roleLabel(entry.getKey()) + " (" + entry.getValue() + ")", entry.getKey(), group));
+        }
+        roleBar.revalidate();
+        roleBar.repaint();
+    }
+
+    private javax.swing.JToggleButton roleChip(String text, String role, javax.swing.ButtonGroup group) {
+        javax.swing.JToggleButton chip = new javax.swing.JToggleButton(text);
+        chip.setSelected(java.util.Objects.equals(role, selectedRole));
+        chip.setFocusPainted(false);
+        chip.putClientProperty("FlatLaf.style",
+                "arc: 999; borderWidth: 1; borderColor: #D8CBB8; background: #FFFFFF; foreground: #3B2A20;"
+                + " hoverBackground: #F1E8DC; selectedBackground: #7A4A33; selectedForeground: #FFFFFF;"
+                + " selectedBorderColor: #7A4A33; focusWidth: 0; margin: 4,14,4,14");
+        chip.addActionListener(e -> {
+            selectedRole = role;
+            refresh();
+        });
+        group.add(chip);
+        return chip;
+    }
+
+    private void refresh() {
+        doSearch.run();
+    }
+
     @Override
     public String navKey() {
         return "employees";
@@ -132,6 +192,7 @@ public class ManageEmployeePage extends javax.swing.JPanel implements AdminPage 
 
         JTextField txtFullName = new JTextField(20);
         JComboBox<String> cboPosition = new JComboBox<>(POSITIONS);
+        cboPosition.setRenderer(Labels.comboRenderer());
         JTextField txtPhone = new JTextField(20);
         JTextField txtEmail = new JTextField(20);
         JTextField txtUsername = new JTextField(20);
@@ -141,8 +202,8 @@ public class ManageEmployeePage extends javax.swing.JPanel implements AdminPage 
         addFormRow(panel, gbc, 1, "Vị trí: *", cboPosition);
         addFormRow(panel, gbc, 2, "Điện thoại: *", txtPhone);
         addFormRow(panel, gbc, 3, "Email: *", txtEmail);
-        addFormRow(panel, gbc, 4, "Username: *", txtUsername);
-        addFormRow(panel, gbc, 5, "Password: *", txtPassword);
+        addFormRow(panel, gbc, 4, "Tên đăng nhập: *", txtUsername);
+        addFormRow(panel, gbc, 5, "Mật khẩu: *", txtPassword);
 
         int result = JOptionPane.showConfirmDialog(shell, panel, "Thêm nhân viên",
                 JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
@@ -184,6 +245,7 @@ public class ManageEmployeePage extends javax.swing.JPanel implements AdminPage 
 
         JTextField txtFullName = new JTextField(selected.getFullName(), 20);
         JComboBox<String> cboPosition = new JComboBox<>(POSITIONS);
+        cboPosition.setRenderer(Labels.comboRenderer());
         cboPosition.setSelectedItem(selected.getPosition());
         JTextField txtPhone = new JTextField(selected.getPhone(), 20);
         JTextField txtEmail = new JTextField(selected.getEmail(), 20);
@@ -242,6 +304,7 @@ public class ManageEmployeePage extends javax.swing.JPanel implements AdminPage 
         header = new javax.swing.JPanel();
         heading = new javax.swing.JLabel();
         searchBar = new javax.swing.JPanel();
+        roleBar = new javax.swing.JPanel();
         txtKeyword = new javax.swing.JTextField();
         btnSearch = new javax.swing.JButton();
         btnAdd = new javax.swing.JButton();
@@ -282,6 +345,11 @@ public class ManageEmployeePage extends javax.swing.JPanel implements AdminPage 
         searchBar.add(btnAdd, java.awt.BorderLayout.WEST);
 
         header.add(searchBar);
+        roleBar.setBackground(AppTheme.BACKGROUND);
+        roleBar.setAlignmentX(0.0F);
+        roleBar.setMaximumSize(new java.awt.Dimension(2147483647, 44));
+        roleBar.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 8, 6));
+        header.add(roleBar);
 
         add(header, java.awt.BorderLayout.NORTH);
 
@@ -335,6 +403,7 @@ public class ManageEmployeePage extends javax.swing.JPanel implements AdminPage 
     private javax.swing.JLabel resultTitle;
     private javax.swing.JPanel rowActions;
     private javax.swing.JScrollPane scroll;
+    private javax.swing.JPanel roleBar;
     private javax.swing.JPanel searchBar;
     private javax.swing.JTable table;
     private javax.swing.JPanel tableCard;

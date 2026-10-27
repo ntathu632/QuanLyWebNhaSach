@@ -18,7 +18,7 @@ public class ManageAuthorPage extends javax.swing.JPanel implements AdminPage {
 
     private AdminShellFrm shell;
 
-    private final DefaultTableModel model = new DefaultTableModel(new String[]{"ID", "Tên tác giả", "Quốc tịch", "Mô tả"}, 0) {
+    private final DefaultTableModel model = new DefaultTableModel(new String[]{"Mã", "Tên tác giả", "Quốc tịch", "Mô tả"}, 0) {
         @Override
         public boolean isCellEditable(int row, int col) {
             return false;

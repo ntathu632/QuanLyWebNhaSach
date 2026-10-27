@@ -8,20 +8,24 @@ package view.admin;
 import view.shared.*;
 
 import dao.BookDAO;
+import dao.CategoryDAO;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
 import model.Book;
+import model.Category;
 
 public class SearchBookForEditPage extends javax.swing.JPanel implements AdminPage {
 
     private AdminShellFrm shell;
 
-    private final DefaultTableModel model = new DefaultTableModel(new String[]{"ID", "ISBN", "Tên sách", "Giá", "Mô tả"}, 0) {
+    private final DefaultTableModel model = new DefaultTableModel(new String[]{"Mã", "ISBN", "Tên sách", "Giá", "Mô tả"}, 0) {
         @Override
         public boolean isCellEditable(int row, int col) {
             return false;
@@ -32,11 +36,15 @@ public class SearchBookForEditPage extends javax.swing.JPanel implements AdminPa
 
     private final Runnable doSearch;
 
+    /** Các danh mục trong ô lọc, cùng thứ tự với các mục của cboCategory (trừ mục "Tất cả danh mục" ở đầu). */
+    private Category[] categories = new Category[0];
+
     public SearchBookForEditPage() {
         initComponents();
 
         txtKeyword.putClientProperty("JTextField.placeholderText", "Tìm theo mã sách, ISBN hoặc tên sách...");
         AppTheme.primary(btnSearch);
+        loadCategories();
 
         table.setModel(model);
         table.getTableHeader().setReorderingAllowed(false);
@@ -48,7 +56,7 @@ public class SearchBookForEditPage extends javax.swing.JPanel implements AdminPa
 
         doSearch = () -> {
             String keyword = txtKeyword.getText().trim();
-            Book[] found = new BookDAO().searchBook(keyword);
+            Book[] found = filterByCategory(new BookDAO().searchBook(keyword));
             currentBooks.clear();
             model.setRowCount(0);
             for (Book b : found) {
@@ -60,6 +68,7 @@ public class SearchBookForEditPage extends javax.swing.JPanel implements AdminPa
 
         btnSearch.addActionListener(e -> doSearch.run());
         txtKeyword.addActionListener(e -> doSearch.run());
+        cboCategory.addActionListener(e -> doSearch.run());
 
         table.addMouseListener(new MouseAdapter() {
             @Override
@@ -72,6 +81,33 @@ public class SearchBookForEditPage extends javax.swing.JPanel implements AdminPa
                 }
             }
         });
+    }
+
+    /** Đổ danh sách danh mục vào ô lọc (mục đầu là "Tất cả danh mục"). */
+    private void loadCategories() {
+        categories = new CategoryDAO().searchCategory("");
+        for (Category category : categories) {
+            cboCategory.addItem(category.getCategoryName());
+        }
+    }
+
+    /** Chỉ giữ các sách thuộc danh mục đang chọn ở ô lọc (chọn "Tất cả danh mục" thì giữ nguyên). */
+    private Book[] filterByCategory(Book[] books) {
+        int index = cboCategory.getSelectedIndex() - 1;
+        if (index < 0 || index >= categories.length) {
+            return books;
+        }
+        Set<Integer> ids = new HashSet<>();
+        for (Book book : new BookDAO().searchByCategory(categories[index].getCategoryID())) {
+            ids.add(book.getBookID());
+        }
+        List<Book> kept = new ArrayList<>();
+        for (Book book : books) {
+            if (ids.contains(book.getBookID())) {
+                kept.add(book);
+            }
+        }
+        return kept.toArray(new Book[0]);
     }
 
     @Override
@@ -113,6 +149,7 @@ public class SearchBookForEditPage extends javax.swing.JPanel implements AdminPa
         searchBar = new javax.swing.JPanel();
         txtKeyword = new javax.swing.JTextField();
         btnSearch = new javax.swing.JButton();
+        cboCategory = new javax.swing.JComboBox<>();
         tableCard = new javax.swing.JPanel();
         resultTitle = new javax.swing.JLabel();
         scroll = new javax.swing.JScrollPane();
@@ -140,6 +177,8 @@ public class SearchBookForEditPage extends javax.swing.JPanel implements AdminPa
         searchBar.setAlignmentX(0.0F);
         searchBar.setMaximumSize(new java.awt.Dimension(2147483647, 40));
         searchBar.setLayout(new java.awt.BorderLayout(10, 0));
+        cboCategory.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Tất cả danh mục" }));
+        searchBar.add(cboCategory, java.awt.BorderLayout.WEST);
         searchBar.add(txtKeyword, java.awt.BorderLayout.CENTER);
         btnSearch.setText("Tìm kiếm");
         searchBar.add(btnSearch, java.awt.BorderLayout.EAST);
@@ -167,6 +206,7 @@ public class SearchBookForEditPage extends javax.swing.JPanel implements AdminPa
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnSearch;
+    private javax.swing.JComboBox<String> cboCategory;
     private javax.swing.JPanel header;
     private javax.swing.JLabel heading;
     private javax.swing.JLabel hint;

@@ -1,11 +1,19 @@
 /*
- * Trang Tra cứu khách hàng (FR-SALE-05) (JFrame Form) — chỉ xem, phục vụ lập
- * hóa đơn hoặc tra cứu nhanh thông tin khách khi tư vấn. Sidebar, ô tìm
- * kiếm, bảng (các cột) thiết kế trong Design; các dòng đổ vào bằng code.
+ * Trang Tra cứu khách hàng (FR-SALE-05) (JFrame Form) — tra cứu nhanh thông
+ * tin khách khi tư vấn hoặc lập hóa đơn, và sửa thông tin khách (chọn 1 dòng rồi
+ * bấm "Sửa thông tin" hoặc nhấp đúp). Sidebar, ô tìm kiếm, bảng (các cột)
+ * thiết kế trong Design; các dòng đổ vào bằng code.
  */
 package view.sales;
 
 import dao.CustomerDAO;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
 import model.Customer;
@@ -36,6 +44,14 @@ public class SearchCustomerFrm extends javax.swing.JPanel implements SalesPage {
         AppTheme.alignTableColumn(tblCustomers, 2, SwingConstants.CENTER, 130, 130);
         AppTheme.alignTableColumn(tblCustomers, 3, SwingConstants.LEFT, 200, 200);
         AppTheme.alignTableColumn(tblCustomers, 4, SwingConstants.LEFT, 220, 220);
+        tblCustomers.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                if (e.getClickCount() == 2 && tblCustomers.rowAtPoint(e.getPoint()) >= 0) {
+                    editSelected();
+                }
+            }
+        });
         doSearch();
     }
 
@@ -70,6 +86,7 @@ public class SearchCustomerFrm extends javax.swing.JPanel implements SalesPage {
         btnSearch = new javax.swing.JButton();
         pnlCard = new javax.swing.JPanel();
         lblCardTitle = new javax.swing.JLabel();
+        btnEdit = new javax.swing.JButton();
         scrCustomers = new javax.swing.JScrollPane();
         tblCustomers = new javax.swing.JTable();
 
@@ -110,7 +127,7 @@ public class SearchCustomerFrm extends javax.swing.JPanel implements SalesPage {
 
             },
             new String [] {
-                "ID", "Họ tên", "Điện thoại", "Email", "Địa chỉ"
+                "Mã", "Họ tên", "Điện thoại", "Email", "Địa chỉ"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -127,6 +144,18 @@ public class SearchCustomerFrm extends javax.swing.JPanel implements SalesPage {
         tblCustomers.getTableHeader().setReorderingAllowed(false);
         scrCustomers.setViewportView(tblCustomers);
 
+        btnEdit.setBackground(new java.awt.Color(122, 74, 51));
+        btnEdit.setFont(new java.awt.Font("Raleway Medium", 0, 14)); // NOI18N
+        btnEdit.setForeground(new java.awt.Color(255, 255, 255));
+        btnEdit.setText("Sửa thông tin");
+        btnEdit.setBorderPainted(false);
+        btnEdit.setFocusPainted(false);
+        btnEdit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout pnlCardLayout = new javax.swing.GroupLayout(pnlCard);
         pnlCard.setLayout(pnlCardLayout);
         pnlCardLayout.setHorizontalGroup(
@@ -135,7 +164,9 @@ public class SearchCustomerFrm extends javax.swing.JPanel implements SalesPage {
                 .addGap(16, 16, 16)
                 .addGroup(pnlCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnlCardLayout.createSequentialGroup()
-                        .addComponent(lblCardTitle))
+                        .addComponent(lblCardTitle)
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnEdit))
                     .addComponent(scrCustomers, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(16, 16, 16))
         );
@@ -144,7 +175,8 @@ public class SearchCustomerFrm extends javax.swing.JPanel implements SalesPage {
             .addGroup(pnlCardLayout.createSequentialGroup()
                 .addGap(14, 14, 14)
                 .addGroup(pnlCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblCardTitle))
+                    .addComponent(lblCardTitle)
+                    .addComponent(btnEdit, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(10, 10, 10)
                 .addComponent(scrCustomers, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(14, 14, 14))
@@ -190,6 +222,77 @@ public class SearchCustomerFrm extends javax.swing.JPanel implements SalesPage {
         doSearch();
     }//GEN-LAST:event_btnSearchActionPerformed
 
+    private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
+        editSelected();
+    }//GEN-LAST:event_btnEditActionPerformed
+
+    /** Sửa thông tin khách ở dòng đang chọn: hộp thoại 4 trường, lưu bằng CustomerDAO.updateCustomer. */
+    private void editSelected() {
+        int row = tblCustomers.getSelectedRow();
+        if (row < 0) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn 1 khách hàng để sửa!");
+            return;
+        }
+        DefaultTableModel model = (DefaultTableModel) tblCustomers.getModel();
+        Customer selected = new Customer();
+        selected.setCustomerID((Integer) model.getValueAt(row, 0));
+
+        JTextField txtFullName = new JTextField(String.valueOf(model.getValueAt(row, 1)), 22);
+        JTextField txtPhone = new JTextField(String.valueOf(model.getValueAt(row, 2)), 22);
+        JTextField txtEmail = new JTextField(String.valueOf(model.getValueAt(row, 3)), 22);
+        Object oldAddress = model.getValueAt(row, 4);
+        JTextField txtAddress = new JTextField(oldAddress == null ? "" : oldAddress.toString(), 22);
+
+        JPanel panel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(6, 0, 6, 10);
+        gbc.anchor = GridBagConstraints.WEST;
+        addFormRow(panel, gbc, 0, "Họ tên:", txtFullName);
+        addFormRow(panel, gbc, 1, "Điện thoại:", txtPhone);
+        addFormRow(panel, gbc, 2, "Email:", txtEmail);
+        addFormRow(panel, gbc, 3, "Địa chỉ:", txtAddress);
+
+        int result = JOptionPane.showConfirmDialog(this, panel, "Sửa thông tin khách hàng",
+                JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+        if (result != JOptionPane.OK_OPTION) {
+            return;
+        }
+
+        String fullName = txtFullName.getText().trim();
+        String phone = txtPhone.getText().trim();
+        String email = txtEmail.getText().trim();
+        String address = txtAddress.getText().trim();
+        if (fullName.isEmpty() || phone.isEmpty() || email.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ Họ tên, Điện thoại và Email!");
+            return;
+        }
+        if (!email.contains("@")) {
+            JOptionPane.showMessageDialog(this, "Email không hợp lệ!");
+            return;
+        }
+
+        selected.setFullName(fullName);
+        selected.setPhone(phone);
+        selected.setEmail(email);
+        selected.setAddress(address.isEmpty() ? null : address);
+
+        String error = new CustomerDAO().updateCustomer(selected);
+        if (error == null) {
+            JOptionPane.showMessageDialog(this, "Cập nhật thông tin khách hàng thành công!");
+            doSearch();
+        } else {
+            JOptionPane.showMessageDialog(this, error);
+        }
+    }
+
+    private void addFormRow(JPanel panel, GridBagConstraints gbc, int row, String label, javax.swing.JComponent field) {
+        gbc.gridx = 0;
+        gbc.gridy = row;
+        panel.add(new JLabel(label), gbc);
+        gbc.gridx = 1;
+        panel.add(field, gbc);
+    }
+
     private void doSearch() {
         Customer[] found = new CustomerDAO().searchCustomer(txtKeyword.getText().trim());
         DefaultTableModel model = (DefaultTableModel) tblCustomers.getModel();
@@ -200,6 +303,7 @@ public class SearchCustomerFrm extends javax.swing.JPanel implements SalesPage {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnEdit;
     private javax.swing.JLabel lblCardTitle;
     private javax.swing.JLabel lblTitle;
     private javax.swing.JPanel pnlCard;

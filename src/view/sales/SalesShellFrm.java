@@ -168,7 +168,7 @@ public class SalesShellFrm extends javax.swing.JFrame {
         btnNavOrders.setFont(new java.awt.Font("Raleway Medium", 0, 15)); // NOI18N
         btnNavOrders.setForeground(new java.awt.Color(140, 123, 109));
         btnNavOrders.setIcon(new view.shared.FlatIcon(view.shared.FlatIcon.Kind.CHART, view.shared.AppTheme.SIDEBAR_TEXT_MUTED, 16));
-        btnNavOrders.setText("Đơn hàng online");
+        btnNavOrders.setText("Đơn hàng trực tuyến");
         btnNavOrders.setBorderPainted(false);
         btnNavOrders.setFocusPainted(false);
         btnNavOrders.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);

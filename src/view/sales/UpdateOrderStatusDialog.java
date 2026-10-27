@@ -1,5 +1,5 @@
 /*
- * Hộp thoại chọn trạng thái mới cho 1 đơn hàng online (JDialog Form) — mở từ
+ * Hộp thoại chọn trạng thái mới cho 1 đơn hàng trực tuyến (JDialog Form) — mở từ
  * nút "Cập nhật trạng thái" ở OrderManagementFrm (FR-SALE-03).
  */
 package view.sales;
@@ -10,6 +10,7 @@ import java.awt.event.KeyEvent;
 import javax.swing.JComponent;
 import javax.swing.KeyStroke;
 import view.shared.AppTheme;
+import view.shared.Labels;
 
 /**
  *
@@ -34,6 +35,7 @@ public class UpdateOrderStatusDialog extends javax.swing.JDialog {
     private UpdateOrderStatusDialog(Window owner) {
         super(owner, ModalityType.APPLICATION_MODAL);
         initComponents();
+        cboStatus.setRenderer(Labels.comboRenderer());
         getContentPane().setBackground(AppTheme.BACKGROUND);
         AppTheme.primary(btnOk);
         AppTheme.secondary(btnCancel);
@@ -66,14 +68,14 @@ public class UpdateOrderStatusDialog extends javax.swing.JDialog {
 
         cboStatus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Pending", "Paid", "Cancelled" }));
 
-        btnOk.setText("OK");
+        btnOk.setText("Đồng ý");
         btnOk.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnOkActionPerformed(evt);
             }
         });
 
-        btnCancel.setText("Cancel");
+        btnCancel.setText("Hủy");
         btnCancel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCancelActionPerformed(evt);

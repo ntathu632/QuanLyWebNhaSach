@@ -840,34 +840,6 @@
                 </Component>
               </SubComponents>
             </Container>
-            <Component class="javax.swing.Box$Filler" name="filler12">
-              <Properties>
-                <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[32767, 8]"/>
-                </Property>
-                <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[0, 8]"/>
-                </Property>
-                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[0, 8]"/>
-                </Property>
-              </Properties>
-              <AuxValues>
-                <AuxValue name="classDetails" type="java.lang.String" value="Box.Filler.VerticalStrut"/>
-              </AuxValues>
-            </Component>
-            <Component class="javax.swing.JLabel" name="note">
-              <Properties>
-                <Property name="font" type="java.awt.Font" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="note.getFont().deriveFont(11f)" type="code"/>
-                </Property>
-                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                  <Color blue="6d" green="7b" red="8c" type="rgb"/>
-                </Property>
-                <Property name="text" type="java.lang.String" value="L&#x1b0;u &#xfd;: &#x111;&#x1a1;n &#x111;&#x1eb7;t h&#xe0;ng qua &#x1ee9;ng d&#x1ee5;ng hi&#x1ec7;n ch&#x1b0;a t&#x1ef1; t&#x1ea1;o h&#xf3;a &#x111;&#x1a1;n (Invoice) g&#x1eaf;n nh&#xe2;n vi&#xea;n x&#x1eed; l&#xfd; &#x2014; b&#x1ea3;ng tr&#xea;n ch&#x1ec9; ph&#x1ea3;n &#xe1;nh d&#x1eef; li&#x1ec7;u h&#xf3;a &#x111;&#x1a1;n &#x111;&#xe3; c&#xf3; s&#x1eb5;n."/>
-                <Property name="alignmentX" type="float" value="0.0"/>
-              </Properties>
-            </Component>
           </SubComponents>
         </Container>
       </SubComponents>

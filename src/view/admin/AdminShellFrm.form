@@ -100,7 +100,7 @@
         </Container>
         <Component class="javax.swing.JButton" name="btnNavDashboard">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Dashboard"/>
+            <Property name="text" type="java.lang.String" value="Tổng quan"/>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
               <Connection code="new FlatIcon(FlatIcon.Kind.HOME, AppTheme.SIDEBAR_TEXT_MUTED, 16)" type="code"/>
             </Property>

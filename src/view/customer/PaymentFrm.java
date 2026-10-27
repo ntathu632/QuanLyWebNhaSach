@@ -1,8 +1,8 @@
 /*
  * Trang thanh toán (JFrame Form) — tạo Payment (status "Paid") và cập nhật
  * Order sang "Paid", hoặc hủy đơn (status "Cancelled") nếu khách bấm Hủy.
- * Chọn VNPay/Momo thì chuyển sang cổng thanh toán giả lập
- * (MockPaymentGatewayFrm). Toàn bộ giao diện thiết kế trong Design.
+ * Thanh toán mô phỏng: bấm "Thanh toán ngay" là ghi nhận thanh toán luôn,
+ * không có bước chọn phương thức. Toàn bộ giao diện thiết kế trong Design.
  */
 package view.customer;
 
@@ -11,9 +11,12 @@ import dao.PaymentDAO;
 import dao.ShoppingCartDAO;
 import java.util.Date;
 import javax.swing.JOptionPane;
+import model.CartItem;
 import model.Customer;
 import model.Order;
+import model.OrderDetail;
 import model.Payment;
+import model.ShoppingCart;
 import view.shared.AppTheme;
 import view.shared.ChangePasswordDialog;
 
@@ -22,6 +25,9 @@ import view.shared.ChangePasswordDialog;
  * @author anhthu632
  */
 public class PaymentFrm extends javax.swing.JPanel implements CustomerPage {
+
+    /** Thanh toán mô phỏng nên không có bước chọn phương thức; cột Payment.paymentMethod ghi giá trị cố định này. */
+    private static final String PAYMENT_METHOD = "Online";
 
     private CustomerShellFrm shell;
 
@@ -39,7 +45,30 @@ public class PaymentFrm extends javax.swing.JPanel implements CustomerPage {
         this.order = order;
         initComponents();
         lblAmount.setText(String.format("%,.0f₫", order.getTotalAmount()));
-        lblMethod.setText(order.getPaymentMethod());
+        lblTotal.setText(String.format("%,.0f₫", order.getTotalAmount()));
+        lblOrderCode.setText("Mã đơn hàng: #" + order.getOrderID());
+        fillItems();
+    }
+
+    /** Khung tóm tắt: mỗi sách trong đơn một dòng "tên ×số lượng" và thành tiền. */
+    private void fillItems() {
+        pnlItems.setLayout(new javax.swing.BoxLayout(pnlItems, javax.swing.BoxLayout.Y_AXIS));
+        OrderDetail[] details = order.getDetails();
+        if (details == null) {
+            return;
+        }
+        for (OrderDetail d : details) {
+            javax.swing.JPanel row = new javax.swing.JPanel(new java.awt.BorderLayout(12, 0));
+            row.setOpaque(false);
+            row.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 0, 5, 0));
+            javax.swing.JLabel name = new javax.swing.JLabel(d.getBook().getTitle() + "  ×" + d.getQuantity());
+            name.setForeground(VintageTheme.TEXT);
+            javax.swing.JLabel amount = new javax.swing.JLabel(String.format("%,.0f₫", d.getSubtotal()));
+            amount.setForeground(VintageTheme.TEXT);
+            row.add(name, java.awt.BorderLayout.CENTER);
+            row.add(amount, java.awt.BorderLayout.EAST);
+            pnlItems.add(row);
+        }
     }
 
     @Override
@@ -74,13 +103,19 @@ public class PaymentFrm extends javax.swing.JPanel implements CustomerPage {
 
         pnlContent = new javax.swing.JPanel();
         lblTitle = new javax.swing.JLabel();
-        pnlCard = new javax.swing.JPanel();
+        pnlForm = new javax.swing.JPanel();
+        lblFormTitle = new javax.swing.JLabel();
+        lblOrderCode = new javax.swing.JLabel();
         lblAmountCaption = new javax.swing.JLabel();
         lblAmount = new javax.swing.JLabel();
-        lblMethodCaption = new javax.swing.JLabel();
-        lblMethod = new javax.swing.JLabel();
         btnCancelOrder = new javax.swing.JButton();
         btnPay = new javax.swing.JButton();
+        pnlSummary = new javax.swing.JPanel();
+        lblSummaryTitle = new javax.swing.JLabel();
+        pnlItems = new javax.swing.JPanel();
+        sepSummary = new javax.swing.JSeparator();
+        lblTotalCaption = new javax.swing.JLabel();
+        lblTotal = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setLayout(new java.awt.BorderLayout());
@@ -90,18 +125,21 @@ public class PaymentFrm extends javax.swing.JPanel implements CustomerPage {
         lblTitle.setFont(new java.awt.Font("Cormorant Garamond", 1, 30)); // NOI18N
         lblTitle.setText("Thanh toán");
 
-        pnlCard.setBackground(new java.awt.Color(255, 255, 255));
-        pnlCard.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(234, 223, 209), 1, true));
+        pnlForm.setBackground(new java.awt.Color(255, 255, 255));
+        pnlForm.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(234, 223, 209), 1, true));
+
+        lblFormTitle.setFont(new java.awt.Font("Raleway Medium", 1, 16)); // NOI18N
+        lblFormTitle.setForeground(new java.awt.Color(59, 42, 32));
+        lblFormTitle.setText("Xác nhận thanh toán");
+
+        lblOrderCode.setForeground(new java.awt.Color(140, 123, 109));
+        lblOrderCode.setText("Mã đơn hàng: #0");
 
         lblAmountCaption.setText("Số tiền cần thanh toán:");
 
-        lblAmount.setFont(new java.awt.Font("Raleway Medium", 0, 20)); // NOI18N
+        lblAmount.setFont(new java.awt.Font("Raleway Medium", 0, 22)); // NOI18N
         lblAmount.setForeground(new java.awt.Color(138, 87, 59));
         lblAmount.setText("0₫");
-
-        lblMethodCaption.setText("Phương thức thanh toán:");
-
-        lblMethod.setText("VNPay");
 
         btnCancelOrder.setBackground(new java.awt.Color(122, 74, 51));
         btnCancelOrder.setFont(new java.awt.Font("Raleway Medium", 0, 14)); // NOI18N
@@ -127,56 +165,120 @@ public class PaymentFrm extends javax.swing.JPanel implements CustomerPage {
             }
         });
 
-        javax.swing.GroupLayout pnlCardLayout = new javax.swing.GroupLayout(pnlCard);
-        pnlCard.setLayout(pnlCardLayout);
-        pnlCardLayout.setHorizontalGroup(
-            pnlCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlCardLayout.createSequentialGroup()
+        javax.swing.GroupLayout pnlFormLayout = new javax.swing.GroupLayout(pnlForm);
+        pnlForm.setLayout(pnlFormLayout);
+        pnlFormLayout.setHorizontalGroup(
+            pnlFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlFormLayout.createSequentialGroup()
                 .addGap(24, 24, 24)
-                .addGroup(pnlCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pnlCardLayout.createSequentialGroup()
-                        .addGroup(pnlCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblAmountCaption)
-                            .addComponent(lblMethodCaption))
+                .addGroup(pnlFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblFormTitle)
+                    .addComponent(lblOrderCode)
+                    .addGroup(pnlFormLayout.createSequentialGroup()
+                        .addComponent(lblAmountCaption)
                         .addGap(14, 14, 14)
-                        .addGroup(pnlCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblAmount)
-                            .addComponent(lblMethod)))
-                    .addGroup(pnlCardLayout.createSequentialGroup()
+                        .addComponent(lblAmount))
+                    .addGroup(pnlFormLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(btnCancelOrder)
                         .addGap(12, 12, 12)
                         .addComponent(btnPay)))
                 .addGap(24, 24, 24))
         );
-        pnlCardLayout.setVerticalGroup(
-            pnlCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlCardLayout.createSequentialGroup()
+        pnlFormLayout.setVerticalGroup(
+            pnlFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlFormLayout.createSequentialGroup()
                 .addGap(24, 24, 24)
-                .addGroup(pnlCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addComponent(lblFormTitle)
+                .addGap(14, 14, 14)
+                .addComponent(lblOrderCode)
+                .addGap(20, 20, 20)
+                .addGroup(pnlFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblAmountCaption)
                     .addComponent(lblAmount))
-                .addGap(16, 16, 16)
-                .addGroup(pnlCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblMethodCaption)
-                    .addComponent(lblMethod))
-                .addGap(24, 24, 24)
-                .addGroup(pnlCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGap(24, 24, Short.MAX_VALUE)
+                .addGroup(pnlFormLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnCancelOrder, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnPay, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(24, 24, 24))
         );
 
+        pnlSummary.setBackground(new java.awt.Color(252, 249, 244));
+        pnlSummary.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(234, 223, 209), 1, true));
+
+        lblSummaryTitle.setFont(new java.awt.Font("Raleway Medium", 1, 16)); // NOI18N
+        lblSummaryTitle.setForeground(new java.awt.Color(59, 42, 32));
+        lblSummaryTitle.setText("Tóm tắt đơn hàng");
+
+        pnlItems.setOpaque(false);
+
+        javax.swing.GroupLayout pnlItemsLayout = new javax.swing.GroupLayout(pnlItems);
+        pnlItems.setLayout(pnlItemsLayout);
+        pnlItemsLayout.setHorizontalGroup(
+            pnlItemsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        pnlItemsLayout.setVerticalGroup(
+            pnlItemsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+
+        sepSummary.setForeground(new java.awt.Color(227, 216, 202));
+
+        lblTotalCaption.setFont(new java.awt.Font("Raleway Medium", 0, 15)); // NOI18N
+        lblTotalCaption.setText("Tổng tiền:");
+
+        lblTotal.setFont(new java.awt.Font("Raleway Medium", 0, 22)); // NOI18N
+        lblTotal.setForeground(new java.awt.Color(138, 87, 59));
+        lblTotal.setText("0₫");
+
+        javax.swing.GroupLayout pnlSummaryLayout = new javax.swing.GroupLayout(pnlSummary);
+        pnlSummary.setLayout(pnlSummaryLayout);
+        pnlSummaryLayout.setHorizontalGroup(
+            pnlSummaryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlSummaryLayout.createSequentialGroup()
+                .addGap(24, 24, 24)
+                .addGroup(pnlSummaryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblSummaryTitle)
+                    .addComponent(pnlItems, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(sepSummary)
+                    .addGroup(pnlSummaryLayout.createSequentialGroup()
+                        .addComponent(lblTotalCaption)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(lblTotal)))
+                .addGap(24, 24, 24))
+        );
+        pnlSummaryLayout.setVerticalGroup(
+            pnlSummaryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlSummaryLayout.createSequentialGroup()
+                .addGap(24, 24, 24)
+                .addComponent(lblSummaryTitle)
+                .addGap(12, 12, 12)
+                .addComponent(pnlItems, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12)
+                .addComponent(sepSummary, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(14, 14, 14)
+                .addGroup(pnlSummaryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblTotalCaption)
+                    .addComponent(lblTotal))
+                .addGap(24, 24, 24))
+        );
+
         javax.swing.GroupLayout pnlContentLayout = new javax.swing.GroupLayout(pnlContent);
         pnlContent.setLayout(pnlContentLayout);
+        pnlContentLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {pnlForm, pnlSummary});
+
         pnlContentLayout.setHorizontalGroup(
             pnlContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlContentLayout.createSequentialGroup()
                 .addGap(28, 28, 28)
                 .addGroup(pnlContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lblTitle)
-                    .addComponent(pnlCard, javax.swing.GroupLayout.PREFERRED_SIZE, 600, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(pnlContentLayout.createSequentialGroup()
+                        .addComponent(pnlForm, 0, 560, 880)
+                        .addGap(24, 24, 24)
+                        .addComponent(pnlSummary, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(28, 28, Short.MAX_VALUE))
         );
         pnlContentLayout.setVerticalGroup(
             pnlContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -184,7 +286,9 @@ public class PaymentFrm extends javax.swing.JPanel implements CustomerPage {
                 .addGap(28, 28, 28)
                 .addComponent(lblTitle)
                 .addGap(16, 16, 16)
-                .addComponent(pnlCard, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(pnlContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(pnlForm, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(pnlSummary, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
@@ -198,21 +302,16 @@ public class PaymentFrm extends javax.swing.JPanel implements CustomerPage {
     }//GEN-LAST:event_btnCancelOrderActionPerformed
 
     private void btnPayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPayActionPerformed
-        String method = order.getPaymentMethod();
-        if ("VNPay".equals(method) || "Momo".equals(method)) {
-            shell.navigateTo(new MockPaymentGatewayFrm(customer, order, method));
-            return;
-        }
-
         Payment payment = new Payment();
         payment.setPaymentDate(new Date());
         payment.setAmount(order.getTotalAmount());
-        payment.setPaymentMethod(order.getPaymentMethod());
+        payment.setPaymentMethod(PAYMENT_METHOD);
         payment.setStatus("Paid");
         payment.setOrderID(order.getOrderID());
 
         if (new PaymentDAO().addPayment(payment)) {
             new OrderDAO().updateOrderStatus(order.getOrderID(), "Paid");
+            removePaidFromCart();
             JOptionPane.showMessageDialog(this, "Thanh toán và đặt hàng thành công!");
             shell.navigateTo(new CustomerHomeFrm(customer));
         } else {
@@ -220,15 +319,37 @@ public class PaymentFrm extends javax.swing.JPanel implements CustomerPage {
         }
     }//GEN-LAST:event_btnPayActionPerformed
 
+    /** Thanh toán xong thì chỉ các sách trong đơn này bị trừ khỏi giỏ hàng; sách chưa thanh toán vẫn ở lại giỏ. */
+    private void removePaidFromCart() {
+        if (order.getDetails() == null) {
+            return;
+        }
+        ShoppingCartDAO shoppingCartDAO = new ShoppingCartDAO();
+        ShoppingCart cart = shoppingCartDAO.getOrCreateCart(customer);
+        for (OrderDetail d : order.getDetails()) {
+            CartItem item = new CartItem();
+            item.setCartID(cart.getCartID());
+            item.setBook(d.getBook());
+            shoppingCartDAO.removeCartItem(item);
+        }
+        shell.showLoginState();
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancelOrder;
     private javax.swing.JButton btnPay;
     private javax.swing.JLabel lblAmount;
     private javax.swing.JLabel lblAmountCaption;
-    private javax.swing.JLabel lblMethod;
-    private javax.swing.JLabel lblMethodCaption;
+    private javax.swing.JLabel lblFormTitle;
+    private javax.swing.JLabel lblOrderCode;
+    private javax.swing.JLabel lblSummaryTitle;
     private javax.swing.JLabel lblTitle;
-    private javax.swing.JPanel pnlCard;
+    private javax.swing.JLabel lblTotal;
+    private javax.swing.JLabel lblTotalCaption;
     private javax.swing.JPanel pnlContent;
+    private javax.swing.JPanel pnlForm;
+    private javax.swing.JPanel pnlItems;
+    private javax.swing.JPanel pnlSummary;
+    private javax.swing.JSeparator sepSummary;
     // End of variables declaration//GEN-END:variables
 }

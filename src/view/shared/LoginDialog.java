@@ -121,11 +121,11 @@ public class LoginDialog extends javax.swing.JDialog implements ActionListener {
         lblSubtitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lblSubtitle.setText("Đăng nhập để tiếp tục");
 
-        jLabel1.setText("Username:");
+        jLabel1.setText("Tên đăng nhập:");
 
-        jLabel2.setText("Password:");
+        jLabel2.setText("Mật khẩu:");
 
-        btnLogin.setText("Login");
+        btnLogin.setText("Đăng nhập");
 
         lblGoRegister.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lblGoRegister.setText("Chưa có tài khoản? Đăng ký ngay");

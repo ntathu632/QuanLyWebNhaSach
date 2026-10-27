@@ -216,7 +216,7 @@ public class AdminShellFrm extends javax.swing.JFrame {
         brandDivider.setLayout(new java.awt.FlowLayout());
         sidebar.add(brandDivider);
 
-        btnNavDashboard.setText("Dashboard");
+        btnNavDashboard.setText("Tổng quan");
         btnNavDashboard.setIcon(new FlatIcon(FlatIcon.Kind.HOME, AppTheme.SIDEBAR_TEXT_MUTED, 16));
         btnNavDashboard.setIconTextGap(10);
         btnNavDashboard.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);

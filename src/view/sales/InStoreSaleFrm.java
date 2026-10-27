@@ -49,6 +49,7 @@ import model.Employee;
 import model.OrderDetail;
 import view.shared.BookCoverPanel;
 import view.shared.AppTheme;
+import view.shared.Labels;
 import view.shared.ChangePasswordDialog;
 import view.shared.QuantityDialog;
 
@@ -83,6 +84,7 @@ public class InStoreSaleFrm extends javax.swing.JPanel implements SalesPage {
     public InStoreSaleFrm(Employee employee) {
         this.employee = employee;
         initComponents();
+        cboPaymentMethod.setRenderer(Labels.comboRenderer());
         txtKeyword.putClientProperty("JTextField.placeholderText", "Tìm sách theo tên, ISBN...");
         scrCards.getVerticalScrollBar().setUnitIncrement(16);
         AppTheme.secondary(btnPickCustomer);
@@ -612,7 +614,7 @@ public class InStoreSaleFrm extends javax.swing.JPanel implements SalesPage {
         }
         sb.append("----------------------------------------\n");
         sb.append(String.format("%-26s %12s%n", "Tổng cộng:", String.format("%,.0f₫", total)));
-        sb.append("Thanh toán: ").append(paymentMethod).append("\n");
+        sb.append("Thanh toán: ").append(Labels.paymentMethod(paymentMethod)).append("\n");
         sb.append("========================================\n");
         sb.append("           Cảm ơn quý khách!\n");
         return sb.toString();

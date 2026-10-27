@@ -21,7 +21,7 @@ public class ManageCategoryPage extends javax.swing.JPanel implements AdminPage 
 
     private AdminShellFrm shell;
 
-    private final DefaultTableModel model = new DefaultTableModel(new String[]{"ID", "Tên danh mục", "Mô tả"}, 0) {
+    private final DefaultTableModel model = new DefaultTableModel(new String[]{"Mã", "Tên danh mục", "Mô tả"}, 0) {
         @Override
         public boolean isCellEditable(int row, int col) {
             return false;

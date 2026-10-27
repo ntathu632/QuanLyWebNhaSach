@@ -1,5 +1,5 @@
 /*
- * Trang Đơn hàng online (FR-SALE-02 Process Online Order + FR-SALE-03 Update
+ * Trang Đơn hàng trực tuyến (FR-SALE-02 Process Online Order + FR-SALE-03 Update
  * Order Status + FR-SALE-04/FR-CUS-10 Cancel Online Order — cùng dùng chung
  * 1 thao tác đổi trạng thái) (JFrame Form). Chỉ hiện đơn CHƯA có Invoice —
  * đơn đã lập hóa đơn tại quầy (InStoreSaleFrm) không thuộc kênh online,
@@ -20,6 +20,7 @@ import model.Customer;
 import model.Employee;
 import model.Order;
 import view.shared.AppTheme;
+import view.shared.Labels;
 import view.shared.ChangePasswordDialog;
 
 /**
@@ -46,6 +47,7 @@ public class OrderManagementFrm extends javax.swing.JPanel implements SalesPage 
     public OrderManagementFrm(Employee employee) {
         this.employee = employee;
         initComponents();
+        cboStatusFilter.setRenderer(Labels.comboRenderer());
         AppTheme.secondary(btnView);
         AppTheme.primary(btnUpdateStatus);
         AppTheme.alignTableColumn(tblOrders, 0, SwingConstants.CENTER, 80, 80);
@@ -63,7 +65,7 @@ public class OrderManagementFrm extends javax.swing.JPanel implements SalesPage 
 
     @Override
     public String title() {
-        return "Đơn Hàng Online";
+        return "Đơn Hàng Trực Tuyến";
     }
 
     @Override
@@ -98,7 +100,7 @@ public class OrderManagementFrm extends javax.swing.JPanel implements SalesPage 
         pnlContent.setBackground(new java.awt.Color(255, 255, 255));
 
         lblTitle.setFont(new java.awt.Font("Cormorant Garamond", 1, 30)); // NOI18N
-        lblTitle.setText("Đơn hàng online");
+        lblTitle.setText("Đơn hàng trực tuyến");
 
         lblFilter.setText("Lọc theo trạng thái:");
 
@@ -113,7 +115,7 @@ public class OrderManagementFrm extends javax.swing.JPanel implements SalesPage 
         pnlCard.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(234, 223, 209), 1, true));
 
         lblCardTitle.setFont(new java.awt.Font("Raleway Medium", 0, 15)); // NOI18N
-        lblCardTitle.setText("Danh sách đơn hàng online");
+        lblCardTitle.setText("Danh sách đơn hàng trực tuyến");
 
         btnView.setBackground(new java.awt.Color(122, 74, 51));
         btnView.setFont(new java.awt.Font("Raleway Medium", 0, 14)); // NOI18N
@@ -297,11 +299,11 @@ public class OrderManagementFrm extends javax.swing.JPanel implements SalesPage 
         model.setRowCount(0);
         for (Order o : currentOrders) {
             model.addRow(new Object[]{o.getOrderID(), o.getCustomer().getFullName(),
-                DATE_FMT.format(o.getOrderDate()), String.format("%,.0f₫", o.getTotalAmount()), o.getStatus()});
+                DATE_FMT.format(o.getOrderDate()), String.format("%,.0f₫", o.getTotalAmount()), Labels.status(o.getStatus())});
         }
     }
 
-    /** FR-SALE-02: xem chi tiết 1 đơn hàng online — thông tin khách hàng + danh sách sách đã đặt. */
+    /** FR-SALE-02: xem chi tiết 1 đơn hàng trực tuyến — thông tin khách hàng + danh sách sách đã đặt. */
     private void showOrderDetail(Order order) {
         Customer c = order.getCustomer();
         SalesOrderDetailDialog.show(this, "Chi tiết đơn hàng #" + order.getOrderID(), new String[][]{

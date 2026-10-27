@@ -264,7 +264,7 @@ public class AccountFrm extends javax.swing.JPanel implements CustomerPage {
 
         lblUsername.setFont(new java.awt.Font("Raleway Medium", 0, 13)); // NOI18N
         lblUsername.setForeground(new java.awt.Color(94, 77, 64));
-        lblUsername.setText("Username: ...");
+        lblUsername.setText("Tên đăng nhập: ...");
 
         lblEmailSummary.setFont(new java.awt.Font("Raleway Medium", 0, 13)); // NOI18N
         lblEmailSummary.setForeground(new java.awt.Color(94, 77, 64));
@@ -916,7 +916,7 @@ public class AccountFrm extends javax.swing.JPanel implements CustomerPage {
         lblAvatar.setIcon(new AvatarIcon(loadAvatarImage(customer.getAvatar()), 64));
         lblName.setText(customer.getFullName());
         lblCustomerId.setText("Mã khách hàng: " + customer.getCustomerID());
-        lblUsername.setText("Username: " + customer.getUsername());
+        lblUsername.setText("Tên đăng nhập: " + customer.getUsername());
         lblEmailSummary.setText("Email: " + customer.getEmail());
         lblPhoneSummary.setText("Số điện thoại: " + (isBlank(customer.getPhone()) ? "Chưa cập nhật" : customer.getPhone()));
         lblFullNameValue.setText(valueOrPlaceholder(customer.getFullName()));

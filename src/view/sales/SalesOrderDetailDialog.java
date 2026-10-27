@@ -191,7 +191,7 @@ public class SalesOrderDetailDialog extends javax.swing.JDialog {
         lblTotal.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         lblTotal.setText("Tổng cộng: 0₫");
 
-        btnOk.setText("OK");
+        btnOk.setText("Đồng ý");
         btnOk.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnOkActionPerformed(evt);

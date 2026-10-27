@@ -25,7 +25,7 @@ public class ManageBooksPage extends javax.swing.JPanel implements AdminPage {
 
     private AdminShellFrm shell;
 
-    private final DefaultTableModel model = new DefaultTableModel(new String[]{"ID", "ISBN", "Tên sách", "Giá"}, 0) {
+    private final DefaultTableModel model = new DefaultTableModel(new String[]{"Mã", "ISBN", "Tên sách", "Giá"}, 0) {
         @Override
         public boolean isCellEditable(int row, int col) {
             return false;

@@ -516,7 +516,7 @@
                 </Component>
                 <Component class="javax.swing.JButton" name="btnReset">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Reset"/>
+                    <Property name="text" type="java.lang.String" value="Đặt lại"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.Box$Filler" name="filler8">

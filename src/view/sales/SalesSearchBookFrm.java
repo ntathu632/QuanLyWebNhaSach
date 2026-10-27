@@ -7,10 +7,16 @@
 package view.sales;
 
 import dao.BookDAO;
+import dao.CategoryDAO;
 import dao.InventoryDAO;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
 import model.Book;
+import model.Category;
 import model.Employee;
 import view.shared.AppTheme;
 import view.shared.ChangePasswordDialog;
@@ -25,12 +31,16 @@ public class SalesSearchBookFrm extends javax.swing.JPanel implements SalesPage 
 
     private final Employee employee;
 
+    /** Các danh mục trong ô lọc, cùng thứ tự với các mục của cboCategory (trừ mục "Tất cả danh mục" ở đầu). */
+    private Category[] categories = new Category[0];
+
     /**
      * Creates new form SalesSearchBookFrm
      */
     public SalesSearchBookFrm(Employee employee) {
         this.employee = employee;
         initComponents();
+        loadCategories();
         txtKeyword.putClientProperty("JTextField.placeholderText", "Tìm theo mã sách, ISBN hoặc tên sách...");
         AppTheme.primary(btnSearch);
         AppTheme.alignTableColumn(tblBooks, 0, SwingConstants.CENTER, 60, 60);
@@ -70,6 +80,7 @@ public class SalesSearchBookFrm extends javax.swing.JPanel implements SalesPage 
         lblTitle = new javax.swing.JLabel();
         txtKeyword = new javax.swing.JTextField();
         btnSearch = new javax.swing.JButton();
+        cboCategory = new javax.swing.JComboBox<>();
         pnlCard = new javax.swing.JPanel();
         lblCardTitle = new javax.swing.JLabel();
         scrBooks = new javax.swing.JScrollPane();
@@ -86,6 +97,13 @@ public class SalesSearchBookFrm extends javax.swing.JPanel implements SalesPage 
         txtKeyword.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtKeywordActionPerformed(evt);
+            }
+        });
+
+        cboCategory.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Tất cả danh mục" }));
+        cboCategory.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cboCategoryActionPerformed(evt);
             }
         });
 
@@ -112,7 +130,7 @@ public class SalesSearchBookFrm extends javax.swing.JPanel implements SalesPage 
 
             },
             new String [] {
-                "ID", "ISBN", "Tên sách", "Giá", "Tồn kho"
+                "Mã", "ISBN", "Tên sách", "Giá", "Tồn kho"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -163,6 +181,8 @@ public class SalesSearchBookFrm extends javax.swing.JPanel implements SalesPage 
                     .addGroup(pnlContentLayout.createSequentialGroup()
                         .addComponent(txtKeyword, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGap(10, 10, 10)
+                        .addComponent(cboCategory, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(10, 10, 10)
                         .addComponent(btnSearch))
                     .addComponent(pnlCard, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(28, 28, 28))
@@ -175,6 +195,7 @@ public class SalesSearchBookFrm extends javax.swing.JPanel implements SalesPage 
                 .addGap(16, 16, 16)
                 .addGroup(pnlContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtKeyword, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cboCategory, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(16, 16, 16)
                 .addComponent(pnlCard, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -192,9 +213,40 @@ public class SalesSearchBookFrm extends javax.swing.JPanel implements SalesPage 
         doSearch();
     }//GEN-LAST:event_btnSearchActionPerformed
 
+    private void cboCategoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboCategoryActionPerformed
+        doSearch();
+    }//GEN-LAST:event_cboCategoryActionPerformed
+
+    /** Đổ danh sách danh mục vào ô lọc (mục đầu là "Tất cả danh mục"). */
+    private void loadCategories() {
+        categories = new CategoryDAO().searchCategory("");
+        for (Category category : categories) {
+            cboCategory.addItem(category.getCategoryName());
+        }
+    }
+
+    /** Chỉ giữ các sách thuộc danh mục đang chọn ở ô lọc (chọn "Tất cả danh mục" thì giữ nguyên). */
+    private Book[] filterByCategory(Book[] books) {
+        int index = cboCategory.getSelectedIndex() - 1;
+        if (index < 0 || index >= categories.length) {
+            return books;
+        }
+        Set<Integer> ids = new HashSet<>();
+        for (Book book : new BookDAO().searchByCategory(categories[index].getCategoryID())) {
+            ids.add(book.getBookID());
+        }
+        List<Book> kept = new ArrayList<>();
+        for (Book book : books) {
+            if (ids.contains(book.getBookID())) {
+                kept.add(book);
+            }
+        }
+        return kept.toArray(new Book[0]);
+    }
+
     private void doSearch() {
         InventoryDAO inventoryDAO = new InventoryDAO();
-        Book[] found = new BookDAO().searchBook(txtKeyword.getText().trim());
+        Book[] found = filterByCategory(new BookDAO().searchBook(txtKeyword.getText().trim()));
         DefaultTableModel model = (DefaultTableModel) tblBooks.getModel();
         model.setRowCount(0);
         for (Book b : found) {
@@ -211,6 +263,7 @@ public class SalesSearchBookFrm extends javax.swing.JPanel implements SalesPage 
     private javax.swing.JScrollPane scrBooks;
     private javax.swing.JTable tblBooks;
     private javax.swing.JButton btnSearch;
+    private javax.swing.JComboBox<String> cboCategory;
     private javax.swing.JTextField txtKeyword;
     // End of variables declaration//GEN-END:variables
 }

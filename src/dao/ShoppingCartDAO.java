@@ -57,13 +57,14 @@ public class ShoppingCartDAO extends DAO {
         }
     }
 
-    // Đếm tổng số lượng sách trong giỏ hàng để hiện badge ở navbar — CHỈ ĐỌC,
+    // Đếm số loại sách (số dòng) trong giỏ hàng để hiện badge ở navbar — 1 loại
+    // sách dù số lượng 2 vẫn tính là 1 — CHỈ ĐỌC,
     // không tạo mới ShoppingCart nếu khách chưa từng có giỏ (khác với
     // getOrCreateCart(), vốn tạo giỏ ngay cả khi chỉ đang xem trang, không phải
     // hành vi mong muốn cho việc hiện badge).
     public int countItemsIfCartExists(Customer customer) {
         try {
-            String sql = "SELECT ISNULL(SUM(ci.quantity), 0) AS cnt FROM ShoppingCart sc "
+            String sql = "SELECT COUNT(ci.bookID) AS cnt FROM ShoppingCart sc "
                     + "LEFT JOIN CartItem ci ON ci.cartID = sc.cartID WHERE sc.customerID = ?";
             PreparedStatement ps = con.prepareStatement(sql);
             ps.setInt(1, customer.getCustomerID());

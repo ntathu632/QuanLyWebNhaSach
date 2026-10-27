@@ -125,9 +125,9 @@ public class RegisterDialog extends javax.swing.JDialog implements ActionListene
 
         lblAddress.setText("Địa chỉ:");
 
-        lblUsername.setText("Username: *");
+        lblUsername.setText("Tên đăng nhập: *");
 
-        lblPassword.setText("Password: *");
+        lblPassword.setText("Mật khẩu: *");
 
         lblConfirmPassword.setText("Xác nhận mật khẩu: *");
 

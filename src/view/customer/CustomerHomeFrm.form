@@ -52,24 +52,18 @@
                               <Component id="lblCategoryTitle" min="-2" max="-2" attributes="0"/>
                               <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
                               <Component id="sepCategory" max="32767" attributes="0"/>
-                              <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
-                              <Component id="lblCategoryAll" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <Component id="pnlCategories" alignment="0" min="0" pref="0" max="32767" attributes="0"/>
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="lblBestSellerTitle" min="-2" max="-2" attributes="0"/>
                               <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
                               <Component id="sepBestSeller" max="32767" attributes="0"/>
-                              <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
-                              <Component id="lblBestSellerAll" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <Component id="pnlBestSellers" alignment="0" min="0" pref="0" max="32767" attributes="0"/>
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="lblFeaturedTitle" min="-2" max="-2" attributes="0"/>
                               <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
                               <Component id="sepFeatured" max="32767" attributes="0"/>
-                              <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
-                              <Component id="lblViewAll" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <Component id="pnlFeatured" alignment="0" min="0" pref="0" max="32767" attributes="0"/>
                       </Group>
@@ -89,10 +83,6 @@
                               <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
                               <Component id="sepCategory" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <Group type="102" alignment="0" attributes="0">
-                              <EmptySpace min="-2" pref="11" max="-2" attributes="0"/>
-                              <Component id="lblCategoryAll" min="-2" max="-2" attributes="0"/>
-                          </Group>
                       </Group>
                       <EmptySpace min="-2" pref="14" max="-2" attributes="0"/>
                       <Component id="pnlCategories" min="-2" pref="132" max="-2" attributes="0"/>
@@ -103,13 +93,9 @@
                               <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
                               <Component id="sepBestSeller" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <Group type="102" alignment="0" attributes="0">
-                              <EmptySpace min="-2" pref="11" max="-2" attributes="0"/>
-                              <Component id="lblBestSellerAll" min="-2" max="-2" attributes="0"/>
-                          </Group>
                       </Group>
                       <EmptySpace min="-2" pref="14" max="-2" attributes="0"/>
-                      <Component id="pnlBestSellers" min="-2" pref="156" max="-2" attributes="0"/>
+                      <Component id="pnlBestSellers" min="-2" pref="180" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="lblFeaturedTitle" alignment="0" min="-2" max="-2" attributes="0"/>
@@ -117,13 +103,9 @@
                               <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
                               <Component id="sepFeatured" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <Group type="102" alignment="0" attributes="0">
-                              <EmptySpace min="-2" pref="11" max="-2" attributes="0"/>
-                              <Component id="lblViewAll" min="-2" max="-2" attributes="0"/>
-                          </Group>
                       </Group>
                       <EmptySpace min="-2" pref="14" max="-2" attributes="0"/>
-                      <Component id="pnlFeatured" min="-2" pref="156" max="-2" attributes="0"/>
+                      <Component id="pnlFeatured" min="-2" pref="180" max="-2" attributes="0"/>
                       <EmptySpace min="28" pref="28" max="32767" attributes="0"/>
                   </Group>
               </Group>
@@ -149,24 +131,6 @@
                   <Color blue="ca" green="d8" red="e3" type="rgb"/>
                 </Property>
               </Properties>
-            </Component>
-            <Component class="javax.swing.JLabel" name="lblCategoryAll">
-              <Properties>
-                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                  <Color blue="3b" green="57" red="8a" type="rgb"/>
-                </Property>
-                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="new view.shared.FlatIcon(view.shared.FlatIcon.Kind.ARROW_RIGHT, new java.awt.Color(138, 87, 59), 14)" type="code"/>
-                </Property>
-                <Property name="text" type="java.lang.String" value="Xem t&#x1ea5;t c&#x1ea3;"/>
-                <Property name="horizontalTextPosition" type="int" value="10"/>
-                <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
-                  <Color id="Hand Cursor"/>
-                </Property>
-              </Properties>
-              <Events>
-                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="lblCategoryAllMouseClicked"/>
-              </Events>
             </Component>
             <Container class="javax.swing.JPanel" name="pnlCategories">
               <Properties>
@@ -197,24 +161,6 @@
                 </Property>
               </Properties>
             </Component>
-            <Component class="javax.swing.JLabel" name="lblBestSellerAll">
-              <Properties>
-                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                  <Color blue="3b" green="57" red="8a" type="rgb"/>
-                </Property>
-                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="new view.shared.FlatIcon(view.shared.FlatIcon.Kind.ARROW_RIGHT, new java.awt.Color(138, 87, 59), 14)" type="code"/>
-                </Property>
-                <Property name="text" type="java.lang.String" value="Xem t&#x1ea5;t c&#x1ea3;"/>
-                <Property name="horizontalTextPosition" type="int" value="10"/>
-                <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
-                  <Color id="Hand Cursor"/>
-                </Property>
-              </Properties>
-              <Events>
-                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="lblBestSellerAllMouseClicked"/>
-              </Events>
-            </Component>
             <Container class="javax.swing.JPanel" name="pnlBestSellers">
               <Properties>
                 <Property name="opaque" type="boolean" value="false"/>
@@ -234,7 +180,7 @@
                 <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="20" green="2a" red="3b" type="rgb"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Kh&#xe1;m ph&#xe1; s&#xe1;ch"/>
+                <Property name="text" type="java.lang.String" value="S&#xe1;ch m&#x1edb;i"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JSeparator" name="sepFeatured">
@@ -243,24 +189,6 @@
                   <Color blue="ca" green="d8" red="e3" type="rgb"/>
                 </Property>
               </Properties>
-            </Component>
-            <Component class="javax.swing.JLabel" name="lblViewAll">
-              <Properties>
-                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                  <Color blue="3b" green="57" red="8a" type="rgb"/>
-                </Property>
-                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="new view.shared.FlatIcon(view.shared.FlatIcon.Kind.ARROW_RIGHT, new java.awt.Color(138, 87, 59), 14)" type="code"/>
-                </Property>
-                <Property name="text" type="java.lang.String" value="Xem t&#x1ea5;t c&#x1ea3;"/>
-                <Property name="horizontalTextPosition" type="int" value="10"/>
-                <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
-                  <Color id="Hand Cursor"/>
-                </Property>
-              </Properties>
-              <Events>
-                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="lblViewAllMouseClicked"/>
-              </Events>
             </Component>
             <Container class="javax.swing.JPanel" name="pnlFeatured">
               <Properties>

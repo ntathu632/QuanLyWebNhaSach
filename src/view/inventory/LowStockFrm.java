@@ -7,13 +7,20 @@
  */
 package view.inventory;
 
+import dao.BookDAO;
+import dao.CategoryDAO;
 import dao.InventoryDAO;
 import java.awt.Component;
 import java.util.List;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import model.Book;
+import model.Category;
 import model.Employee;
 import model.Inventory;
 import view.shared.AppTheme;
@@ -31,12 +38,16 @@ public class LowStockFrm extends javax.swing.JPanel implements InventoryPage {
 
     private final Employee employee;
 
+    /** Các danh mục trong ô lọc, cùng thứ tự với các mục của cboCategory (trừ mục "Tất cả danh mục" ở đầu). */
+    private Category[] categories = new Category[0];
+
     /**
      * Creates new form LowStockFrm
      */
     public LowStockFrm(Employee employee) {
         this.employee = employee;
         initComponents();
+        loadCategories();
         lblTitle.setText("Sách sắp hết hàng (dưới " + THRESHOLD + " quyển)");
         AppTheme.alignTableColumn(tblStock, 0, SwingConstants.LEFT, 0, 0);
         AppTheme.alignTableColumn(tblStock, 1, SwingConstants.CENTER, 90, 90);
@@ -84,6 +95,7 @@ public class LowStockFrm extends javax.swing.JPanel implements InventoryPage {
         lblTitle = new javax.swing.JLabel();
         pnlCard = new javax.swing.JPanel();
         lblCardTitle = new javax.swing.JLabel();
+        cboCategory = new javax.swing.JComboBox<>();
         scrStock = new javax.swing.JScrollPane();
         tblStock = new javax.swing.JTable();
 
@@ -100,6 +112,13 @@ public class LowStockFrm extends javax.swing.JPanel implements InventoryPage {
 
         lblCardTitle.setFont(new java.awt.Font("Raleway Medium", 0, 15)); // NOI18N
         lblCardTitle.setText("Danh sách sách cần nhập thêm");
+
+        cboCategory.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Tất cả danh mục" }));
+        cboCategory.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cboCategoryActionPerformed(evt);
+            }
+        });
 
         tblStock.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -131,7 +150,9 @@ public class LowStockFrm extends javax.swing.JPanel implements InventoryPage {
                 .addGap(16, 16, 16)
                 .addGroup(pnlCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnlCardLayout.createSequentialGroup()
-                        .addComponent(lblCardTitle))
+                        .addComponent(lblCardTitle)
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(cboCategory, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(scrStock, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(16, 16, 16))
         );
@@ -140,7 +161,8 @@ public class LowStockFrm extends javax.swing.JPanel implements InventoryPage {
             .addGroup(pnlCardLayout.createSequentialGroup()
                 .addGap(14, 14, 14)
                 .addGroup(pnlCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblCardTitle))
+                    .addComponent(lblCardTitle)
+                    .addComponent(cboCategory, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(10, 10, 10)
                 .addComponent(scrStock, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(14, 14, 14))
@@ -170,17 +192,44 @@ public class LowStockFrm extends javax.swing.JPanel implements InventoryPage {
         add(pnlContent, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
+    private void cboCategoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboCategoryActionPerformed
+        loadRows();
+    }//GEN-LAST:event_cboCategoryActionPerformed
+
+    /** Đổ danh sách danh mục vào ô lọc (mục đầu là "Tất cả danh mục"). */
+    private void loadCategories() {
+        categories = new CategoryDAO().searchCategory("");
+        for (Category category : categories) {
+            cboCategory.addItem(category.getCategoryName());
+        }
+    }
+
+    /** Sách sắp hết hàng, lọc theo danh mục đang chọn ở ô lọc (chọn "Tất cả danh mục" thì hiện tất cả). */
     private void loadRows() {
-        List<Inventory> rows = new InventoryDAO().lowStock(THRESHOLD);
+        int index = cboCategory.getSelectedIndex() - 1;
+        Set<Integer> ids = null;
+        if (index >= 0 && index < categories.length) {
+            ids = new HashSet<>();
+            for (Book book : new BookDAO().searchByCategory(categories[index].getCategoryID())) {
+                ids.add(book.getBookID());
+            }
+        }
+        List<Inventory> rows = new ArrayList<>();
+        for (Inventory inv : new InventoryDAO().lowStock(THRESHOLD)) {
+            if (ids == null || ids.contains(inv.getBookID())) {
+                rows.add(inv);
+            }
+        }
         DefaultTableModel model = (DefaultTableModel) tblStock.getModel();
         model.setRowCount(0);
         for (Inventory inv : rows) {
             model.addRow(new Object[]{inv.getBookTitle(), inv.getImportQuantity(), inv.getExportQuantity(), inv.getStockQuantity()});
         }
-        lblCardTitle.setText(rows.isEmpty() ? "Không có sách nào sắp hết hàng" : "Danh sách sách cần nhập thêm");
+        lblCardTitle.setText(rows.isEmpty() ? (index >= 0 ? "Không có sách sắp hết hàng trong danh mục này" : "Không có sách nào sắp hết hàng") : "Danh sách sách cần nhập thêm");
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox<String> cboCategory;
     private javax.swing.JLabel lblCardTitle;
     private javax.swing.JLabel lblTitle;
     private javax.swing.JPanel pnlCard;

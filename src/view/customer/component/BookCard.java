@@ -35,6 +35,11 @@ public final class BookCard {
     }
 
     public static JPanel build(Book book, Runnable onViewDetail) {
+        return build(book, onViewDetail, null);
+    }
+
+    /** onAddToCart != null thì cạnh nút "Xem chi tiết" có thêm nút giỏ hàng để thêm sách ngay từ thẻ. */
+    public static JPanel build(Book book, Runnable onViewDetail, Runnable onAddToCart) {
         JPanel card = whiteCard();
         card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
         onClick(card, onViewDetail);
@@ -60,11 +65,28 @@ public final class BookCard {
         card.add(Box.createVerticalStrut(10));
 
         JButton btn = new JButton("Xem chi tiết");
-        btn.setAlignmentX(JComponent.LEFT_ALIGNMENT);
         btn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 32));
         AppTheme.primary(btn);
         btn.addActionListener(e -> onViewDetail.run());
-        card.add(btn);
+
+        JPanel actions = new JPanel();
+        actions.setLayout(new BoxLayout(actions, BoxLayout.X_AXIS));
+        actions.setOpaque(false);
+        actions.setAlignmentX(JComponent.LEFT_ALIGNMENT);
+        actions.setMaximumSize(new Dimension(Integer.MAX_VALUE, 32));
+        actions.add(btn);
+        if (onAddToCart != null) {
+            JButton cart = new JButton(new FlatIcon(FlatIcon.Kind.CART, Color.WHITE, 16));
+            cart.setToolTipText("Thêm vào giỏ hàng");
+            cart.setPreferredSize(new Dimension(44, 32));
+            cart.setMinimumSize(new Dimension(44, 32));
+            cart.setMaximumSize(new Dimension(44, 32));
+            AppTheme.primary(cart);
+            cart.addActionListener(e -> onAddToCart.run());
+            actions.add(Box.createHorizontalStrut(8));
+            actions.add(cart);
+        }
+        card.add(actions);
         return card;
     }
 

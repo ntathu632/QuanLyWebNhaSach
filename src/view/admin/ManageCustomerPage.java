@@ -29,7 +29,7 @@ public class ManageCustomerPage extends javax.swing.JPanel implements AdminPage 
 
     private AdminShellFrm shell;
 
-    private final DefaultTableModel model = new DefaultTableModel(new String[]{"ID", "Họ tên", "Điện thoại", "Email", "Địa chỉ"}, 0) {
+    private final DefaultTableModel model = new DefaultTableModel(new String[]{"Mã", "Họ tên", "Điện thoại", "Email", "Địa chỉ"}, 0) {
         @Override
         public boolean isCellEditable(int row, int col) {
             return false;

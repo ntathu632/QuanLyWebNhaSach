@@ -1,6 +1,8 @@
 /*
- * Trang giỏ hàng (JFrame Form) — bảng các sách đã thêm, xóa từng dòng, và
- * chuyển sang CheckoutFrm. Tự lấy/tạo giỏ hàng của khách qua
+ * Trang giỏ hàng (JFrame Form) — bảng các sách đã thêm, mỗi dòng có ô tick:
+ * mặc định tick hết, ô ở góc tiêu đề cột để chọn/bỏ chọn tất cả. Nút Thanh
+ * toán chuyển sang CheckoutFrm với đúng các sách đã tick; sách thanh toán xong
+ * mới bị xóa khỏi giỏ (PaymentFrm). Tự lấy/tạo giỏ hàng của khách qua
  * ShoppingCartDAO.getOrCreateCart(). Navbar, tiêu đề, bảng (các cột), tổng
  * tiền và nút bấm thiết kế trong Design; các dòng của bảng đổ vào bằng code.
  */
@@ -36,16 +38,23 @@ public class ShoppingCartFrm extends javax.swing.JPanel implements CustomerPage 
     /** Các dòng đang hiện trong bảng, cùng thứ tự với các dòng của tblItems. */
     private final ArrayList<CartItem> currentItems = new ArrayList<>();
 
+    /** Mã các sách đang bị bỏ tick (mặc định mọi sách đều được tick); giữ lại khi nạp lại giỏ. */
+    private final java.util.Set<Integer> unchecked = new java.util.HashSet<>();
+
+    /** true trong lúc nạp lại bảng để không coi việc đổ dữ liệu là người dùng đổi tick. */
+    private boolean loading;
+
     /**
      * Creates new form ShoppingCartFrm
      */
     public ShoppingCartFrm(Customer customer) {
         this.customer = customer;
         initComponents();
-        AppTheme.alignTableColumn(tblItems, 0, SwingConstants.LEFT, 0, 0);
-        AppTheme.alignTableColumn(tblItems, 1, SwingConstants.CENTER, 100, 100);
-        AppTheme.alignTableColumn(tblItems, 2, SwingConstants.RIGHT, 130, 130);
+        AppTheme.alignTableColumn(tblItems, 1, SwingConstants.LEFT, 0, 0);
+        AppTheme.alignTableColumn(tblItems, 2, SwingConstants.CENTER, 100, 100);
         AppTheme.alignTableColumn(tblItems, 3, SwingConstants.RIGHT, 130, 130);
+        AppTheme.alignTableColumn(tblItems, 4, SwingConstants.RIGHT, 130, 130);
+        setupCheckColumn();
         cart = new ShoppingCartDAO().getOrCreateCart(customer);
         loadCart();
     }
@@ -105,12 +114,19 @@ public class ShoppingCartFrm extends javax.swing.JPanel implements CustomerPage 
 
             },
             new String [] {
-                "Sách", "Số lượng", "Đơn giá", "Thành tiền"
+                "", "Sách", "Số lượng", "Đơn giá", "Thành tiền"
             }
         ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false
+            Class[] types = new Class [] {
+                java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
             };
+            boolean[] canEdit = new boolean [] {
+                true, false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
@@ -140,7 +156,7 @@ public class ShoppingCartFrm extends javax.swing.JPanel implements CustomerPage 
         btnCheckout.setBackground(new java.awt.Color(122, 74, 51));
         btnCheckout.setFont(new java.awt.Font("Raleway Medium", 0, 14)); // NOI18N
         btnCheckout.setForeground(new java.awt.Color(255, 255, 255));
-        btnCheckout.setText("Tiến hành thanh toán");
+        btnCheckout.setText("Thanh toán");
         btnCheckout.setBorderPainted(false);
         btnCheckout.setFocusPainted(false);
         btnCheckout.addActionListener(new java.awt.event.ActionListener() {
@@ -204,14 +220,23 @@ public class ShoppingCartFrm extends javax.swing.JPanel implements CustomerPage 
 
 
     private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveActionPerformed
-        int row = tblItems.getSelectedRow();
-        if (row < 0 || row >= currentItems.size()) {
-            JOptionPane.showMessageDialog(this, "Vui lòng chọn 1 sách trong giỏ hàng để xóa!");
+        java.util.List<CartItem> picked = checkedItems();
+        if (picked.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng tick chọn sách cần xóa khỏi giỏ hàng!");
             return;
         }
-        if (new ShoppingCartDAO().removeCartItem(currentItems.get(row))) {
-            loadCart();
-        } else {
+        int ok = JOptionPane.showConfirmDialog(this, "Xóa " + picked.size() + " sách đã chọn khỏi giỏ hàng?",
+                "Xóa khỏi giỏ hàng", JOptionPane.YES_NO_OPTION);
+        if (ok != JOptionPane.YES_OPTION) {
+            return;
+        }
+        ShoppingCartDAO shoppingCartDAO = new ShoppingCartDAO();
+        boolean allOk = true;
+        for (CartItem item : picked) {
+            allOk &= shoppingCartDAO.removeCartItem(item);
+        }
+        loadCart();
+        if (!allOk) {
             JOptionPane.showMessageDialog(this, "Xóa sách khỏi giỏ hàng thất bại!");
         }
     }//GEN-LAST:event_btnRemoveActionPerformed
@@ -221,11 +246,31 @@ public class ShoppingCartFrm extends javax.swing.JPanel implements CustomerPage 
             JOptionPane.showMessageDialog(this, "Giỏ hàng đang trống!");
             return;
         }
+        java.util.List<CartItem> picked = checkedItems();
+        if (picked.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng tick chọn ít nhất 1 sách để thanh toán!");
+            return;
+        }
+        checkout(picked);
+    }//GEN-LAST:event_btnCheckoutActionPerformed
 
-        OrderDetail[] details = new OrderDetail[currentItems.size()];
-        float total = 0f;
+    /** Các sách đang được tick, theo thứ tự trong bảng. */
+    private java.util.List<CartItem> checkedItems() {
+        java.util.List<CartItem> picked = new ArrayList<>();
         for (int i = 0; i < currentItems.size(); i++) {
-            CartItem item = currentItems.get(i);
+            if (Boolean.TRUE.equals(tblItems.getValueAt(i, 0))) {
+                picked.add(currentItems.get(i));
+            }
+        }
+        return picked;
+    }
+
+    /** Dựng đơn hàng từ các sách đã tick rồi sang trang xác nhận đơn hàng. */
+    private void checkout(java.util.List<CartItem> items) {
+        OrderDetail[] details = new OrderDetail[items.size()];
+        float total = 0f;
+        for (int i = 0; i < items.size(); i++) {
+            CartItem item = items.get(i);
             details[i] = new OrderDetail(item.getQuantity(), item.getUnitPrice(), item.getSubtotal(), item.getBook());
             total += item.getSubtotal();
         }
@@ -236,26 +281,106 @@ public class ShoppingCartFrm extends javax.swing.JPanel implements CustomerPage 
         order.setStatus("Pending");
         order.setCustomer(cart.getCustomer());
         order.setDetails(details);
-        order.setCartID(cart.getCartID());
+        // Không gán cartID: lúc tạo đơn giỏ hàng chưa bị xóa; chỉ các sách đã thanh toán xong
+        // mới được PaymentFrm xóa khỏi giỏ (hủy đơn thì giỏ vẫn còn nguyên).
 
         shell.navigateTo(new CheckoutFrm(customer, order));
-    }//GEN-LAST:event_btnCheckoutActionPerformed
+    }
+
+    /**
+     * Cột đầu là ô tick từng sách. Ô ở tiêu đề cột (góc trái trên bảng) tick/bỏ tick tất cả:
+     * đang tick hết thì hiện đã tick, bấm vào để bỏ chọn hết, ngược lại thì chọn hết.
+     */
+    private void setupCheckColumn() {
+        tblItems.getColumnModel().getColumn(0).setMinWidth(48);
+        tblItems.getColumnModel().getColumn(0).setMaxWidth(48);
+        final javax.swing.JCheckBox headerBox = new javax.swing.JCheckBox();
+        headerBox.setHorizontalAlignment(SwingConstants.CENTER);
+        headerBox.setToolTipText("Chọn tất cả");
+        brownCheck(headerBox);
+        // Ô tick từng dòng cũng dùng màu nâu Vintage thay cho màu xanh mặc định.
+        final javax.swing.JCheckBox cellBox = new javax.swing.JCheckBox();
+        cellBox.setHorizontalAlignment(SwingConstants.CENTER);
+        brownCheck(cellBox);
+        tblItems.getColumnModel().getColumn(0).setCellRenderer((table, value, isSelected, hasFocus, row, column) -> {
+            cellBox.setSelected(Boolean.TRUE.equals(value));
+            cellBox.setBackground(isSelected ? table.getSelectionBackground() : table.getBackground());
+            return cellBox;
+        });
+        javax.swing.JCheckBox editBox = new javax.swing.JCheckBox();
+        brownCheck(editBox);
+        tblItems.getColumnModel().getColumn(0).setCellEditor(new javax.swing.DefaultCellEditor(editBox));
+        tblItems.getColumnModel().getColumn(0).setHeaderRenderer(new javax.swing.table.TableCellRenderer() {
+            @Override
+            public java.awt.Component getTableCellRendererComponent(javax.swing.JTable table, Object value,
+                    boolean isSelected, boolean hasFocus, int row, int column) {
+                headerBox.setSelected(!currentItems.isEmpty() && checkedItems().size() == currentItems.size());
+                headerBox.setBackground(table.getTableHeader().getBackground());
+                return headerBox;
+            }
+        });
+        tblItems.getTableHeader().addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                if (tblItems.getTableHeader().columnAtPoint(e.getPoint()) != 0 || currentItems.isEmpty()) {
+                    return;
+                }
+                boolean selectAll = checkedItems().size() != currentItems.size();
+                for (int i = 0; i < currentItems.size(); i++) {
+                    tblItems.setValueAt(selectAll, i, 0);
+                }
+            }
+        });
+        tblItems.getModel().addTableModelListener(e -> {
+            if (loading || e.getColumn() != 0) {
+                return;
+            }
+            for (int i = 0; i < currentItems.size(); i++) {
+                int bookID = currentItems.get(i).getBook().getBookID();
+                if (Boolean.TRUE.equals(tblItems.getValueAt(i, 0))) {
+                    unchecked.remove(bookID);
+                } else {
+                    unchecked.add(bookID);
+                }
+            }
+            updateTotal();
+        });
+    }
+
+    /** Ô tick màu nâu Vintage (nền nâu, dấu tick trắng). */
+    private static void brownCheck(javax.swing.JCheckBox box) {
+        box.putClientProperty("FlatLaf.style",
+                "icon.selectedBackground: #7A4A33; icon.selectedBorderColor: #7A4A33;"
+                + " icon.focusedBorderColor: #7A4A33; icon.hoverBorderColor: #7A4A33;"
+                + " icon.checkmarkColor: #FFFFFF");
+    }
+
+    /** Tổng tiền của các sách đang tick. */
+    private void updateTotal() {
+        float total = 0f;
+        java.util.List<CartItem> picked = checkedItems();
+        for (CartItem item : picked) {
+            total += item.getSubtotal();
+        }
+        lblTotal.setText("Đã chọn " + picked.size() + "/" + currentItems.size() + " sách, tổng cộng: " + String.format("%,.0f₫", total));
+        tblItems.getTableHeader().repaint();
+    }
 
     /** Đọc lại các sách trong giỏ từ DB, đổ vào bảng, cập nhật tổng tiền và badge giỏ hàng. */
     private void loadCart() {
         CartItem[] items = new ShoppingCartDAO().getCartItems(cart);
         cart.setItems(items);
         currentItems.clear();
+        loading = true;
         DefaultTableModel model = (DefaultTableModel) tblItems.getModel();
         model.setRowCount(0);
-        float total = 0f;
         for (CartItem item : items) {
             currentItems.add(item);
-            total += item.getSubtotal();
-            model.addRow(new Object[]{item.getBook().getTitle(), item.getQuantity(),
+            model.addRow(new Object[]{!unchecked.contains(item.getBook().getBookID()), item.getBook().getTitle(), item.getQuantity(),
                 String.format("%,.0f₫", item.getUnitPrice()), String.format("%,.0f₫", item.getSubtotal())});
         }
-        lblTotal.setText("Tổng cộng: " + String.format("%,.0f₫", total));
+        loading = false;
+        updateTotal();
         if (shell != null) {
             shell.showLoginState();
         }

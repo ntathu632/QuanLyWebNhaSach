@@ -486,7 +486,7 @@ public class EditBookPage extends javax.swing.JPanel implements AdminPage {
         buttonRow.setMaximumSize(new java.awt.Dimension(1160, 40));
         buttonRow.setLayout(new javax.swing.BoxLayout(buttonRow, javax.swing.BoxLayout.X_AXIS));
         buttonRow.add(filler7);
-        btnReset.setText("Reset");
+        btnReset.setText("Đặt lại");
         buttonRow.add(btnReset);
         buttonRow.add(filler8);
         btnSave.setText("Lưu");

@@ -152,14 +152,14 @@
     </Component>
     <Component class="javax.swing.JLabel" name="lblUsername">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Username: *"/>
+        <Property name="text" type="java.lang.String" value="Tên đăng nhập: *"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="txtUsername">
     </Component>
     <Component class="javax.swing.JLabel" name="lblPassword">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Password: *"/>
+        <Property name="text" type="java.lang.String" value="Mật khẩu: *"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JPasswordField" name="txtPassword">

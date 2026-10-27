@@ -110,14 +110,14 @@ public class StockTransactionDialog extends javax.swing.JDialog {
 
         lblNote.setText("Ghi chú:");
 
-        btnOk.setText("OK");
+        btnOk.setText("Đồng ý");
         btnOk.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnOkActionPerformed(evt);
             }
         });
 
-        btnCancel.setText("Cancel");
+        btnCancel.setText("Hủy");
         btnCancel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCancelActionPerformed(evt);

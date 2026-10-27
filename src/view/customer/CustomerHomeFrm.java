@@ -2,8 +2,8 @@
  * Trang chủ Khách hàng (JFrame Form) — trang mở đầu tiên khi chạy app.
  * customer == null nghĩa là khách vãng lai: vẫn xem/tìm sách được; thêm vào
  * giỏ hàng thì bật hộp thoại đăng nhập. Phần tĩnh (banner, tiêu đề các mục,
- * đường kẻ, link "Xem tất cả") thiết kế trong Design; phần lấy từ DB (ô danh
- * mục, thẻ sách bán chạy, khám phá sách) đổ vào các panel trống bằng code.
+ * đường kẻ) thiết kế trong Design; phần lấy từ DB (ô danh mục, thẻ sách bán
+ * chạy, sách mới) đổ vào các panel trống bằng code.
  * Banner để trống cho tới khi có file images/banner/home-banner.png.
  */
 package view.customer;
@@ -117,15 +117,12 @@ public class CustomerHomeFrm extends javax.swing.JPanel implements CustomerPage 
         pnlBanner = new view.customer.component.BannerPanel();
         lblCategoryTitle = new javax.swing.JLabel();
         sepCategory = new javax.swing.JSeparator();
-        lblCategoryAll = new javax.swing.JLabel();
         pnlCategories = new javax.swing.JPanel();
         lblBestSellerTitle = new javax.swing.JLabel();
         sepBestSeller = new javax.swing.JSeparator();
-        lblBestSellerAll = new javax.swing.JLabel();
         pnlBestSellers = new javax.swing.JPanel();
         lblFeaturedTitle = new javax.swing.JLabel();
         sepFeatured = new javax.swing.JSeparator();
-        lblViewAll = new javax.swing.JLabel();
         pnlFeatured = new javax.swing.JPanel();
 
         setBackground(new java.awt.Color(255, 255, 255));
@@ -141,17 +138,6 @@ public class CustomerHomeFrm extends javax.swing.JPanel implements CustomerPage 
 
         sepCategory.setForeground(new java.awt.Color(227, 216, 202));
 
-        lblCategoryAll.setForeground(new java.awt.Color(138, 87, 59));
-        lblCategoryAll.setIcon(new view.shared.FlatIcon(view.shared.FlatIcon.Kind.ARROW_RIGHT, new java.awt.Color(138, 87, 59), 14));
-        lblCategoryAll.setText("Xem tất cả");
-        lblCategoryAll.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
-        lblCategoryAll.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        lblCategoryAll.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                lblCategoryAllMouseClicked(evt);
-            }
-        });
-
         pnlCategories.setOpaque(false);
         pnlCategories.setLayout(new java.awt.GridLayout(1, 8, 12, 0));
 
@@ -161,36 +147,14 @@ public class CustomerHomeFrm extends javax.swing.JPanel implements CustomerPage 
 
         sepBestSeller.setForeground(new java.awt.Color(227, 216, 202));
 
-        lblBestSellerAll.setForeground(new java.awt.Color(138, 87, 59));
-        lblBestSellerAll.setIcon(new view.shared.FlatIcon(view.shared.FlatIcon.Kind.ARROW_RIGHT, new java.awt.Color(138, 87, 59), 14));
-        lblBestSellerAll.setText("Xem tất cả");
-        lblBestSellerAll.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
-        lblBestSellerAll.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        lblBestSellerAll.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                lblBestSellerAllMouseClicked(evt);
-            }
-        });
-
         pnlBestSellers.setOpaque(false);
         pnlBestSellers.setLayout(new java.awt.GridLayout(1, 4, 16, 0));
 
         lblFeaturedTitle.setFont(new java.awt.Font("Cormorant Garamond", 1, 30)); // NOI18N
         lblFeaturedTitle.setForeground(new java.awt.Color(59, 42, 32));
-        lblFeaturedTitle.setText("Khám phá sách");
+        lblFeaturedTitle.setText("Sách mới");
 
         sepFeatured.setForeground(new java.awt.Color(227, 216, 202));
-
-        lblViewAll.setForeground(new java.awt.Color(138, 87, 59));
-        lblViewAll.setIcon(new view.shared.FlatIcon(view.shared.FlatIcon.Kind.ARROW_RIGHT, new java.awt.Color(138, 87, 59), 14));
-        lblViewAll.setText("Xem tất cả");
-        lblViewAll.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
-        lblViewAll.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        lblViewAll.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                lblViewAllMouseClicked(evt);
-            }
-        });
 
         pnlFeatured.setOpaque(false);
         pnlFeatured.setLayout(new java.awt.GridLayout(1, 4, 16, 0));
@@ -206,23 +170,17 @@ public class CustomerHomeFrm extends javax.swing.JPanel implements CustomerPage 
                     .addGroup(pnlBodyLayout.createSequentialGroup()
                         .addComponent(lblCategoryTitle)
                         .addGap(18, 18, 18)
-                        .addComponent(sepCategory, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(18, 18, 18)
-                        .addComponent(lblCategoryAll))
+                        .addComponent(sepCategory, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addComponent(pnlCategories, 0, 0, Short.MAX_VALUE)
                     .addGroup(pnlBodyLayout.createSequentialGroup()
                         .addComponent(lblBestSellerTitle)
                         .addGap(18, 18, 18)
-                        .addComponent(sepBestSeller, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(18, 18, 18)
-                        .addComponent(lblBestSellerAll))
+                        .addComponent(sepBestSeller, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addComponent(pnlBestSellers, 0, 0, Short.MAX_VALUE)
                     .addGroup(pnlBodyLayout.createSequentialGroup()
                         .addComponent(lblFeaturedTitle)
                         .addGap(18, 18, 18)
-                        .addComponent(sepFeatured, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(18, 18, 18)
-                        .addComponent(lblViewAll))
+                        .addComponent(sepFeatured, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addComponent(pnlFeatured, 0, 0, Short.MAX_VALUE))
                 .addGap(24, 24, 24))
         );
@@ -236,10 +194,7 @@ public class CustomerHomeFrm extends javax.swing.JPanel implements CustomerPage 
                     .addComponent(lblCategoryTitle)
                     .addGroup(pnlBodyLayout.createSequentialGroup()
                         .addGap(20, 20, 20)
-                        .addComponent(sepCategory, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(pnlBodyLayout.createSequentialGroup()
-                        .addGap(11, 11, 11)
-                        .addComponent(lblCategoryAll)))
+                        .addComponent(sepCategory, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(14, 14, 14)
                 .addComponent(pnlCategories, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(30, 30, 30)
@@ -247,23 +202,17 @@ public class CustomerHomeFrm extends javax.swing.JPanel implements CustomerPage 
                     .addComponent(lblBestSellerTitle)
                     .addGroup(pnlBodyLayout.createSequentialGroup()
                         .addGap(20, 20, 20)
-                        .addComponent(sepBestSeller, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(pnlBodyLayout.createSequentialGroup()
-                        .addGap(11, 11, 11)
-                        .addComponent(lblBestSellerAll)))
+                        .addComponent(sepBestSeller, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(14, 14, 14)
-                .addComponent(pnlBestSellers, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(pnlBestSellers, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(30, 30, 30)
                 .addGroup(pnlBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lblFeaturedTitle)
                     .addGroup(pnlBodyLayout.createSequentialGroup()
                         .addGap(20, 20, 20)
-                        .addComponent(sepFeatured, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(pnlBodyLayout.createSequentialGroup()
-                        .addGap(11, 11, 11)
-                        .addComponent(lblViewAll)))
+                        .addComponent(sepFeatured, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(14, 14, 14)
-                .addComponent(pnlFeatured, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(pnlFeatured, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(28, 28, Short.MAX_VALUE))
         );
 
@@ -271,18 +220,6 @@ public class CustomerHomeFrm extends javax.swing.JPanel implements CustomerPage 
 
         add(scrBody, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
-
-    private void lblCategoryAllMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblCategoryAllMouseClicked
-        shell.openSearch("");
-    }//GEN-LAST:event_lblCategoryAllMouseClicked
-
-    private void lblBestSellerAllMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblBestSellerAllMouseClicked
-        shell.openSearch("");
-    }//GEN-LAST:event_lblBestSellerAllMouseClicked
-
-    private void lblViewAllMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblViewAllMouseClicked
-        shell.openSearch("");
-    }//GEN-LAST:event_lblViewAllMouseClicked
 
     /** Tối đa 8 ô danh mục (icon tròn + tên), bấm vào mở trang Tìm sách lọc theo danh mục. */
     private void loadCategories() {
@@ -312,8 +249,8 @@ public class CustomerHomeFrm extends javax.swing.JPanel implements CustomerPage 
     }
 
     // Sách bán chạy thật (BookDAO.bestSellers(), tính theo tổng số lượng
-    // trong OrderDetail của mọi đơn) — khác "Khám phá sách" bên dưới vốn chỉ
-    // lấy N sách đầu tiên trong kho, không dựa trên doanh số thật.
+    // trong OrderDetail của mọi đơn) — khác "Sách mới" bên dưới lấy theo mã
+    // sách mới nhất, không dựa trên doanh số.
     private void loadBestSellers() {
         Book[] books = bookDAO.bestSellers(4);
         if (books.length == 0) {
@@ -327,8 +264,11 @@ public class CustomerHomeFrm extends javax.swing.JPanel implements CustomerPage 
         fillBookGrid(pnlBestSellers, books, 4);
     }
 
+    /** Sách mới: 4 sách thêm vào hệ thống gần nhất (mã sách tự tăng nên mã lớn nhất là sách mới nhất). */
     private void loadFeaturedBooks() {
-        fillBookGrid(pnlFeatured, bookDAO.searchBook(""), 4);
+        Book[] books = bookDAO.searchBook("");
+        java.util.Arrays.sort(books, java.util.Comparator.comparingInt(Book::getBookID).reversed());
+        fillBookGrid(pnlFeatured, books, 4);
     }
 
     /** Đổ tối đa "slots" thẻ sách vào lưới, ô thừa để trống cho các thẻ không bị kéo giãn. */
@@ -368,6 +308,9 @@ public class CustomerHomeFrm extends javax.swing.JPanel implements CustomerPage 
         title.setFont(title.getFont().deriveFont(Font.PLAIN, 14f));
         title.setForeground(VintageTheme.TEXT);
         title.setAlignmentX(JComponent.LEFT_ALIGNMENT);
+        // Tên dài tối đa 3 dòng (phần dư bị cắt, rê chuột vào xem đủ tên) để không đẩy nút giỏ hàng ra ngoài thẻ.
+        title.setMaximumSize(new Dimension(Integer.MAX_VALUE, 58));
+        title.setToolTipText(book.getTitle());
         info.add(title);
         info.add(Box.createVerticalStrut(4));
 
@@ -477,12 +420,9 @@ public class CustomerHomeFrm extends javax.swing.JPanel implements CustomerPage 
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel lblBestSellerAll;
     private javax.swing.JLabel lblBestSellerTitle;
-    private javax.swing.JLabel lblCategoryAll;
     private javax.swing.JLabel lblCategoryTitle;
     private javax.swing.JLabel lblFeaturedTitle;
-    private javax.swing.JLabel lblViewAll;
     private javax.swing.JPanel pnlBestSellers;
     private javax.swing.JPanel pnlBody;
     private javax.swing.JPanel pnlCategories;
